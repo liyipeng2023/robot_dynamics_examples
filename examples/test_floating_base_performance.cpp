@@ -25,7 +25,7 @@ int main()
     int num = 8;
     shared_ptr<Graph> graph(createGraph(num), deleteGraph);
     
-    // 拓扑结构：0 -> 1(Floating) -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+    // Construct a floating-base serial chain followed by six revolute joints.
     for (int i = 0; i < 7; ++i) {
         graph->add_edge(i, i + 1);
     }
@@ -55,7 +55,7 @@ int main()
         robot_dyn->set_fixed_transformation(i, T[i].data(), 16);
     }
 
-    // 设置浮动基座关节 + 6个旋转关节
+    // Configure one floating-base joint followed by six revolute joints.
     robot_dyn->set_joint_type(1, JointType::FLOATING, 0);
     for (int i = 2; i <= 7; ++i) {
         robot_dyn->set_joint_type(i, JointType::REVOLUTE, 0);
@@ -79,7 +79,8 @@ int main()
 
     robot_dyn->build_model();
 
-    // Floating base 状态维度：q 为 13 (四元数+位置+6关节), qd 和 qdd 为 12
+    // Floating-base state dimensions: q has 13 entries (quaternion, position, and
+    // six joint angles); qd and qdd each have 12 entries.
     Eigen::VectorXd q(13), qd(12), qdd(12), tau(12);
     q << 0, 0, 0, 1, 0, 0, 0, 0, -M_PI / 4, M_PI / 2, -M_PI / 2, -M_PI / 3, M_PI / 3;
     qd << 0.01, -0.03, 0.05, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0;
@@ -91,27 +92,27 @@ int main()
     const size_t WARMUP_N = 1000;
     const size_t TEST_N = 50000;
 
-    // CPU 预热
+    // Warm up the dynamics routines before collecting timing measurements.
     for (size_t i = 0; i < WARMUP_N; ++i) {
         robot_dyn->forward_kinematics(q.data(), q.size());
         robot_dyn->forward_dynamics_crba(M.data(), qd.size());
     }
 
     std::cout << "========================================================\n";
-    std::cout << "  RDL Performance Test: Floating-Base 6-DOF Robot\n";
-    std::cout << "  Iterations: " << TEST_N << "\n";
+    std::cout << "  Benchmark: floating-base 6-DOF robot dynamics\n";
+    std::cout << "  Timed iterations per routine: " << TEST_N << "\n";
     std::cout << "========================================================\n\n";
 
-    // 1. 浮动基座正运动学 (FK)
+    // Measure floating-base forward-kinematics execution time.
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < TEST_N; ++i) {
         robot_dyn->forward_kinematics(q.data(), q.size());
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto ns_fk = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[FK] Floating-Base FK: " << ns_fk / TEST_N << " ns / call\n";
+    std::cout << "Floating-base forward kinematics: " << ns_fk / TEST_N << " ns/call\n";
 
-    // 2. 浮动基座 CRBA 矩阵求解测试
+    // Measure the floating-base CRBA inertia-matrix calculation.
     start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < TEST_N; ++i) {
         robot_dyn->forward_kinematics(q.data(), q.size());
@@ -119,9 +120,9 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_crba = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[CRBA] Inertia Matrix M: " << ns_crba / TEST_N << " ns / call\n";
+    std::cout << "Floating-base CRBA inertia matrix: " << ns_crba / TEST_N << " ns/call\n";
 
-    // 3. 浮动基座逆动力学 (RNEA) 测试
+    // Measure floating-base inverse dynamics using the recursive Newton-Euler algorithm (RNEA).
     robot_dyn->cal_coriolis_matrix(qd.data(), C.data(), qd.size());
     robot_dyn->cal_gravitational_torque(g.data(), g.size());
     tau = M * qdd + C * qd + g;
@@ -134,9 +135,9 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_id = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[ID] Floating-Base Inverse Dynamics (RNEA): " << ns_id / TEST_N << " ns / call\n";
+    std::cout << "Floating-base inverse dynamics (RNEA): " << ns_id / TEST_N << " ns/call\n";
 
-    // 4. 浮动基座正动力学 (ABA) 测试
+    // Measure floating-base forward dynamics using the articulated-body algorithm (ABA).
     Eigen::VectorXd qdd_aba(12);
     Eigen::VectorXd zero_tau = Eigen::VectorXd::Zero(12);
     start = std::chrono::high_resolution_clock::now();
@@ -146,9 +147,9 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_aba = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[FD] Floating-Base Forward Dynamics (ABA): " << ns_aba / TEST_N << " ns / call\n";
+    std::cout << "Floating-base forward dynamics (ABA): " << ns_aba / TEST_N << " ns/call\n";
 
-    // 5. 质心雅可比矩阵 (CoM Jacobian) 计算耗时测试
+    // Measure the center-of-mass Jacobian calculation.
     Eigen::Matrix<double, 3, 12> J_com;
     start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < TEST_N; ++i) {
@@ -156,7 +157,7 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_com = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[CoM] Center of Mass Jacobian: " << ns_com / TEST_N << " ns / call\n";
+    std::cout << "Center-of-mass Jacobian: " << ns_com / TEST_N << " ns/call\n";
 
     std::cout << "\n========================================================\n";
     return 0;

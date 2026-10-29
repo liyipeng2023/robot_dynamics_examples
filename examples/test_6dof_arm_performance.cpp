@@ -20,21 +20,21 @@ using namespace Eigen;
 
 int main()
 {
-    // 显式单线程，防止多线程调度干扰耗时统计
+    // Restrict Eigen to one thread to reduce scheduling noise during benchmarking.
     Eigen::setNbThreads(1);
 
     int num = 7;
     shared_ptr<Graph> graph(createGraph(num), deleteGraph);
 
-    // 拓扑结构：0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6
+    // Construct the serial-chain topology: fixed base 0 followed by six joints.
     for (int i = 0; i < 6; ++i) {
         graph->add_edge(i, i + 1);
     }
 
-    // 创建动力学对象
+    // Create the robot dynamics model.
     shared_ptr<RobotDynamics> robot_dyn(createRobotDynamics(graph.get()), deleteRobotDynamics);
 
-    // MDH 参数定义 (alpha, theta, a, d)
+    // Define modified Denavit-Hartenberg parameters in (alpha, theta, a, d) order.
     MDH dh0(0, 0, 0, 0, false);
     MDH dh1(0, 0, 0, 0.1273, false);
     MDH dh2(-M_PI / 2, 0, 0, 0, false);
@@ -57,7 +57,7 @@ int main()
         robot_dyn->set_joint_type(i, JointType::REVOLUTE, 0);
     }
 
-    // 惯性与动力学参数配置
+    // Configure the link inertial and dynamic parameters.
     DynamicParam link1_param(0.029053, 0.0, 0.0, 0.029053, 0.0, 0.0243,   7.778,  0.00008,  0.00244,  -0.037);
     DynamicParam link2_param(0.023247, 0.0, 0.0, 1.157850, 0.0, 1.157850, 12.930, 0.00001,  0.15061,  0.38757);
     DynamicParam link3_param(0.012586, 0.0, 0.0, 0.408420, 0.0, 0.408420,  3.870, -0.00012, 0.06112,  0.1984);
@@ -74,7 +74,7 @@ int main()
 
     robot_dyn->build_model();
 
-    // 初始状态变量
+    // Set the initial joint positions, velocities, and accelerations.
     Eigen::VectorXd q(6), qd(6), qdd(6), tau(6);
     q << 0, -M_PI / 4, 0, -M_PI / 2, 0, M_PI / 3;
     qd << 0.27, -0.5, -0.2, 0.7, -1.3, 0.2;
@@ -86,27 +86,27 @@ int main()
     const size_t WARMUP_N = 1000;
     const size_t TEST_N = 50000;
 
-    // CPU 预热，消除 Branch Prediction 与 Cache 未命中影响
+    // Warm up the dynamics routines before collecting timing measurements.
     for (size_t i = 0; i < WARMUP_N; ++i) {
         robot_dyn->forward_kinematics(q.data(), q.size());
         robot_dyn->forward_dynamics_crba(qd.data(), M.data(), C.data(), g.data(), qd.size());
     }
 
     std::cout << "========================================================\n";
-    std::cout << "  RDL Performance Test: Fixed-Base 6-DOF Robot\n";
-    std::cout << "  Iterations: " << TEST_N << "\n";
+    std::cout << "  Benchmark: fixed-base 6-DOF robot dynamics\n";
+    std::cout << "  Timed iterations per routine: " << TEST_N << "\n";
     std::cout << "========================================================\n\n";
 
-    // 1. 正运动学 (Forward Kinematics) 测试
+    // Measure forward-kinematics execution time.
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < TEST_N; ++i) {
         robot_dyn->forward_kinematics(q.data(), q.size());
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto ns_fk = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[FK] Forward Kinematics: " << ns_fk / TEST_N << " ns / call\n";
+    std::cout << "Forward kinematics: " << ns_fk / TEST_N << " ns/call\n";
 
-    // 2. CRBA 复合体惯性法 (Mass, Coriolis, Gravity) 测试
+    // Measure CRBA-based inertia, Coriolis, and gravity calculations.
     start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < TEST_N; ++i) {
         robot_dyn->forward_kinematics(q.data(), q.size());
@@ -114,9 +114,9 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_crba = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[CRBA] M, C, G Calculation: " << ns_crba / TEST_N << " ns / call\n";
+    std::cout << "CRBA (M, C, and gravity): " << ns_crba / TEST_N << " ns/call\n";
 
-    // 3. 逆动力学 RNEA (Recursive Newton-Euler) 测试
+    // Measure inverse dynamics using the recursive Newton-Euler algorithm (RNEA).
     tau = M * qdd + C * qd + g;
     start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < TEST_N; ++i) {
@@ -126,9 +126,9 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_id = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[ID] Inverse Dynamics (RNEA): " << ns_id / TEST_N << " ns / call\n";
+    std::cout << "Inverse dynamics (RNEA): " << ns_id / TEST_N << " ns/call\n";
 
-    // 4. 正动力学 ABA (Articulated-Body Algorithm) 测试
+    // Measure forward dynamics using the articulated-body algorithm (ABA).
     Eigen::VectorXd qdd_aba(6);
     Eigen::VectorXd zero_tau = Eigen::VectorXd::Zero(6);
     start = std::chrono::high_resolution_clock::now();
@@ -138,7 +138,7 @@ int main()
     }
     end = std::chrono::high_resolution_clock::now();
     auto ns_aba = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    std::cout << "[FD] Forward Dynamics (ABA): " << ns_aba / TEST_N << " ns / call\n";
+    std::cout << "Forward dynamics (ABA): " << ns_aba / TEST_N << " ns/call\n";
 
     std::cout << "\n========================================================\n";
     return 0;

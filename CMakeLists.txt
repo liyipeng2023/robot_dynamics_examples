@@ -75,6 +75,27 @@ target_include_directories(test_floating_base_performance PRIVATE
 )
 target_link_libraries(test_floating_base_performance PRIVATE rdl::rdl_core)
 
+# 7. add test_dynamics_calib.cpp
+add_executable(test_dynamics_calib ${CMAKE_SOURCE_DIR}/examples/test_dynamics_calib.cpp)
+target_include_directories(test_dynamics_calib PRIVATE
+        ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(test_dynamics_calib PRIVATE rdl::rdl_calib rdl::rdl_core)
+
+# 8. add test_kin_calib.cpp
+add_executable(test_kin_calib ${CMAKE_SOURCE_DIR}/examples/test_kin_calib.cpp)
+target_include_directories(test_kin_calib PRIVATE
+        ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(test_kin_calib PRIVATE rdl::rdl_calib rdl::rdl_ik)
+
+# 9. add test_robot_kinematics.cpp
+add_executable(test_robot_kinematics ${CMAKE_SOURCE_DIR}/examples/test_robot_kinematics.cpp)
+target_include_directories(test_robot_kinematics PRIVATE
+        ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(test_robot_kinematics PRIVATE rdl::rdl_ik)
+
 # Ensure the rdl DLL is available next to the executable after build
 if(WIN32)
     set(TEST_TARGETS
@@ -82,6 +103,9 @@ if(WIN32)
             test_6DOF_dynamics
             test_3DOF_dynamics
             test_dual_floating_robots
+            test_dynamics_calib
+            test_kin_calib
+            test_robot_kinematics
     )
 
     foreach(test_target ${TEST_TARGETS})

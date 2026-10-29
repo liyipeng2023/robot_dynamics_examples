@@ -6,7 +6,6 @@
 #include <robot_dynamics.h>
 #include <constrained_dynamics_solver.h>
 #include <iostream>
-//#define EIGEN_DONT_PARALLELIZE
 #include <Eigen/Dense>
 #define EIGEN_USE_THREADS
 #include <Eigen/Core>
@@ -24,13 +23,9 @@ using namespace Eigen;
 int main()
 {
     setNbThreads(1);
-    //#ifdef _WIN32
-    //SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-    //#endif
-    // create a two-DOF robot manipulator, 0 represents the base frame
+    // Build the topology shared by two floating-base six-joint robots.
     int num = 8;
     shared_ptr<Graph> graph(createGraph(num), deleteGraph);
-    // 0->1->2->3->4->5->6
     graph->add_edge(0,1); 
     graph->add_edge(1,2); 
     graph->add_edge(2,3);
@@ -43,11 +38,11 @@ int main()
 
     double pi = 3.141592653589793238462643383279502884;
 
-    // create the dynamics
+    // Create dynamics models for both robots.
     shared_ptr<RobotDynamics> robot_dyn_1(createRobotDynamics(graph.get()),deleteRobotDynamics);
     shared_ptr<RobotDynamics> robot_dyn_2(createRobotDynamics(graph.get()),deleteRobotDynamics);
 
-    // alpha theta a d
+    // Define the modified Denavit-Hartenberg parameters in (alpha, theta, a, d) order.
 	MDH dh0(0, 0, 0, 0, false);
     MDH dh1(0,0,0,0.1273,false);
     MDH dh2(-pi/2,0,0,0,false);
@@ -84,7 +79,7 @@ int main()
     robot_dyn_2->set_fixed_transformation(6, T[6].data(), 16);
     robot_dyn_2->set_fixed_transformation(7, T[7].data(), 16);
 
-    //
+    // Configure a floating base followed by six revolute joints on each robot.
     robot_dyn_1->set_joint_type(1,JointType::FLOATING,0);
     robot_dyn_1->set_joint_type(2,JointType::REVOLUTE,0);
     robot_dyn_1->set_joint_type(3,JointType::REVOLUTE,0);
@@ -101,15 +96,15 @@ int main()
     robot_dyn_2->set_joint_type(6,JointType::REVOLUTE,0);
     robot_dyn_2->set_joint_type(7, JointType::REVOLUTE,0);
 
-    std::cout << "The joint types have been set." << std::endl;
-    // dynamic parameters of robot_dyn_1
+    std::cout << "Robot models: floating bases and revolute joints configured." << std::endl;
+    // Configure inertial parameters for the first robot.
     DynamicParam link0_param_1(29.053, 0.0, 0.0, 29.053, 0.0, 200.43, 777.8, -0.08, 0.33, 0.037);
-    DynamicParam link1_param_1(0.029053, 0.0, 0.0, 0.029053, 0.0, 3.0243, 7.778, 0.00008, 0.00244, -0.037);   // shoulder_link
-    DynamicParam link2_param_1(0.023247, 0.0, 0.0, 1.157850, 0.0, 5.157850, 12.930, 0.00001, 0.15061, 0.38757);  // upper_arm_link
-    DynamicParam link3_param_1(0.012586, 0.0, 0.0, 0.408420, 0.0, 2.408420, 3.870, -0.00012, 0.06112, 0.1984);   // forearm_link
-    DynamicParam link4_param_1(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, -0.00112, 0.02269);  // wrist_1_link
-    DynamicParam link5_param_1(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, 0.00112, 0.002269); // wrist_2_link
-    DynamicParam link6_param_1(0.000405, 0.0, 0.0, 0.000405, 0.0, 0.1577, 0.202, 0.0, -0.001156, -0.00149);  // wrist_3_link
+    DynamicParam link1_param_1(0.029053, 0.0, 0.0, 0.029053, 0.0, 3.0243, 7.778, 0.00008, 0.00244, -0.037);   // Shoulder link.
+    DynamicParam link2_param_1(0.023247, 0.0, 0.0, 1.157850, 0.0, 5.157850, 12.930, 0.00001, 0.15061, 0.38757);  // Upper-arm link.
+    DynamicParam link3_param_1(0.012586, 0.0, 0.0, 0.408420, 0.0, 2.408420, 3.870, -0.00012, 0.06112, 0.1984);   // Forearm link.
+    DynamicParam link4_param_1(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, -0.00112, 0.02269);  // First wrist link.
+    DynamicParam link5_param_1(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, 0.00112, 0.002269); // Second wrist link.
+    DynamicParam link6_param_1(0.000405, 0.0, 0.0, 0.000405, 0.0, 0.1577, 0.202, 0.0, -0.001156, -0.00149);  // Third wrist link.
 
     robot_dyn_1->set_dyn_param(1,link0_param_1);
     robot_dyn_1->set_dyn_param(2,link1_param_1);
@@ -121,14 +116,14 @@ int main()
 
     robot_dyn_1->build_model();
 
-    // dynamic parameters of robot_dyn_2
+    // Configure inertial parameters for the second robot.
     DynamicParam link0_param_2(50.3, 0.0, 0.0, 48.03, 0.0, 240.43, 877.8, 0.08, 0.244, -0.37);
-    DynamicParam link1_param_2(0.029053, 0.0, 0.0, 0.029053, 0.0, 3.0243, 7.778, 0.00008, 0.00244, -0.037);   // shoulder_link
-    DynamicParam link2_param_2(0.023247, 0.0, 0.0, 1.157850, 0.0, 5.157850, 12.930, 0.00001, 0.15061, 0.38757);  // upper_arm_link
-    DynamicParam link3_param_2(0.012586, 0.0, 0.0, 0.408420, 0.0, 2.408420, 3.870, -0.00012, 0.06112, 0.1984);   // forearm_link
-    DynamicParam link4_param_2(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, -0.00112, 0.02269);  // wrist_1_link
-    DynamicParam link5_param_2(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, 0.00112, 0.002269); // wrist_2_link
-    DynamicParam link6_param_2(0.000405, 0.0, 0.0, 0.000405, 0.0, 0.1577, 0.202, 0.0, -0.001156, -0.00149);  // wrist_3_link
+    DynamicParam link1_param_2(0.029053, 0.0, 0.0, 0.029053, 0.0, 3.0243, 7.778, 0.00008, 0.00244, -0.037);   // Shoulder link.
+    DynamicParam link2_param_2(0.023247, 0.0, 0.0, 1.157850, 0.0, 5.157850, 12.930, 0.00001, 0.15061, 0.38757);  // Upper-arm link.
+    DynamicParam link3_param_2(0.012586, 0.0, 0.0, 0.408420, 0.0, 2.408420, 3.870, -0.00012, 0.06112, 0.1984);   // Forearm link.
+    DynamicParam link4_param_2(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, -0.00112, 0.02269);  // First wrist link.
+    DynamicParam link5_param_2(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.25625, 1.960, -0.00021, 0.00112, 0.002269); // Second wrist link.
+    DynamicParam link6_param_2(0.000405, 0.0, 0.0, 0.000405, 0.0, 0.1577, 0.202, 0.0, -0.001156, -0.00149);  // Third wrist link.
 
     robot_dyn_2->set_dyn_param(1,link0_param_2);
     robot_dyn_2->set_dyn_param(2,link1_param_2);
@@ -140,9 +135,8 @@ int main()
 
     robot_dyn_2->build_model();
 
-    // create a free-floating object
+    // Create a free-floating rigid object shared by the two robots.
     shared_ptr<Graph> graph_obj(createGraph(2), deleteGraph);
-    // 0->1->2->3->4->5->6
     graph_obj->add_edge(0,1); 
     graph_obj->print();
     
@@ -166,7 +160,6 @@ int main()
     AngleAxisd aa_1(0, axis_1);
     Quaterniond quat1(aa_1);
 
-    //VectorXd q_1(13), qd_1(12), qdd_1(12);
     Map<VectorXd> q_1(robot_data_1.q, 13), qd_1(robot_data_1.qd, 12), qdd_1(robot_data_1.qdd, 12);
     Map<MatrixXd> M_1(robot_data_1.M, 12, 12), C_1(robot_data_1.C, 12, 12);
     Map<VectorXd> tau_1(robot_data_1.tau, 12), g_1(robot_data_1.g, 12), h_1(robot_data_1.h, 12);
@@ -178,7 +171,7 @@ int main()
     axis_2.normalize();
     AngleAxisd aa_2(pi, axis_2);
     Quaterniond quat2(aa_2);
-    print("quat2",quat2.vec().transpose());
+    print("Initial orientation quaternion vector for robot 2:", quat2.vec().transpose());
 
     Map<VectorXd> q_2(robot_data_2.q, 13), qd_2(robot_data_2.qd, 12), qdd_2(robot_data_2.qdd, 12);
     Map<MatrixXd> M_2(robot_data_2.M, 12, 12), C_2(robot_data_2.C, 12, 12);
@@ -204,43 +197,38 @@ int main()
     robot_dyn_obj->forward_kinematics(robot_data_obj.q, robot_data_obj.dim_pos);
     robot_dyn_obj->forward_dynamics_crba(robot_data_obj.M, robot_data_obj.dof_dyn);
 
-    print("M1_bb", M_1.block<6,6>(0,0));
-    print("M1_mm", M_1.block<6,6>(6,6));
-    print("M1_bm", M_1.block<6,6>(0,6));
-    print("M2_bb", M_2.block<6,6>(0,0));
-    print("M2_mm", M_2.block<6,6>(6,6));
-    print("M2_bm", M_2.block<6,6>(0,6));
-    print("Mobj", M_obj);
+    print("Robot 1 floating-base inertia block:", M_1.block<6,6>(0,0));
+    print("Robot 1 joint-space inertia block:", M_1.block<6,6>(6,6));
+    print("Robot 1 base-to-joint inertia block:", M_1.block<6,6>(0,6));
+    print("Robot 2 floating-base inertia block:", M_2.block<6,6>(0,0));
+    print("Robot 2 joint-space inertia block:", M_2.block<6,6>(6,6));
+    print("Robot 2 base-to-joint inertia block:", M_2.block<6,6>(0,6));
+    print("Object spatial inertia matrix:", M_obj);
 
-    // construct a constraint
+    // Compute the initial frame poses and define the attachment constraints.
     robot_dyn_1->forward_kinematics(robot_data_1.q, robot_data_1.dim_pos);
     robot_dyn_2->forward_kinematics(robot_data_2.q, robot_data_2.dim_pos);
     robot_dyn_obj->forward_kinematics(robot_data_obj.q, robot_data_obj.dim_pos);
-    Matrix4d T_end_1, T_end_2, T_base_1, T_base_2, T_obj;
+    Matrix4d T_end_1, T_end_2, T_obj;
     size_t end_frame_id = 7;
     robot_dyn_1->get_pose(end_frame_id, T_end_1.data(), 16);
     robot_dyn_2->get_pose(end_frame_id, T_end_2.data(), 16);
     robot_dyn_obj->get_pose(1, T_obj.data(), 16);
-    robot_dyn_1->get_pose(1, T_base_1.data(), 16);
-    robot_dyn_2->get_pose(1, T_base_2.data(), 16);
 
-    print("T_end_1",T_end_1);
-    print("T_end_2",T_end_2);
-    print("T_obj",T_obj);
+    print("Robot 1 end-effector pose in the world frame:", T_end_1);
+    print("Robot 2 end-effector pose in the world frame:", T_end_2);
+    print("Rigid-object pose in the world frame:", T_obj);
     Vector3d del_r = T_end_1.block<3,1>(0,3) - T_end_2.block<3,1>(0,3);
-    Matrix3d del_R = T_end_2.block<3,3>(0,0).transpose()*T_end_1.block<3,3>(0,0);
-    print("del_r",del_r.transpose());
+    print("Initial relative end-effector displacement [m]:", del_r.transpose());
 
     Matrix3d R_constraint_1 = T_end_1.block<3, 3>(0, 0);
     Vector3d r_constraint_1 = T_end_1.block<3, 1>(0, 3) - T_obj.block<3, 1>(0, 3);
     Matrix3d R_constraint_2 = T_end_2.block<3, 3>(0, 0);
     Vector3d r_constraint_2 = T_end_2.block<3, 1>(0, 3) - T_obj.block<3, 1>(0, 3);
-    print("r_constraint_1", r_constraint_1.transpose());
-    print("r_constraint_2", r_constraint_2.transpose());
-    print("R_constraint_1", R_constraint_1);
-    print("R_constraint_2", R_constraint_2);
-
-    //print("del_r_base",T_base_1.block<3,1>(0,3) - T_base_2.block<3,1>(0,3));
+    print("Robot 1 attachment offset from the object origin [m]:", r_constraint_1.transpose());
+    print("Robot 2 attachment offset from the object origin [m]:", r_constraint_2.transpose());
+    print("Robot 1 attachment orientation in the world frame:", R_constraint_1);
+    print("Robot 2 attachment orientation in the world frame:", R_constraint_2);
 
     LoopConstraint constraint_1;
     constraint_1.model_A = 0;
@@ -259,7 +247,6 @@ int main()
     constraint_1.mask.x = true;
     constraint_1.mask.y = true;
     constraint_1.mask.z = true;
-    //constraint_1.type = ConstraintType::CLOSED_LOOP;
 
     LoopConstraint constraint_2;
     constraint_2.model_A = 1;
@@ -279,7 +266,6 @@ int main()
     constraint_2.mask.x = true;
     constraint_2.mask.y = true;
     constraint_2.mask.z = true;
-    //constraint_2.type = ConstraintType::CLOSED_LOOP;
 
     Matrix<double, 6, 1> acc;
     acc.setZero();
@@ -297,17 +283,17 @@ int main()
     solver->set_parameters(40.0,400.0,0.0,0.0,0.0);
     solver->solve(robots.data(), datas.data(), 3);
 
-    print("qdd_1",qdd_1.transpose());
-    print("qdd_2",qdd_2.transpose());
-    print("qdd_obj",qdd_obj.transpose());
+    print("Initial generalized acceleration of robot 1:", qdd_1.transpose());
+    print("Initial generalized acceleration of robot 2:", qdd_2.transpose());
+    print("Initial generalized acceleration of the object:", qdd_obj.transpose());
 
     Matrix<double, 6, 12> J_1, J_2;
     robot_dyn_1->forward_kinematics(robot_data_1.q, 13);
     robot_dyn_2->forward_kinematics(robot_data_2.q, 13);
     robot_dyn_1->cal_jacobian(end_frame_id, J_1.data(), 6, 12, ReferenceFrame::BODY);
     robot_dyn_2->cal_jacobian(end_frame_id, J_2.data(), 6, 12, ReferenceFrame::BODY);
-    print("J_1",J_1);
-    print("J_2",J_2);
+    print("Robot 1 end-effector Jacobian in body coordinates:", J_1);
+    print("Robot 2 end-effector Jacobian in body coordinates:", J_2);
 
     double dt = 0.0005;
     size_t N = 100/dt;
@@ -383,12 +369,8 @@ int main()
         J_bar_1 = J_1.block<6,6>(0,6) - J_1.block<6,6>(0,0)*M_1.block<6,6>(0,0).inverse()*M_1.block<6,6>(0,6);
         robot_dyn_1->get_pose(end_frame_id, T_end_1.data(), 16);
         Eigen::Matrix3d R_end_1 = T_end_1.block<3,3>(0,0);
-        Eigen::VectorXd v_1 = J_1*qd_1;
         Eigen::Vector3d r_end_1 = T_end_1.block<3,1>(0,3);
-        Eigen::Vector3d v_end_1 = v_1.tail<3>();
 
-        //print("M_bar_1", M_bar_1);
-        //print("h_bar_1", h_bar_1.transpose());
         robot_dyn_2->forward_kinematics(robot_data_2.q, 13);
         robot_dyn_2->forward_dynamics_crba(M_2.data(), robot_data_2.dof_dyn);
         robot_dyn_2->cal_nonlinear_effect(robot_data_2.qd, h_2.data(), h_2.size());
@@ -397,12 +379,10 @@ int main()
         h_bar_2 = h_2.segment<6>(6) - M_2.block<6,6>(6,0)*M_2.block<6,6>(0,0).inverse()*h_2.segment<6>(0);
         J_bar_2 = J_2.block<6,6>(0,6) - J_2.block<6,6>(0,0)*M_2.block<6,6>(0,0).inverse()*M_2.block<6,6>(0,6);
         robot_dyn_2->get_pose(end_frame_id, T_end_2.data(), 16);
-        Eigen::VectorXd v_2 = J_2*qd_2;
         Eigen::Matrix3d R_end_2 = T_end_2.block<3,3>(0,0);
         Eigen::Vector3d r_end_2 = T_end_2.block<3,1>(0,3);
-        Eigen::Vector3d v_end_2 = v_2.tail<3>();
 
-        // update position of obj
+        // Update the object's pose and construct the combined object Jacobian.
         robot_dyn_obj->forward_kinematics(robot_data_obj.q, 7);
         robot_dyn_obj->get_pose(1, T_obj.data(), 16);
         Eigen::Matrix3d R_obj = T_obj.block<3,3>(0,0);
@@ -421,10 +401,9 @@ int main()
         J_bar_obj.block<6,6>(0,6) = 0.5*J_bar_obj.block<6,6>(0,6);
 
         Eigen::Quaterniond del_quat_obj(R_des_obj.transpose()*R_obj);
-        Eigen::AngleAxisd del_aa_obj(del_quat_obj);
         Eigen::Matrix<double,6,1> u_obj;
         Eigen::Vector3d del_r_obj = r_end_obj - x_des_obj;
-        Eigen::Vector3d del_w_obj = del_quat_obj.vec();//del_aa_obj.axis() * del_aa_obj.angle();
+        Eigen::Vector3d del_w_obj = del_quat_obj.vec();
         u_obj.head<3>() = -0.4*del_w_obj;
         u_obj.tail<3>() = -0.4*del_r_obj;
 
@@ -436,54 +415,10 @@ int main()
         qd_des_2 = qd_des_all.segment<6>(6);
         qdd_des_2.setZero();
         q_des_2 += dt*qd_des_2;
-        /*
-        Eigen::Quaterniond del_quat_1(R_des_1.transpose()*T_end_1.block<3,3>(0,0));
-        Eigen::AngleAxisd del_aa(del_quat_1);
-        Eigen::Matrix<double,6,1> u_1;
-		Eigen::Vector3d del_r_1 = r_end_1 - x_des_1;
-		Eigen::Vector3d del_w_1 = del_aa.axis() * del_aa.angle();
-		//if (del_r_1.norm() < 2e-3) del_r_1.setZero();
-		//if (del_w_1.norm() < 2e-3) del_w_1.setZero();
-        u_1.head<3>() = -1.5*del_w_1;
-        u_1.tail<3>() = -1.5*del_r_1;// - 0.1*(r_end_1-r_end_2 - del_r_12);
-        //Eigen::Matrix3d JJT_1 = J_bar_1.block<3,6>(3,0)*J_bar_1.block<3,6>(3,0).transpose();
-        qd_des_1 = J_bar_1.inverse()*u_1 ;
-        qdd_des_1.setZero();
-        q_des_1 += dt*qd_des_1;
-
-        Eigen::Quaterniond del_quat_2(R_des_2.transpose()*T_end_2.block<3,3>(0,0));
-        Eigen::Matrix<double,6,1> u_2;
-		Eigen::Vector3d del_r_2 = r_end_2 - x_des_2;
-		//if (del_r_2.norm() < 1e-4) del_r_2.setZero();
-        u_2.head<3>() = -0.0*del_quat_2.vec();
-        u_2.tail<3>() = -0.0*del_r_2 - 0.15* (v_end_2- v_end_1) - 2.5*(r_end_2-r_end_1 + T_obj.block<3,3>(0,0)*del_r_12);
-        Eigen::Matrix3d JJT_2 = J_bar_2.block<3,6>(3,0)*J_bar_2.block<3,6>(3,0).transpose();
-        qd_des_2 = J_bar_2.block<3, 6>(3, 0).transpose()* JJT_2.inverse()*u_2.tail<3>(); //J_bar_2.inverse() * u_2; 
-        qdd_des_2.setZero();
-        q_des_2 += dt*qd_des_2;
-        */
-        
-        //print("M_bar_2", M_bar_2);
-        //print("h_bar_2", h_bar_2.transpose());
         tau_1.segment<6>(6) = M_bar_1*(qdd_des_1  -Kp*(q_1.segment<6>(7) - q_des_1) - Kd*(qd_1.segment<6>(6)-qd_des_1)) + h_bar_1;
-        //tau_1.setZero();
-		//tau_1 = J_bar_1.inverse() * u_1 + h_bar_1;
         tau_2.segment<6>(6) =  M_bar_2*(qdd_des_2 -Kp*(q_2.segment<6>(7) - q_des_2) - Kd*(qd_2.segment<6>(6)) - qd_des_2) + h_bar_2;
         tau_obj.setZero();
-        //print("tau_1", tau_1.transpose());
-        //print("tau_2", tau_2.transpose());
 
-        // test taskspace control
-        /*robot_dyn_1->get_pose(end_frame_id, T_end_1.data(), 16);
-        Eigen::Vector3d r_end_1 = T_end_1.block<3,1>(0,3);
-        Eigen::Matrix<double,6,6> M_tmp = J_bar_1.transpose()*(J_bar_1*M_1.block<6,6>(6,6).inverse()*J_bar_1.transpose()).inverse();
-        tau_1.segment<6>(6) = -M_tmp.block<3,6>(3,0).transpose()*0.3*(r_end_1 - x_des_1);
-
-        robot_dyn_2->get_pose(end_frame_id, T_end_2.data(), 16);
-        Eigen::Vector3d r_end_2 = T_end_2.block<3,1>(0,3);
-        Eigen::Matrix<double,6,6> M_tmp_2 = J_bar_2.transpose()*(J_bar_2*M_2.block<6,6>(6,6).inverse()*J_bar_2.transpose()).inverse();
-        tau_2.segment<6>(6) = -M_tmp_2.block<3,6>(3,0).transpose()*0.3*(r_end_2 - x_des_2);
-        */
         solver->get_constraint_err(c_err.data(), c_err_d.data(), c_err_dd.data(), 6);
         solver->get_lambda(lambda.data(), 12);
         

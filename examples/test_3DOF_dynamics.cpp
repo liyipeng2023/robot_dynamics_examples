@@ -73,50 +73,32 @@ void cal_3dof_dynamics(vector<double> q, vector<double> qd, vector<double> qdd, 
 
 int main()
 {
-    // create a two-DOF robot manipulator, 0 represents the base frame
+    // Build a three-joint serial manipulator with link 0 as the fixed base.
     shared_ptr<Graph> graph(createGraph(4),deleteGraph);
-    // 0->1->2->3
     graph->add_edge(0,1); 
     graph->add_edge(1,2); 
     graph->add_edge(2,3);
     
     graph->print();
 
-    // create the dynamics 
+    // Create the dynamics model and assign modified Denavit-Hartenberg parameters.
     shared_ptr<RobotDynamics> robot_dynamics(createRobotDynamics(graph.get()),deleteRobotDynamics);
 
     MDH dh0(0,0,0,0,false);
     MDH dh1(0,0,0,0.2,false);
     MDH dh2(M_PI /2,0,0,0,false);
     MDH dh3(0, 0, 0.6, 0, false);
-    Matrix4d T0, T1, T2, T3;
-
-    mdh_to_transformation(dh0, JointType::FIXED, 0, T0.data(), 16);
-    mdh_to_transformation(dh1, JointType::REVOLUTE, 0, T1.data(), 16);
-    mdh_to_transformation(dh2, JointType::REVOLUTE, 0, T2.data(), 16);
-    mdh_to_transformation(dh3, JointType::REVOLUTE, 0, T3.data(), 16);
-
-    //robot_dynamics->set_auxiliary_Trans(0, T0.data(), 16);
-    //robot_dynamics->set_auxiliary_Trans(1, T1.data(), 16);
-    //robot_dynamics->set_auxiliary_Trans(2, T2.data(), 16);
-    //robot_dynamics->set_auxiliary_Trans(3, T3.data(), 16);
-    //robot_dynamics->set_mdh(0,dh0);
     robot_dynamics->set_mdh(1, dh1);
     robot_dynamics->set_mdh(2, dh2);
     robot_dynamics->set_mdh(3, dh3);
 
-    Eigen::Vector3d axis;
-    axis << 0,0,1;
-    //robot_dynamics->set_joint_type(0, JointType::FIXED);
     robot_dynamics->set_joint_type(1, JointType::REVOLUTE, 0);
     robot_dynamics->set_joint_type(2, JointType::REVOLUTE, 0);
     robot_dynamics->set_joint_type(3, JointType::REVOLUTE, 0);
 
-    DynamicParam dp0(0.5, 0, 0, 0.5, 0, 1, 1, 0.0, 0, -0.1);
     DynamicParam dp1(0.5,0,0,0.5,0,1,1,0.0,0,-0.1);
     DynamicParam dp2(1,0,0,1,0,2,1.5,0.3,0,0);
     DynamicParam dp3(1,0,0,1,0,2,1.5,0.25,0,0);
-    //robot_dynamics->set_dyn_param(0, dp0);
     robot_dynamics->set_dyn_param(1,dp1);
     robot_dynamics->set_dyn_param(2,dp2);
     robot_dynamics->set_dyn_param(3,dp3);
@@ -132,57 +114,32 @@ int main()
     qd[0] = 0.8; qd[1] = 1.3; qd[2] = -0.4;
     qdd[0] = 0.3; qdd[1] = 0.2; qdd[2] = 0.8;
 
-    //robot_dynamics->set_joint_pos(q.data(),q.size());
-    //robot_dynamics->set_joint_vel(qd.data(),qd.size());
-    //robot_dynamics->set_joint_acc(qdd.data(),qdd.size());
-
     robot_dynamics->forward_kinematics(q.data(),q.size());
     robot_dynamics->forward_iterations(qd.data(),qdd.data(),qd.size());
     
-    vector<long long> times1;
-    Eigen::MatrixXd M(3,3);// = get_M(robot_dynamics);
-    Eigen::MatrixXd C(3,3);// = get_C(robot_dynamics);
-    Eigen::VectorXd g(3);// = get_g(robot_dynamics);
-	auto start = Clock::now();
-	auto end = Clock::now();
-    for (size_t i=0; i<100; i++)
-    {
-        start = Clock::now();
-        robot_dynamics->forward_dynamics_crba(qd.data(),M.data(),C.data(),g.data(),qd.size());
-        //robot_dynamics->cal_inertia_matrix();
-        //robot_dynamics->cal_coriolis_matrix();
-        //robot_dynamics->cal_gravitational_torque();
-        end = Clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-		times1.push_back(duration.count());
-    }
-    //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    //cout << "cal inertia, coriolis, gravitational time: " << duration.count() << " us" << endl;
-    for (size_t i = 0; i < 100; i++)
-    {
-		//cout << "cal inertia, coriolis, gravitational time: " << times1[i] << " us" << endl;
-    }
-
+    Eigen::MatrixXd M(3,3);
+    Eigen::MatrixXd C(3,3);
+    Eigen::VectorXd g(3);
+    robot_dynamics->forward_dynamics_crba(qd.data(), M.data(), C.data(), g.data(), qd.size());
     Map<Vector3d> qd_(qd.data(), 3);
 
     Matrix3d M1, C1;
     Vector3d g1;
     cal_3dof_dynamics(q, qd, qdd, dp1, dp2, dp3, M1, C1, g1);
 
-    print("M ", M);
-    print("M1", M1);
-    print("C ", C);
-    print("C1", C1);
-    print("g ", g.transpose());
-    print("g1", g1.transpose());
-    print("Cqd ", (C * qd_).transpose());
-    print("Cqd1", (C1 * qd_).transpose());
+    print("Model inertia matrix M:", M);
+    print("Analytical inertia matrix M:", M1);
+    print("Model Coriolis matrix C:", C);
+    print("Analytical Coriolis matrix C:", C1);
+    print("Model gravity torque vector g:", g.transpose());
+    print("Analytical gravity torque vector g:", g1.transpose());
+    print("Model Coriolis torque C * qd:", (C * qd_).transpose());
+    print("Analytical Coriolis torque C * qd:", (C1 * qd_).transpose());
 
     Map<Vector3d> qdd_(qdd.data(), 3);
     Vector3d tau_ = M * qdd_ + C * qd_ + g;
     Vector3d tau;
-    vector<long long> times;
-    start = Clock::now();
+    auto start = Clock::now();
     size_t N = 10000;
     for (size_t i = 0; i < N; i++)
     {   
@@ -191,20 +148,13 @@ int main()
         robot_dynamics->forward_iterations(qd.data(),qdd.data(), qd.size());
         robot_dynamics->backward_iterations(tau.data(),tau.size());
         
-        //cout << "backward iterations time: " << duration_.count() << " us" << endl;
-        //printf("elapsed time: %lld \n", duration_.count());
-        //times.push_back(duration_.count());
     }
-    end = Clock::now();
+    auto end = Clock::now();
     auto duration_ = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-    cout << "average iterations time: " << duration_.count()/N << " ns" << endl;
-    //for (size_t i = 0; i < 100; i++)
-    {
-        //cout << "backward iterations time: " << times[i] << " ns" << endl;
-    }
-    
-    print("tau_", tau_.transpose());
-    print("tau ", tau.transpose());
+    cout << "Average recursive inverse-dynamics evaluation time: "
+         << duration_.count()/N << " ns/call" << endl;
+    print("Torque from mass-matrix equation:", tau_.transpose());
+    print("Torque from recursive inverse dynamics:", tau.transpose());
 
     return 0;
 }

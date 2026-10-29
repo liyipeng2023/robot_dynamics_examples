@@ -61,6 +61,20 @@ target_include_directories(test_dual_floating_robots PRIVATE
 )
 target_link_libraries(test_dual_floating_robots PRIVATE rdl::rdl_core)
 
+# 5. add test_6dof_arm_performance.cpp
+add_executable(test_6dof_arm_performance ${CMAKE_SOURCE_DIR}/examples/test_6dof_arm_performance.cpp)
+target_include_directories(test_6dof_arm_performance PRIVATE
+        ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(test_6dof_arm_performance PRIVATE rdl::rdl_core)
+
+# 6. add test_floating_base_performance.cpp
+add_executable(test_floating_base_performance ${CMAKE_SOURCE_DIR}/examples/test_floating_base_performance.cpp)
+target_include_directories(test_floating_base_performance PRIVATE
+        ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(test_floating_base_performance PRIVATE rdl::rdl_core)
+
 # Ensure the rdl DLL is available next to the executable after build
 if(WIN32)
     set(TEST_TARGETS

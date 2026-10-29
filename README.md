@@ -10,8 +10,7 @@ RDL is an advanced, high-performance C++ library designed for rigid body kinemat
 * **Loop Closure Constraints**: Advanced mechanics support for solving dynamics systems with kinematic loop constraints.
 * **Custom Solvers & Kinematics**: Includes the author's proprietary numerical solutions for inverse kinematics.
 * **Parameter Calibration Suite**: Built-in support for Modified Denavit-Hartenberg (MDH) parameter calibration and rigorous dynamics parameter identification.
-* **Multi-Platform & Modern CMake**: Seamless cross-platform support for Linux (x86_64, ARM64) and Windows (x86_64) with automated package detection and runtime dependency deployment.
-* **IEEE-Style Data Plotting GUI**: Includes `plot_data_GUI.py`, a lightweight Python GUI generated with Gemini for rapid, publication-ready data visualization.
+* **Multi-Platform & Modern CMake**: Seamless cross-platform support for Linux (x86_64, ARM64) and Windows (x86_64, ARM64) with automated package detection and runtime dependency deployment.
 
 ---
 
@@ -38,7 +37,8 @@ your_project/
 ├── 3rdparties/
 │   ├── rdl-linux-arm64/        # Linux ARM64 binaries and cmake configs
 │   ├── rdl-linux-x86_64/       # Linux x86_64 binaries and cmake configs
-│   └── rdl-windows-x86_64/     # Windows x86_64 binaries, headers, and DLLs
+│   ├── rdl-windows-arm64/      # Windows ARM64 binaries, headers, and DLLs
+|   └── rdl-windows-x86_64/     # Windows x86_64 binaries, headers, and DLLs
 ├── examples/
 │   ├── utils/
 │   ├── test_3DOF_S_dynamics.cpp
@@ -56,7 +56,7 @@ your_project/
 * **Build System**: CMake 3.10 or higher (CMake 3.21+ recommended)
 * **Dependencies**: 
   * **Eigen3** (Linear algebra library required by RDL)
-  * Pre-compiled **RDL** binaries matching your target platform (`rdl-linux-x86_64`, `rdl-linux-arm64`, or `rdl-windows-x86_64`)
+  * Pre-compiled **RDL** binaries matching your target platform (`rdl-linux-x86_64`, `rdl-linux-arm64`, or `rdl-windows-x86_64`, `rdl-windows-arm64`)
   * **Python 3.x** with `matplotlib`, `pandas`, `numpy`, and `tkinter` (optional, for running `plot_data_GUI.py`)
 
 ---

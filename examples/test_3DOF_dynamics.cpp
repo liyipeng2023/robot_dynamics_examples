@@ -84,18 +84,18 @@ int main()
 
     // create the dynamics 
     shared_ptr<RobotDynamics> robot_dynamics(createRobotDynamics(graph.get()),deleteRobotDynamics);
-    printf("-2\n");
+
     MDH dh0(0,0,0,0,false);
     MDH dh1(0,0,0,0.2,false);
     MDH dh2(M_PI /2,0,0,0,false);
     MDH dh3(0, 0, 0.6, 0, false);
     Matrix4d T0, T1, T2, T3;
-    printf("-1\n");
+
     mdh_to_transformation(dh0, JointType::FIXED, 0, T0.data(), 16);
     mdh_to_transformation(dh1, JointType::REVOLUTE, 0, T1.data(), 16);
     mdh_to_transformation(dh2, JointType::REVOLUTE, 0, T2.data(), 16);
     mdh_to_transformation(dh3, JointType::REVOLUTE, 0, T3.data(), 16);
-    printf("0\n");
+
     //robot_dynamics->set_auxiliary_Trans(0, T0.data(), 16);
     //robot_dynamics->set_auxiliary_Trans(1, T1.data(), 16);
     //robot_dynamics->set_auxiliary_Trans(2, T2.data(), 16);
@@ -104,14 +104,14 @@ int main()
     robot_dynamics->set_mdh(1, dh1);
     robot_dynamics->set_mdh(2, dh2);
     robot_dynamics->set_mdh(3, dh3);
-    printf("1\n");
+
     Eigen::Vector3d axis;
     axis << 0,0,1;
     //robot_dynamics->set_joint_type(0, JointType::FIXED);
     robot_dynamics->set_joint_type(1, JointType::REVOLUTE, 0);
     robot_dynamics->set_joint_type(2, JointType::REVOLUTE, 0);
     robot_dynamics->set_joint_type(3, JointType::REVOLUTE, 0);
-    printf("2\n");
+
     DynamicParam dp0(0.5, 0, 0, 0.5, 0, 1, 1, 0.0, 0, -0.1);
     DynamicParam dp1(0.5,0,0,0.5,0,1,1,0.0,0,-0.1);
     DynamicParam dp2(1,0,0,1,0,2,1.5,0.3,0,0);
@@ -131,11 +131,11 @@ int main()
     q[0] = 1 * M_PI / 4; q[1] = 1 * M_PI / 2; q[2] = -1* M_PI / 3;
     qd[0] = 0.8; qd[1] = 1.3; qd[2] = -0.4;
     qdd[0] = 0.3; qdd[1] = 0.2; qdd[2] = 0.8;
-    cout << "set joint: " << endl;
+
     //robot_dynamics->set_joint_pos(q.data(),q.size());
     //robot_dynamics->set_joint_vel(qd.data(),qd.size());
     //robot_dynamics->set_joint_acc(qdd.data(),qdd.size());
-    cout << "cal torque: " << endl;
+
     robot_dynamics->forward_kinematics(q.data(),q.size());
     robot_dynamics->forward_iterations(qd.data(),qdd.data(),qd.size());
     
@@ -160,7 +160,7 @@ int main()
     //cout << "cal inertia, coriolis, gravitational time: " << duration.count() << " us" << endl;
     for (size_t i = 0; i < 100; i++)
     {
-		cout << "cal inertia, coriolis, gravitational time: " << times1[i] << " us" << endl;
+		//cout << "cal inertia, coriolis, gravitational time: " << times1[i] << " us" << endl;
     }
 
     Map<Vector3d> qd_(qd.data(), 3);

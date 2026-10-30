@@ -7,10 +7,10 @@ RDL is an advanced, high-performance C++ library designed for rigid body kinemat
 ## Key Features
 
 * **Inverse and Forward Dynamics**: Implements the forward and inverse dynamics algorithms compatible with all joint types described in Featherstone's book.
-* **Loop Closure Constraints**: Support for solving dynamics systems with kinematic loop constraints.
-* **Custom Solvers & Kinematics**: Includes numerical solutions for inverse kinematics.
+* **Loop Closure Constraints**: Support for solving dynamics with kinematic loop constraints.
+* **Inverse Kinematics**: Includes numerical solutions for inverse kinematics.
 * **Parameters Calibration Suite**: Built-in support for Modified Denavit-Hartenberg (MDH) parameters calibration and rigorous dynamics parameters identification.
-* **Multi-Platform**: Cross-platform support for Linux (x86_64, ARM64) and Windows (x86_64, ARM64) with automated package detection and runtime dependency deployment.
+* **Multi-Platform Support**: Cross-platform support for Linux (x86_64, ARM64) and Windows (x86_64, ARM64) with automated package detection and runtime dependency deployment.
 * **Frictionless Integration**: C-like interface is adopted and strict ABI stability is ensured. RDL can be deployed easily for real-time control of robots on edge hardware like Raspberry Pi, RK3588, etc. 
 
 ---
@@ -23,7 +23,7 @@ RDL is an advanced, high-performance C++ library designed for rigid body kinemat
 
 ## Data Visualization Tool (`plot_data_GUI.py`)
 
-To assist with experiment evaluation and paper writing, this repository includes an interactive GUI plotting utility (`plot_data_GUI.py`) created with Gemini. It simplifies rendering high-quality IEEE-compliant figures directly from exported CSV/TXT test logs.
+To assist with experiment evaluation, this repository includes an interactive GUI plotting utility (`plot_data_GUI.py`) created with Gemini. It simplifies rendering high-quality figures directly from exported CSV/TXT test logs.
 
 ### Key Highlights:
 * **Effortless LaTeX & Labeling**: Full LaTeX mathematical syntax support (`\theta`, `\dot{q}`, etc.) for custom legends and axis labels with live math font switching (`stix`, `cm`, etc.).

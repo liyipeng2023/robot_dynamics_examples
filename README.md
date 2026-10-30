@@ -149,3 +149,5 @@ endif()
    cmake --build . --config Release
    ```
 5. Executables will be compiled into the build directory, with Windows DLLs automatically copied alongside them.
+
+6. On macOS, excute 'xattr -d com.apple.quarantine rdl/rdl-macos-arm64/lib/*.dylib' before run the excutables.

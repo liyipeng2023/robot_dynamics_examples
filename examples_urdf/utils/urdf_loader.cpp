@@ -1,10 +1,14 @@
 //
 // Created by liyip on 2026/11/2.
 //
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#endif // _WIN32
 #include "urdf_loader.h"
 #include <iostream>
 #include <vector>
 #include <map>
+#include <cmath>
 #include <urdf_parser/urdf_parser.h>
 #include <urdf_model/model.h>
 #include <Eigen/Dense>
@@ -37,7 +41,6 @@ static Matrix6d computeSpatialInertia(double mass, const Eigen::Vector3d& com, c
                com(2),   0,   -com(0),
               -com(1), com(0),   0;
 
-    // 平行轴定理：关于连杆坐标系原点的惯性张量
     Eigen::Matrix3d I_origin = I_com + mass * (com.squaredNorm() * E - com * com.transpose());
 
     I_spatial.block<3,3>(0,0) = I_origin;
@@ -47,7 +50,7 @@ static Matrix6d computeSpatialInertia(double mass, const Eigen::Vector3d& com, c
     return I_spatial;
 }
 
-// 2. 空间惯性矩阵坐标变换 (T 从子坐标系到父坐标系)
+// 2. 空间惯性矩阵坐标变换 (模仿 Pinocchio 的 spatial inertia transformation)
 static Matrix6d transformSpatialInertia(const Matrix6d& I_c, const Eigen::Matrix4d& T) {
     Eigen::Matrix3d R = T.block<3,3>(0,0);
     Eigen::Vector3d p = T.block<3,1>(0,3);
@@ -85,7 +88,7 @@ static void extractInertiaFromSpatial(const Matrix6d& I_spatial, double& mass, E
     I_com = I_origin - mass * (com.squaredNorm() * E - com * com.transpose());
 }
 
-// 4. 递归累加固定关节子树（实现 Pinocchio 的 Fixed Joint Welding）
+// 4. 递归累加固定关节子树（完全对标 Pinocchio 的 Fixed Joint Welding 逻辑）
 static void accumulateFixedSubtree(
     const urdf::LinkSharedPtr& link,
     const Eigen::Matrix4d& accum_transform,
@@ -153,7 +156,7 @@ static bool hasActiveJoints(const urdf::LinkSharedPtr& link, const std::shared_p
     return false;
 }
 
-// 5. 严格保证 child_id > parent_id 的递归 DFS 拓扑提取函数
+// 5. 递归 DFS 拓扑提取与全向轴转 Z 轴对齐函数
 static void collectActiveJointsDFS(
     const urdf::LinkSharedPtr& current_link,
     int current_parent_id,
@@ -169,30 +172,56 @@ static void collectActiveJointsDFS(
 
         Eigen::Matrix4d joint_transform = current_transform * urdfPoseToMatrix(joint->parent_to_joint_origin_transform);
 
-        // A. 活动关节：创建新节点，此时 parent_id 必小于当前 nodes.size()
+        // A. 活动关节：创建新节点，并进行轴向对齐转换
         if (joint->type == urdf::Joint::REVOLUTE ||
             joint->type == urdf::Joint::CONTINUOUS ||
             joint->type == urdf::Joint::PRISMATIC) {
+
+            // --- 核心转换：全向兼容解析物理转轴，并将其对齐到 RDL 的本地 Z 轴 ---
+            Eigen::Vector3d axis(joint->axis.x, joint->axis.y, joint->axis.z);
+            if (axis.norm() < 1e-6) {
+                axis << 0, 0, 1;
+            } else {
+                axis.normalize();
+            }
+
+            Eigen::Vector3d z_axis(0, 0, 1);
+            Eigen::Matrix3d R_align = Eigen::Matrix3d::Identity();
+
+            if (axis.isApprox(z_axis, 1e-6)) {
+                R_align = Eigen::Matrix3d::Identity();
+            } else if (axis.isApprox(-z_axis, 1e-6)) {
+                R_align = Eigen::AngleAxisd(M_PI, Eigen::Vector3d::UnitX()).toRotationMatrix();
+            } else {
+                R_align = Eigen::Quaterniond::FromTwoVectors(z_axis, axis).toRotationMatrix();
+            }
+
+            // 将对齐旋转吸收入关节固定变换矩阵中
+            Eigen::Matrix4d final_transform = joint_transform;
+            final_transform.block<3,3>(0,0) = joint_transform.block<3,3>(0,0) * R_align;
 
             RobotNodeInfo node_info;
             node_info.link_name = child_link->name;
             node_info.link = child_link;
             node_info.active_joint = joint;
-            node_info.transform = joint_transform;
+            node_info.transform = final_transform;
             node_info.parent_id = current_parent_id;
 
-            // 累加该活动关节连杆及其固定子树的复合惯性
+            // 首先完整收集/焊接该活动关节连杆及所有固定子树的复合惯性
             Matrix6d sub_inertia = Matrix6d::Zero();
             accumulateFixedSubtree(child_link, Eigen::Matrix4d::Identity(), model, sub_inertia);
-            node_info.accumulated_spatial_inertia = sub_inertia;
+
+            // --- 核心转换：根据转轴对齐矩阵 R_align 同步变换空间惯性张量与质心 ---
+            Eigen::Matrix4d T_align = Eigen::Matrix4d::Identity();
+            T_align.block<3,3>(0,0) = R_align;
+            node_info.accumulated_spatial_inertia = transformSpatialInertia(sub_inertia, T_align);
 
             int new_node_id = nodes.size();
             nodes.push_back(node_info);
 
-            // 递归向下：将刚刚生成的新节点 ID 作为下一层子树的父 ID
             collectActiveJointsDFS(child_link, new_node_id, Eigen::Matrix4d::Identity(), model, nodes);
         }
-        // B. 固定关节：穿透固定关节群寻找下层活动关节，保持父 ID 不变
+        // B. 固定关节：穿透固定关节群查找下层活动关节
         else if (joint->type == urdf::Joint::FIXED) {
             if (hasActiveJoints(child_link, model)) {
                 collectActiveJointsDFS(child_link, current_parent_id, joint_transform, model, nodes);
@@ -232,7 +261,7 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
     nodes.push_back(world_node);
 
     if (is_floating_base) {
-        // --- 浮动基座模式 (如 Atlas) ---
+        // --- 浮动基座模式：严格锁定浮动基座为 Node 1 ---
         urdf::LinkSharedPtr effective_root = root_link;
         Eigen::Matrix4d base_accum_transform = Eigen::Matrix4d::Identity();
 
@@ -249,7 +278,7 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
             }
         }
 
-        // Node 1: Base Link (Floating Base)
+        // Node 1: Base Link (Floating Base / Pelvis)
         RobotNodeInfo base_node;
         base_node.link_name = effective_root->name;
         base_node.link = effective_root;
@@ -262,18 +291,17 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
         base_node.accumulated_spatial_inertia = base_inertia;
         nodes.push_back(base_node);
 
-        // 从 Base 往下通过 DFS 收集所有活动关节，父节点 ID 从 1 开始
+        // 从 Base 往下通过 DFS 收集所有活动关节
         collectActiveJointsDFS(effective_root, 1, Eigen::Matrix4d::Identity(), model, nodes);
 
     } else {
-        // --- 固定基座模式 (如 UR10) ---
-        // 不创建固定基座的冗余关节节点，首个活动关节的父节点直接是 World (0)
+        // --- 固定基座模式 ---
         collectActiveJointsDFS(root_link, 0, Eigen::Matrix4d::Identity(), model, nodes);
     }
 
     int num_nodes = nodes.size();
     std::cout << "[URDF Loader] Total Graph Nodes: " << num_nodes
-              << " (Floating Base: " << (is_floating_base ? "Yes" : "No") << ")\n";
+              << " (Floating Base: " << (is_floating_base ? "Yes (Node 1)" : "No") << ")\n";
 
     out_graph = std::shared_ptr<Graph>(createGraph(num_nodes), deleteGraph);
     for (int i = 1; i < num_nodes; ++i) {
@@ -292,24 +320,25 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
         }
 
         if (is_floating_base && i == 1) {
-            // 浮动基座的第一个节点（Node 1）配置为 FLOATING 关节
-            robot_dyn->set_joint_type(1, JointType::FLOATING, 0);
+            // Node 1: 浮动基座关节，螺距设为 0.0
+            robot_dyn->set_joint_type(1, JointType::FLOATING, 0.0);
             robot_dyn->set_fixed_transformation(1, node.transform.data(), 16);
         } else {
-            // 其他节点配置为对应的活动关节（Revolute / Prismatic）
             auto joint = node.active_joint;
+
+            // --- 关键规范：所有活动关节的转动/移动轴已通过 R_align 归约至本地 Z 轴，故类型设为 REVOLUTE/PRISMATIC，螺旋螺距严格传 0.0 ---
             if (joint->type == urdf::Joint::REVOLUTE || joint->type == urdf::Joint::CONTINUOUS) {
-                robot_dyn->set_joint_type(i, JointType::REVOLUTE, 0);
+                robot_dyn->set_joint_type(i, JointType::REVOLUTE, 0.0);
             } else if (joint->type == urdf::Joint::PRISMATIC) {
-                robot_dyn->set_joint_type(i, JointType::PRISMATIC, 0);
+                robot_dyn->set_joint_type(i, JointType::PRISMATIC, 0.0);
             }
             robot_dyn->set_fixed_transformation(i, node.transform.data(), 16);
         }
 
-        // 从复合空间惯性中提取等效质量、质心与惯性张量
+        // 从对齐且焊接后的复合空间惯性中提取等效质量、质心位置及对齐后的惯性张量
         double mass = 0.0;
         Eigen::Vector3d com = Eigen::Vector3d::Zero();
-        Eigen::Matrix3d I_com = Eigen::Matrix3d::Zero();
+        Eigen::Matrix3d I_com = Eigen::Matrix3d::Identity();
         extractInertiaFromSpatial(node.accumulated_spatial_inertia, mass, com, I_com);
 
         DynamicParam link_param(
@@ -319,11 +348,14 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
             mass,
             com(0), com(1), com(2)
         );
+        std::cout << i << " link parameters:\n" << link_param.Ixx << ", " << link_param.Ixy << ", " << link_param.Ixz << ", "
+        << link_param.Iyy << ", " << link_param.Iyz << ", " << link_param.Izz << ", "
+        << link_param.m << ", " << link_param.xc << ", " << link_param.yc << ", " << link_param.zc << std::endl;
         robot_dyn->set_dyn_param(i, link_param);
     }
 
     robot_dyn->build_model();
-    std::cout << "[URDF Loader] Model built successfully!\n";
+    std::cout << "[URDF Loader] Model successfully built with Pinocchio-style fixed joint welding and full axis-to-Z-axis transformation!\n";
 
     return robot_dyn;
 }

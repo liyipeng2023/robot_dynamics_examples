@@ -4,7 +4,6 @@
 #include "urdf_loader.h"
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <map>
 #include <urdf_parser/urdf_parser.h>
 #include <urdf_model/model.h>
@@ -154,6 +153,54 @@ static bool hasActiveJoints(const urdf::LinkSharedPtr& link, const std::shared_p
     return false;
 }
 
+// 5. 严格保证 child_id > parent_id 的递归 DFS 拓扑提取函数
+static void collectActiveJointsDFS(
+    const urdf::LinkSharedPtr& current_link,
+    int current_parent_id,
+    const Eigen::Matrix4d& current_transform,
+    const std::shared_ptr<urdf::ModelInterface>& model,
+    std::vector<RobotNodeInfo>& nodes)
+{
+    if (!current_link) return;
+
+    for (const auto& joint : current_link->child_joints) {
+        auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
+        if (!child_link) continue;
+
+        Eigen::Matrix4d joint_transform = current_transform * urdfPoseToMatrix(joint->parent_to_joint_origin_transform);
+
+        // A. 活动关节：创建新节点，此时 parent_id 必小于当前 nodes.size()
+        if (joint->type == urdf::Joint::REVOLUTE ||
+            joint->type == urdf::Joint::CONTINUOUS ||
+            joint->type == urdf::Joint::PRISMATIC) {
+
+            RobotNodeInfo node_info;
+            node_info.link_name = child_link->name;
+            node_info.link = child_link;
+            node_info.active_joint = joint;
+            node_info.transform = joint_transform;
+            node_info.parent_id = current_parent_id;
+
+            // 累加该活动关节连杆及其固定子树的复合惯性
+            Matrix6d sub_inertia = Matrix6d::Zero();
+            accumulateFixedSubtree(child_link, Eigen::Matrix4d::Identity(), model, sub_inertia);
+            node_info.accumulated_spatial_inertia = sub_inertia;
+
+            int new_node_id = nodes.size();
+            nodes.push_back(node_info);
+
+            // 递归向下：将刚刚生成的新节点 ID 作为下一层子树的父 ID
+            collectActiveJointsDFS(child_link, new_node_id, Eigen::Matrix4d::Identity(), model, nodes);
+        }
+        // B. 固定关节：穿透固定关节群寻找下层活动关节，保持父 ID 不变
+        else if (joint->type == urdf::Joint::FIXED) {
+            if (hasActiveJoints(child_link, model)) {
+                collectActiveJointsDFS(child_link, current_parent_id, joint_transform, model, nodes);
+            }
+        }
+    }
+}
+
 std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
     const std::string& urdf_file,
     std::shared_ptr<Graph>& out_graph,
@@ -172,22 +219,6 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
         return nullptr;
     }
 
-    urdf::LinkSharedPtr effective_root = root_link;
-    Eigen::Matrix4d base_accum_transform = Eigen::Matrix4d::Identity();
-
-    if (!effective_root->inertial || effective_root->inertial->mass == 0.0) {
-        for (const auto& joint : effective_root->child_joints) {
-            if (joint->type == urdf::Joint::FIXED) {
-                auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
-                if (child_link && child_link->inertial && child_link->inertial->mass > 0.0) {
-                    effective_root = child_link;
-                    base_accum_transform = urdfPoseToMatrix(joint->parent_to_joint_origin_transform);
-                    break;
-                }
-            }
-        }
-    }
-
     std::vector<RobotNodeInfo> nodes;
 
     // Node 0: World
@@ -200,79 +231,55 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
     world_node.accumulated_spatial_inertia = Matrix6d::Zero();
     nodes.push_back(world_node);
 
-    // Node 1: Base Link (pelvis)
-    RobotNodeInfo base_node;
-    base_node.link_name = effective_root->name;
-    base_node.link = effective_root;
-    base_node.active_joint = nullptr;
-    base_node.transform = base_accum_transform;
-    base_node.parent_id = 0;
+    if (is_floating_base) {
+        // --- 浮动基座模式 (如 Atlas) ---
+        urdf::LinkSharedPtr effective_root = root_link;
+        Eigen::Matrix4d base_accum_transform = Eigen::Matrix4d::Identity();
 
-    // 累加 Base 及其固定子树的复合惯性（对齐 Pinocchio 焊接）
-    Matrix6d base_inertia = Matrix6d::Zero();
-    accumulateFixedSubtree(effective_root, Eigen::Matrix4d::Identity(), model, base_inertia);
-    base_node.accumulated_spatial_inertia = base_inertia;
-    nodes.push_back(base_node);
-
-    // BFS 遍历提取活动关节
-    struct QueueItem {
-        urdf::LinkSharedPtr link;
-        int parent_id;
-        Eigen::Matrix4d accum_transform;
-    };
-
-    std::queue<QueueItem> q;
-    q.push({effective_root, 1, Eigen::Matrix4d::Identity()});
-
-    while (!q.empty()) {
-        auto current = q.front();
-        q.pop();
-
-        for (const auto& joint : current.link->child_joints) {
-            auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
-            if (!child_link) continue;
-
-            Eigen::Matrix4d joint_transform = current.accum_transform * urdfPoseToMatrix(joint->parent_to_joint_origin_transform);
-
-            // A. 活动关节
-            if (joint->type == urdf::Joint::REVOLUTE ||
-                joint->type == urdf::Joint::CONTINUOUS ||
-                joint->type == urdf::Joint::PRISMATIC) {
-
-                RobotNodeInfo node_info;
-                node_info.link_name = child_link->name;
-                node_info.link = child_link;
-                node_info.active_joint = joint;
-                node_info.transform = joint_transform;
-                node_info.parent_id = current.parent_id;
-
-                // 累加该活动关节连杆及其固定子树的复合惯性
-                Matrix6d sub_inertia = Matrix6d::Zero();
-                accumulateFixedSubtree(child_link, Eigen::Matrix4d::Identity(), model, sub_inertia);
-                node_info.accumulated_spatial_inertia = sub_inertia;
-
-                int new_node_id = nodes.size();
-                nodes.push_back(node_info);
-
-                q.push({child_link, new_node_id, Eigen::Matrix4d::Identity()});
-            }
-            // B. 固定关节（如果通往更深层的活动关节，则继续向下搜索）
-            else if (joint->type == urdf::Joint::FIXED) {
-                if (hasActiveJoints(child_link, model)) {
-                    q.push({child_link, current.parent_id, joint_transform});
+        if (!effective_root->inertial || effective_root->inertial->mass == 0.0) {
+            for (const auto& joint : effective_root->child_joints) {
+                if (joint->type == urdf::Joint::FIXED) {
+                    auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
+                    if (child_link && child_link->inertial && child_link->inertial->mass > 0.0) {
+                        effective_root = child_link;
+                        base_accum_transform = urdfPoseToMatrix(joint->parent_to_joint_origin_transform);
+                        break;
+                    }
                 }
             }
         }
+
+        // Node 1: Base Link (Floating Base)
+        RobotNodeInfo base_node;
+        base_node.link_name = effective_root->name;
+        base_node.link = effective_root;
+        base_node.active_joint = nullptr;
+        base_node.transform = base_accum_transform;
+        base_node.parent_id = 0;
+
+        Matrix6d base_inertia = Matrix6d::Zero();
+        accumulateFixedSubtree(effective_root, Eigen::Matrix4d::Identity(), model, base_inertia);
+        base_node.accumulated_spatial_inertia = base_inertia;
+        nodes.push_back(base_node);
+
+        // 从 Base 往下通过 DFS 收集所有活动关节，父节点 ID 从 1 开始
+        collectActiveJointsDFS(effective_root, 1, Eigen::Matrix4d::Identity(), model, nodes);
+
+    } else {
+        // --- 固定基座模式 (如 UR10) ---
+        // 不创建固定基座的冗余关节节点，首个活动关节的父节点直接是 World (0)
+        collectActiveJointsDFS(root_link, 0, Eigen::Matrix4d::Identity(), model, nodes);
     }
 
     int num_nodes = nodes.size();
-    std::cout << "[URDF Loader] Pinocchio-Style Welded Tree Nodes: " << num_nodes
-              << " (Node 0: World, Node 1: Base, " << (num_nodes - 2) << " Active Joints)\n";
+    std::cout << "[URDF Loader] Total Graph Nodes: " << num_nodes
+              << " (Floating Base: " << (is_floating_base ? "Yes" : "No") << ")\n";
 
     out_graph = std::shared_ptr<Graph>(createGraph(num_nodes), deleteGraph);
     for (int i = 1; i < num_nodes; ++i) {
         out_graph->add_edge(nodes[i].parent_id, i);
     }
+    out_graph->print();
 
     std::shared_ptr<RobotDynamics> robot_dyn(createRobotDynamics(out_graph.get()), deleteRobotDynamics);
 
@@ -281,20 +288,15 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
         const auto& node = nodes[i];
 
         if (i == 0) {
-            //robot_dyn->set_joint_type(0, JointType::FIXED, 0);
-            //DynamicParam world_param(0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0);
-            //robot_dyn->set_dyn_param(0, world_param);
             continue;
         }
 
-        if (i == 1) {
-            if (is_floating_base) {
-                robot_dyn->set_joint_type(1, JointType::FLOATING, 0);
-            } else {
-                robot_dyn->set_joint_type(1, JointType::FIXED, 0);
-            }
+        if (is_floating_base && i == 1) {
+            // 浮动基座的第一个节点（Node 1）配置为 FLOATING 关节
+            robot_dyn->set_joint_type(1, JointType::FLOATING, 0);
             robot_dyn->set_fixed_transformation(1, node.transform.data(), 16);
         } else {
+            // 其他节点配置为对应的活动关节（Revolute / Prismatic）
             auto joint = node.active_joint;
             if (joint->type == urdf::Joint::REVOLUTE || joint->type == urdf::Joint::CONTINUOUS) {
                 robot_dyn->set_joint_type(i, JointType::REVOLUTE, 0);
@@ -321,7 +323,7 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
     }
 
     robot_dyn->build_model();
-    std::cout << "[URDF Loader] Pinocchio-equivalent welded model built successfully!\n";
+    std::cout << "[URDF Loader] Model built successfully!\n";
 
     return robot_dyn;
 }

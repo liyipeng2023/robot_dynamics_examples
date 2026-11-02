@@ -31,8 +31,8 @@ def main():
 
     # 3. 初始化广义状态向量 q, v, a (与 C++ 测试程序完全一致)
     q = pin.neutral(model)
-    v = np.zeros(model.nv)
-    a = np.zeros(model.nv)
+    v = 0.1*np.ones(model.nv)
+    a = 0.2*np.ones(model.nv)
 
     # 设定浮动基座初始位姿：平移 [x, y, z] = [0, 0, 0.92]，四元数 [qx, qy, qz, qw] = [0, 0, 0, 1]
     q[0:3] = [0.0, 0.0, 0.92]
@@ -70,9 +70,11 @@ def main():
     tau = M @ a + C @ v + g
 
     print("\n--- 关键动力学结果摘要 (可与 C++ 对比) ---")
-    print("浮动基座惯性矩阵块 M[:6, :6]:\n", M[:6, :6])
+    print("浮动基座惯性矩阵块 M*a:\n", M@a)
     print("广义重力向量 g (前 6 位):", g[:6])
-    print("广义逆动力学力矩 tau (前 6 位):", tau[:6])
+    print("Coriolis 矩阵 C*qd : \n", C@v)
+    print("qd: \n", v)
+    print("广义逆动力学力矩 tau (前 6 位):", tau)
 
     # -------------------------------------------------------------
     # 5. RNEA (逆动力学) 测试

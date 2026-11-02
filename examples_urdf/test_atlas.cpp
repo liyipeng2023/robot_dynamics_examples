@@ -48,6 +48,11 @@ int main(int argc, char** argv) {
     for (int i = 7; i < dof_q; ++i) {
         q(i) = 0.0; //0.01 * ((i-7) % 3);
     }
+    qd = 0.1*Eigen::VectorXd::Ones(dof_dyn); // 给定一些初始关节速度
+    qdd = 0.2*Eigen::VectorXd::Ones(dof_dyn); // 给定一些初始关节加速度
+    qd(0) = 0;
+    qd(1) = 0;
+    qd(2) = 0;
     qd(3) = 0.01;
     qd(4) = -0.03;
     qd(5) = 0.05;
@@ -56,8 +61,8 @@ int main(int argc, char** argv) {
     Eigen::MatrixXd M(dof_dyn, dof_dyn);
     Eigen::MatrixXd C(dof_dyn, dof_dyn);
     Eigen::VectorXd g(dof_dyn);
-    M.setZero();
-    C.setZero();
+    //M.setZero();
+    //C.setZero();
 
     auto start = Clock::now();
     auto end = Clock::now();
@@ -68,7 +73,7 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < N; i++)
     {
         atlas_dyn->forward_kinematics(q.data(), q.size());
-        atlas_dyn->forward_dynamics_crba(M.data(), dof_dyn);
+        atlas_dyn->forward_dynamics_crba(qd.data(),M.data(),C.data(),g.data(),qd.size());
     }
     end = Clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
@@ -76,15 +81,17 @@ int main(int argc, char** argv) {
          << duration.count() / N << " ns/call" << endl;
 
     // 计算科里奥利矩阵 C 与重力向量 g
-    atlas_dyn->cal_coriolis_matrix(qd.data(), C.data(), dof_dyn);
-    atlas_dyn->cal_gravitational_torque(g.data(), g.size());
+    //atlas_dyn->cal_coriolis_matrix(qd.data(), C.data(), dof_dyn);
+    //atlas_dyn->cal_gravitational_torque(g.data(), g.size());
 
     Eigen::VectorXd tau = M * qdd + C * qd + g;
 
-    print("Floating-base inertia matrix block (6x6):", M.block<6, 6>(0, 0));
-    print("Joint-space inertia matrix block (top-left 6x6):", M.block<6, 6>(6, 6));
-    print("Base-to-joint inertia matrix block (6x6):", M.block<6, 6>(0, 6));
-    //print("C", C);
+    //print("Floating-base inertia matrix block (6x6):", M.block<6, 6>(0, 0));
+    //print("Joint-space inertia matrix block (top-left 6x6):", M.block<6, 6>(6, 6));
+    //print("Base-to-joint inertia matrix block (6x6):", M.block<6, 6>(0, 6));
+    print("M*qdd", M*qdd);
+    print("C*qd", C*qd);
+    //print("qd", qd);
     print("Generalized gravity force vector g:", g.transpose());
     print("Generalized inverse-dynamics force vector tau:", tau.transpose());
 

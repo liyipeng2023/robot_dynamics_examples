@@ -281,9 +281,9 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
         const auto& node = nodes[i];
 
         if (i == 0) {
-            robot_dyn->set_joint_type(0, JointType::FIXED, 0);
-            DynamicParam world_param(0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0);
-            robot_dyn->set_dyn_param(0, world_param);
+            //robot_dyn->set_joint_type(0, JointType::FIXED, 0);
+            //DynamicParam world_param(0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0);
+            //robot_dyn->set_dyn_param(0, world_param);
             continue;
         }
 

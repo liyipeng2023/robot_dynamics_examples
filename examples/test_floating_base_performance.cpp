@@ -12,7 +12,7 @@
 #include <Eigen/Dense>
 
 #include "math_utils.h"
-#include "./utils/utils.h"
+#include "../utils/utils.h"
 
 using namespace std;
 using namespace RDL;

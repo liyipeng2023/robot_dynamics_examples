@@ -10,7 +10,7 @@
 #include <Eigen/Core>
 #include <cmath>
 #include <math_utils.h>
-#include "./utils/utils.h"
+#include "../utils/utils.h"
 
 using namespace std;
 using namespace RDL;
@@ -71,7 +71,7 @@ int main()
     DynamicParam link2_param(0.023247, 0.0, 0.0, 1.157850, 0.0, 1.157850, 12.930, 0.00001,  0.15061,  0.38757);  // Upper-arm link.
     DynamicParam link3_param(0.012586, 0.0, 0.0, 0.408420, 0.0, 0.408420,  3.870, -0.00012, 0.06112,  0.1984);   // Forearm link.
     DynamicParam link4_param(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.005625,  1.960, -0.00021, -0.00112, 0.02269);  // First wrist link.
-    DynamicParam link5_param(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.005625,  1.960, -0.00021, 0.00112,  0.002269); // Second wrist link.
+    DynamicParam link5_param(0.005267, 0.0, 0.0, 0.005267, 0.0, 0.005625,  1.960, -0.00021, 0.00112,  0.02269); // Second wrist link.
     DynamicParam link6_param(0.000405, 0.0, 0.0, 0.000405, 0.0, 0.000577,  0.202,  0.0,     -0.001156,-0.00149);  // Third wrist link.
 
     robot_dyn->set_dyn_param(1,link1_param);
@@ -162,5 +162,6 @@ int main()
     robot_dyn->get_pose(4, T4.data(), 16);
     robot_dyn->get_pose(5, T5.data(), 16);
     robot_dyn->get_pose(6, T6.data(), 16);
+	print("T_end", T6);
     return 0;
 }

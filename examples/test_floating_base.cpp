@@ -10,10 +10,10 @@
 #include <Eigen/Core>
 #include <cmath>
 #include <math_utils.h>
-#include "./utils/utils.h"
-#include "./utils/robot_data_allocator.h"
-#include "./utils/robot_dynamics_integrator.h"
-#include "./utils//data_recorder.h"
+#include "../utils/utils.h"
+#include "../utils/robot_data_allocator.h"
+#include "../utils/robot_dynamics_integrator.h"
+#include "../utils//data_recorder.h"
 
 using namespace std;
 using namespace RDL;

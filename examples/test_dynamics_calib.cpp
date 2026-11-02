@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <Eigen/Dense>
-#include "./utils/utils.h"
+#include "../utils/utils.h"
 
 using namespace std;
 using namespace RDL;

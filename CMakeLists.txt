@@ -4,6 +4,8 @@ project(robot_dynamics_examples LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(WITH_EXAMPLES_URDF "Build examples with URDF support" OFF)
+
 # detect the type of operating system
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(OS_PREFIX "linux")
@@ -35,98 +37,11 @@ find_package(rdl REQUIRED)
 set(EIGEN3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rdparties/eigen3.4.1")
 message(STATUS "Eigen include: ${EIGEN3_INCLUDE_DIR}")
 
-# 1. add test_floating_base
-add_executable(test_floating_base ${CMAKE_SOURCE_DIR}/examples/test_floating_base.cpp)
-target_include_directories(test_floating_base PRIVATE
-    ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_floating_base PRIVATE rdl::rdl_core)
+# add examples
+add_subdirectory(examples)
 
-# 2. add test_6DOF_dynamics.cpp
-add_executable(test_6DOF_dynamics ${CMAKE_SOURCE_DIR}/examples/test_6DOF_dynamics.cpp)
-target_include_directories(test_6DOF_dynamics PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_6DOF_dynamics PRIVATE rdl::rdl_core)
-
-# 3. add test_3DOF_dynamics.cpp
-add_executable(test_3DOF_dynamics ${CMAKE_SOURCE_DIR}/examples/test_3DOF_dynamics.cpp)
-target_include_directories(test_3DOF_dynamics PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_3DOF_dynamics PRIVATE rdl::rdl_core)
-
-# 4. add test_dual_floating_robots.cpp
-add_executable(test_dual_floating_robots ${CMAKE_SOURCE_DIR}/examples/test_dual_floating_robots.cpp)
-target_include_directories(test_dual_floating_robots PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_dual_floating_robots PRIVATE rdl::rdl_core)
-
-# 5. add test_6dof_arm_performance.cpp
-add_executable(test_6dof_arm_performance ${CMAKE_SOURCE_DIR}/examples/test_6dof_arm_performance.cpp)
-target_include_directories(test_6dof_arm_performance PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_6dof_arm_performance PRIVATE rdl::rdl_core)
-
-# 6. add test_floating_base_performance.cpp
-add_executable(test_floating_base_performance ${CMAKE_SOURCE_DIR}/examples/test_floating_base_performance.cpp)
-target_include_directories(test_floating_base_performance PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_floating_base_performance PRIVATE rdl::rdl_core)
-
-# 7. add test_dynamics_calib.cpp
-add_executable(test_dynamics_calib ${CMAKE_SOURCE_DIR}/examples/test_dynamics_calib.cpp)
-target_include_directories(test_dynamics_calib PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_dynamics_calib PRIVATE rdl::rdl_calib rdl::rdl_core)
-
-# 8. add test_kin_calib.cpp
-add_executable(test_kin_calib ${CMAKE_SOURCE_DIR}/examples/test_kin_calib.cpp)
-target_include_directories(test_kin_calib PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_kin_calib PRIVATE rdl::rdl_calib rdl::rdl_ik)
-
-# 9. add test_robot_kinematics.cpp
-add_executable(test_robot_kinematics ${CMAKE_SOURCE_DIR}/examples/test_robot_kinematics.cpp)
-target_include_directories(test_robot_kinematics PRIVATE
-        ${EIGEN3_INCLUDE_DIR}
-)
-target_link_libraries(test_robot_kinematics PRIVATE rdl::rdl_ik)
-
-# Ensure the rdl DLL is available next to the executable after build
-if(WIN32)
-    set(TEST_TARGETS
-            test_floating_base
-            test_6DOF_dynamics
-            test_3DOF_dynamics
-            test_dual_floating_robots
-            test_dynamics_calib
-            test_kin_calib
-            test_robot_kinematics
-    )
-
-    foreach(test_target ${TEST_TARGETS})
-        add_custom_command(
-                TARGET ${test_target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                $<TARGET_RUNTIME_DLLS:${test_target}>
-                $<TARGET_FILE_DIR:${test_target}>
-                COMMAND_EXPAND_LISTS
-                COMMENT "Copying runtime DLLs for ${test_target}..."
-        )
-    endforeach()
-elseif(UNIX)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-    if(APPLE)
-        # using @loader_path to load relative path on macOS
-        set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
-    else()
-        # Linux
-        set(CMAKE_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/rdl/rdl-${RDL_PLATFORM_NAME}/lib")
-    endif()
-endif()
+# add examples_urdf
+if (WITH_EXAMPLES_URDF)
+    message(STATUS "Add examples with dynamics created from urdf files (urdfdom is required).")
+    add_subdirectory(examples_urdf)
+endif ()

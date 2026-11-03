@@ -143,11 +143,14 @@ endif()
    ```bash
    mkdir build && cd build
    cmake ..
+   make
    ```
-4. Build the project:
+   Buld the project with URDF (urdfdom is required):
    ```bash
-   cmake --build . --config Release
+   mkdir build && cd build
+   cmake -DWITH_EXAMPLES_URDF=ON ..
+   make
    ```
-5. Executables will be compiled into the build directory, with Windows DLLs automatically copied alongside them.
+4. Executables will be compiled into the build directory, with Windows DLLs automatically copied alongside them.
 
-6. On macOS, please excute 'xattr -d com.apple.quarantine rdl/rdl-macos-arm64/lib/*.dylib' before running the excutables.
+5. On macOS, please excute 'xattr -d com.apple.quarantine rdl/rdl-macos-arm64/lib/*.dylib' before running the excutables.

@@ -20,9 +20,9 @@ using namespace Eigen;
 
 int main(int argc, char** argv) {
     std::string urdf_path = "spot.urdf";
-    std::shared_ptr<RDL::Graph> graph;
 
-    auto spot_dyn = RDL::Utils::loadRobotDynamicsFromURDF(urdf_path, graph, true);
+    std::map<std::string, int> joint_map;
+    auto spot_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map, true);
 
     if (!spot_dyn) {
         cerr << "[Error] Failed to load Spot URDF from " << urdf_path << endl;
@@ -60,11 +60,14 @@ int main(int argc, char** argv) {
     spot_dyn->forward_kinematics(q.data(), q.size());
 
     cout << "\n================ C++ RDL Spot Joint Placements ================" << endl;
-    int total_nodes = graph->num(); // 13 (1 World + 1 Base + 12 Active Joints)
+    int total_nodes = joint_map.size(); // 13 (1 World + 1 Base + 12 Active Joints)
+    for (auto it : joint_map) {
+        std::cout << "The index of " << it.first << " is " << it.second << std::endl;
+    }
     for (int i = 1; i < total_nodes; ++i) {
         Eigen::Matrix4d T_node = Eigen::Matrix4d::Identity();
         spot_dyn->get_pose(i, T_node.data(), 16);
-        // cout << "Node/Joint ID " << i << " Pose:\n" << T_node << "\n-----------------------------------" << endl;
+        cout << "Node/Joint ID " << i << " Pose:\n" << T_node << "\n-----------------------------------" << endl;
     }
     cout << "Total Graph Nodes: " << total_nodes << endl;
     cout << "===============================================================\n" << endl;

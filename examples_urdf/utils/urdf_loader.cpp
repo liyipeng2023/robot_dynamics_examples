@@ -235,9 +235,9 @@ static void collectActiveJointsDFS(
     }
 }
 
-std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
+std::shared_ptr<RobotDynamics> load_RobotDynamics_from_URDF(
     const std::string& urdf_file,
-    std::shared_ptr<Graph>& out_graph,
+    std::map<std::string, int>& joint_map,
     bool is_floating_base)
 {
     std::shared_ptr<urdf::ModelInterface> model = urdf::parseURDFFile(urdf_file);
@@ -310,13 +310,24 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
     std::cout << "[URDF Loader] Total Graph Nodes: " << num_nodes
               << " (Floating Base: " << (is_floating_base ? "Yes (Node 1)" : "No") << ")\n";
 
-    out_graph = std::shared_ptr<Graph>(createGraph(num_nodes), deleteGraph);
+    // Create internal Graph structure
+    std::shared_ptr<Graph> internal_graph(createGraph(num_nodes), deleteGraph);
     for (int i = 1; i < num_nodes; ++i) {
-        out_graph->add_edge(nodes[i].parent_id, i);
+        internal_graph->add_edge(nodes[i].parent_id, i);
     }
-    out_graph->print();
 
-    std::shared_ptr<RobotDynamics> robot_dyn(createRobotDynamics(out_graph.get()), deleteRobotDynamics);
+    // Populate joint_map (Joint Name -> Node ID)
+    joint_map.clear();
+    for (int i = 1; i < num_nodes; ++i) {
+        if (is_floating_base && i == 1) {
+            //joint_map["floating_base"] = 1;
+            joint_map[nodes[i].link_name] = 1;
+        } else if (nodes[i].active_joint) {
+            joint_map[nodes[i].active_joint->name] = i;
+        }
+    }
+
+    std::shared_ptr<RobotDynamics> robot_dyn(createRobotDynamics(internal_graph.get()), deleteRobotDynamics);
 
     // Configure model parameters
     for (int i = 0; i < num_nodes; ++i) {
@@ -361,12 +372,6 @@ std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
             com_aligned(0), com_aligned(1), com_aligned(2)
         );
 
-        /*std::cout << "Link ID " << i << " (" << node.link_name << ") Dynamic Params:\n"
-                  << "  - Mass: " << link_param.m << "\n"
-                  << "  - Aligned CoM: [" << link_param.xc << ", " << link_param.yc << ", " << link_param.zc << "]\n"
-                  << "  - Aligned I_com:\n" << I_com_aligned << "\n"
-                  << "----------------------------------------" << std::endl;
-        */
         robot_dyn->set_dyn_param(i, link_param);
     }
 

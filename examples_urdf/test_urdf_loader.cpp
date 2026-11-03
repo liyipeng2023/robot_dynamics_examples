@@ -21,7 +21,8 @@ using namespace Eigen;
 int main(int argc, char** argv) {
     std::string urdf_path = "ur10.urdf";
     std::shared_ptr<RDL::Graph> graph;
-    auto ur10_dyn = RDL::Utils::loadRobotDynamicsFromURDF(urdf_path, graph);
+	std::map<std::string, int> joint_map;
+    auto ur10_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map);
 
     Eigen::VectorXd q(6), qd(6), qdd(6);
 	q << 0, -M_PI / 4, 0, -M_PI / 2, 0, M_PI / 3;

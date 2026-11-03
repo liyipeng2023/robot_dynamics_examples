@@ -9,6 +9,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 #include <robot_dynamics.h>
 #include <graph.h>
 
@@ -16,15 +17,16 @@ namespace RDL {
     namespace Utils {
 
         /**
-         * @brief 从 URDF 文件中加载机器人模型，并构建 RDL 的图结构与动力学模型
+         * @brief Load model from URDF file, create RDL dynamics and joint name to node ID mapping
          *
-         * @param urdf_file URDF 文件路径
-         * @param out_graph 输出的 RDL 图结构智能指针
-         * @return std::shared_ptr<RobotDynamics> 初始化并构建完成的动力学求解器实例
+         * @param urdf_file URDF path
+         * @param joint_map Output mapping from joint name to node ID
+         * @param is_floating_base Whether to include a floating base
+         * @return std::shared_ptr<RobotDynamics> Return an instance of RobotDynamics
          */
-        std::shared_ptr<RobotDynamics> loadRobotDynamicsFromURDF(
+        std::shared_ptr<RobotDynamics> load_RobotDynamics_from_URDF(
             const std::string& urdf_file,
-            std::shared_ptr<Graph>& out_graph,
+            std::map<std::string, int>& joint_map,
             bool is_floating_base = false
         );
 

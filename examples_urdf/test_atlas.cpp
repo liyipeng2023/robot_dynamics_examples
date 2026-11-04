@@ -79,10 +79,22 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < N; i++)
     {
         atlas_dyn->forward_kinematics(q.data(), q.size());
-        atlas_dyn->forward_dynamics_crba(M.data(),qd.size());
+        //atlas_dyn->forward_dynamics_crba(M.data(),qd.size());
     }
     auto end = Clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    atlas_dyn->cal_coriolis_matrix(qd.data(), C.data(), dof_dyn);
+    atlas_dyn->cal_gravitational_torque(g.data(), dof_dyn);
+    cout << "Atlas - Average Kinematics calculation time: " << duration.count() / N << " ns/call" << endl;
+
+    start = Clock::now();
+    for (size_t i = 0; i < N; i++)
+    {
+        atlas_dyn->forward_kinematics(q.data(), q.size());
+        atlas_dyn->forward_dynamics_crba(M.data(),qd.size());
+    }
+    end = Clock::now();
+    duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
     atlas_dyn->cal_coriolis_matrix(qd.data(), C.data(), dof_dyn);
     atlas_dyn->cal_gravitational_torque(g.data(), dof_dyn);
     cout << "Atlas - Average CRBA calculation (only M) time: " << duration.count() / N << " ns/call" << endl;

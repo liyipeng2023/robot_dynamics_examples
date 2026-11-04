@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
 
     size_t N = 50000;
 
-    auto start = Clock::now();
+    /*auto start = Clock::now();
     for (size_t i = 0; i < N; i++) {
         spot_dyn->forward_kinematics(q.data(), q.size());
         spot_dyn->forward_dynamics_crba(qd.data(), M.data(), C.data(), g.data(), qd.size());
@@ -95,12 +95,24 @@ int main(int argc, char** argv) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
     cout << "Spot (18-DOF) - Average CRBA calculation (incl. Kinematics) time: "
          << duration.count() / N << " ns/call" << endl;
+    */
+    auto start = Clock::now();
+    for (size_t i = 0; i < N; i++) {
+        spot_dyn->forward_kinematics(q.data(), q.size());
+    }
+    auto end = Clock::now();
+    spot_dyn->forward_dynamics_crba(qd.data(), M.data(), C.data(), g.data(), qd.size());
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    cout << "Spot (18-DOF) - Average Kinematics calculation time: "
+         << duration.count() / N << " ns/call" << endl;
 
     start = Clock::now();
     for (size_t i = 0; i < N; i++) {
-        spot_dyn->forward_dynamics_crba(qd.data(), M.data(), C.data(), g.data(), qd.size());
+        spot_dyn->forward_kinematics(q.data(), q.size());
+        spot_dyn->forward_dynamics_crba(M.data(), qd.size());
     }
     end = Clock::now();
+    spot_dyn->forward_dynamics_crba(qd.data(), M.data(), C.data(), g.data(), qd.size());
     duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
     cout << "Spot (18-DOF) - Average CRBA calculation (only M) time: "
          << duration.count() / N << " ns/call" << endl;

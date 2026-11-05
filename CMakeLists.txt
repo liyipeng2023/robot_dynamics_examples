@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(WITH_EXAMPLES_MODEL "Build examples with support for loading model from files" OFF)
+option(WITH_BENCHMARK "Build benchmark for comparing RDL with Pinocchio" OFF)
 
 # detect the type of operating system
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -45,3 +46,9 @@ if (WITH_EXAMPLES_MODEL)
     message(STATUS "Add examples with dynamics created from files (urdfdom and tinyxml2 are required).")
     add_subdirectory(examples_model)
 endif ()
+
+# add benchmark
+if (WITH_BENCHMARK)
+    message(STATUS "Add benchmark for comparing RDL and Pinocchio (Pinocchio should be installed first).")
+    add_subdirectory(benchmark)
+endif()

@@ -2,30 +2,34 @@
 #include <chrono>
 #include <vector>
 #include <string>
+#include <random>
 
-// Pinocchio 头文件
 #include <pinocchio/parsers/urdf.hpp>
+#include <pinocchio/parsers/mjcf.hpp>
 #include <pinocchio/algorithm/kinematics.hpp>
 #include <pinocchio/algorithm/crba.hpp>
+#include <pinocchio/algorithm/rnea.hpp>
 #include <pinocchio/algorithm/aba.hpp>
 #include <pinocchio/algorithm/joint-configuration.hpp>
 
 int main(int argc, char** argv) {
-    // 1. 检查命令行参数
-    std::string urdf_filename = "spot.urdf"; // 默认路径，可通过命令行参数传入
+    std::string model_file = "atlas.urdf";
     if (argc > 1) {
-        urdf_filename = argv[1];
+        model_file = argv[1];
     }
 
     std::cout << "========================================\n";
-    std::cout << "[Pinocchio Benchmark] Loading URDF: " << urdf_filename << "\n";
+    std::cout << "[Pinocchio Benchmark] Loading Model: " << model_file << "\n";
 
-    // 2. 加载 URDF 模型（包含 6-DOF 浮动基座 FreeFlyer）
     pinocchio::Model model;
     try {
-        pinocchio::urdf::buildModel(urdf_filename, pinocchio::JointModelFreeFlyer(), model);
+        if (model_file.find(".xml") != std::string::npos || model_file.find(".mjcf") != std::string::npos) {
+            pinocchio::mjcf::buildModel(model_file, model);
+        } else {
+            pinocchio::urdf::buildModel(model_file, pinocchio::JointModelFreeFlyer(), model);
+        }
     } catch (const std::exception& e) {
-        std::cerr << "Error loading URDF: " << e.what() << std::endl;
+        std::cerr << "Error loading model: " << e.what() << std::endl;
         return -1;
     }
 
@@ -34,72 +38,58 @@ int main(int argc, char** argv) {
     std::cout << "[Pinocchio Benchmark] Total Position DOFs (nq): " << model.nq << "\n";
     std::cout << "========================================\n";
 
-    // 创建算法关联的数据结构 Data
     pinocchio::Data data(model);
 
-    // 3. 初始化测试状态 (q, v, tau)
+    std::mt19937 rng(1337);
+    std::uniform_real_distribution<double> dist(-0.5, 0.5);
+
     Eigen::VectorXd q = pinocchio::neutral(model);
-    Eigen::VectorXd v = Eigen::VectorXd::Ones(model.nv) * 0.1;
-    Eigen::VectorXd tau = Eigen::VectorXd::Zero(model.nv);
+    Eigen::VectorXd v = Eigen::VectorXd::Random(model.nv);
+    Eigen::VectorXd a = Eigen::VectorXd::Random(model.nv);
+    Eigen::VectorXd tau = Eigen::VectorXd::Random(model.nv);
 
-    const size_t NUM_ITERATIONS = 10000; // 迭代 10 万次
+    const size_t NUM_ITERATIONS = 50000;
 
     // ----------------------------------------------------
-    // 测试 1: 前向运动学 + CRBA (惯性矩阵 M)
+    // 1. CRBA Benchmark
     // ----------------------------------------------------
-    auto start_kin = std::chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        // 显式计算前向运动学
-        pinocchio::forwardKinematics(model, data, q);
-        // 计算 CRBA 惯性矩阵 M
-        //pinocchio::crba(model, data, q);
-    }
-    auto end_kin = std::chrono::high_resolution_clock::now();
-    
-    double total_kin_us = std::chrono::duration<double, std::micro>(end_kin - start_kin).count();
-    double avg_kin_ns = (total_kin_us * 1000.0) / NUM_ITERATIONS;
-
-    std::cout << "--> Forward Kinematics Average Time: " << avg_kin_ns << " ns/call (" 
-              << avg_kin_ns / 1000.0 << " us/call)\n";
-
     auto start_crba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        // 显式计算前向运动学
+        q = pinocchio::randomConfiguration(model);
         pinocchio::forwardKinematics(model, data, q);
-        // 计算 CRBA 惯性矩阵 M
         pinocchio::crba(model, data, q);
     }
     auto end_crba = std::chrono::high_resolution_clock::now();
-    
-    double total_crba_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count();
-    double avg_crba_ns = (total_crba_us * 1000.0) / NUM_ITERATIONS;
-
-    std::cout << "--> CRBA (FK + M) Average Time: " << avg_crba_ns << " ns/call (" 
-              << avg_crba_ns / 1000.0 << " us/call)\n";
+    double crba_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count();
+    std::cout << "--> Pinocchio CRBA Average Time: " << (crba_us / NUM_ITERATIONS) << " us/call\n";
 
     // ----------------------------------------------------
-    // 测试 2: 前向运动学 + ABA (前向动力学)
+    // 2. RNEA Benchmark
     // ----------------------------------------------------
-    // 热身循环 (Warm-up)
-    for (size_t i = 0; i < 1000; ++i) {
-        pinocchio::forwardKinematics(model, data, q, v);
-        pinocchio::aba(model, data, q, v, tau);
+    auto start_rnea = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
+        q = pinocchio::randomConfiguration(model);
+        v.setRandom();
+        a.setRandom();
+        pinocchio::rnea(model, data, q, v, a);
     }
+    auto end_rnea = std::chrono::high_resolution_clock::now();
+    double rnea_us = std::chrono::duration<double, std::micro>(end_rnea - start_rnea).count();
+    std::cout << "--> Pinocchio RNEA Average Time: " << (rnea_us / NUM_ITERATIONS) << " us/call\n";
 
+    // ----------------------------------------------------
+    // 3. ABA Benchmark
+    // ----------------------------------------------------
     auto start_aba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        // 显式计算前向运动学（包含速度）
-        pinocchio::forwardKinematics(model, data, q, v);
-        // 计算 ABA 前向动力学
+        q = pinocchio::randomConfiguration(model);
+        v.setRandom();
+        tau.setRandom();
         pinocchio::aba(model, data, q, v, tau);
     }
     auto end_aba = std::chrono::high_resolution_clock::now();
-
-    double total_aba_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count();
-    double avg_aba_ns = (total_aba_us * 1000.0) / NUM_ITERATIONS;
-
-    std::cout << "--> ABA (FK + Forward Dynamics) Average Time: " << avg_aba_ns << " ns/call (" 
-              << avg_aba_ns / 1000.0 << " us/call)\n";
+    double aba_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count();
+    std::cout << "--> Pinocchio ABA Average Time:  " << (aba_us / NUM_ITERATIONS) << " us/call\n";
     std::cout << "========================================\n";
 
     return 0;

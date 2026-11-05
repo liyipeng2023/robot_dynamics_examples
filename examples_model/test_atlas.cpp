@@ -10,7 +10,7 @@
 #include <Eigen/Core>
 #include <cmath>
 #include "../utils/utils.h"
-#include "./utils/robot_loader.h"
+#include "../utils/robot_loader.h"
 #include <robot_dynamics.h>
 
 using namespace std;

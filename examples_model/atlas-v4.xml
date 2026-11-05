@@ -1,0 +1,309 @@
+<mujoco model="multisense_sl">
+  <compiler angle="radian" coordinate="local" meshdir="meshes"/>
+  <option integrator="implicitfast"/>
+
+  <asset>
+    <mesh name="head" file="head.dae"/>
+    <mesh name="r_clav" file="r_clav.dae"/>
+    <mesh name="r_farm" file="r_farm.dae"/>
+    <mesh name="l_foot" file="l_foot.dae"/>
+    <mesh name="r_hand" file="r_hand.dae"/>
+    <mesh name="r_larm" file="r_larm.dae"/>
+    <mesh name="l_lglut" file="l_lglut.dae"/>
+    <mesh name="l_lleg" file="l_lleg.dae"/>
+    <mesh name="r_scap" file="r_scap.dae"/>
+    <mesh name="l_talus" file="l_talus.dae"/>
+    <mesh name="r_uarm" file="r_uarm.dae"/>
+    <mesh name="l_uglut" file="l_uglut.dae"/>
+    <mesh name="l_uleg" file="l_uleg.dae"/>
+    <mesh name="ltorso" file="ltorso.dae"/>
+    <mesh name="mtorso" file="mtorso.dae"/>
+    <mesh name="pelvis" file="pelvis.dae"/>
+    <mesh name="r_foot" file="r_foot.dae"/>
+    <mesh name="r_lglut" file="r_lglut.dae"/>
+    <mesh name="r_lleg" file="r_lleg.dae"/>
+    <mesh name="r_talus" file="r_talus.dae"/>
+    <mesh name="r_uglut" file="r_uglut.dae"/>
+    <mesh name="r_uleg" file="r_uleg.dae"/>
+    <mesh name="utorso" file="utorso.dae"/>
+    <material name="dark" rgba="0.5 0.5 0.5 1"/>
+  </asset>
+
+  <worldbody>
+    <body name="pelvis">
+      <inertial pos="0.0111 0 0.0271" mass="9.509" fullinertia="0.1244 0.0958 0.1167 0.0008 -0.0007 -0.0005"/>
+      <geom type="mesh" mesh="pelvis" contype="0" conaffinity="0" group="1"/>
+      <geom type="cylinder" size="0.11 0.03" pos="0.046 0 0.01" quat="0.707107 0.707107 0 0" group="3"/>
+      <geom type="cylinder" size="0.11 0.03" pos="-0.03 0 0.01" quat="0.707107 0.707107 0 0" group="3"/>
+      <geom type="cylinder" size="0.16 0.025" pos="0.01 0.042 0.09" group="3"/>
+      <geom type="cylinder" size="0.16 0.025" pos="0.01 -0.042 0.09" group="3"/>
+      <geom type="box" size="0.05 0.075 0.1" pos="-0.1 0 -0.02" group="3"/>
+      <body name="ltorso" pos="-0.0125 0 0" quat="1 0 0 0">
+        <joint name="back_bkz" type="hinge" axis="0 0 1" range="-0.663225 0.663225" limited="true" damping="0.1"/>
+        <inertial pos="-0.0112984 -3.15366e-06 0.0746835" mass="2.27" fullinertia="0.0039092 0.00341694 0.00174492 -5.04491e-08 -0.000342157 4.87119e-07"/>
+        <geom type="mesh" mesh="ltorso" contype="0" conaffinity="0" group="1"/>
+        <body name="mtorso" pos="0 0 0.162" quat="1 0 0 0">
+          <joint name="back_bky" type="hinge" axis="0 1 0" range="-0.219388 0.538783" limited="true" damping="0.1"/>
+          <inertial pos="-0.00816266 -0.0131245 0.0305974" mass="0.799" fullinertia="0.000454181 0.000483282 0.000444215 -6.10764e-05 3.94009e-05 5.27463e-05"/>
+          <geom type="mesh" mesh="mtorso" contype="0" conaffinity="0" group="1"/>
+          <geom type="cylinder" size="0.02 0.075" pos="0 0 0.02" group="3"/>
+          <body name="utorso" pos="0 0 0.05" quat="1 0 0 0">
+            <joint name="back_bkx" type="hinge" axis="1 0 0" range="-0.523599 0.523599" limited="true" damping="0.1"/>
+            <inertial pos="-0.0622 0.0023 0.3157" mass="84.409" fullinertia="1.577 1.602 0.565 -0.032 0.102 0.047"/>
+            <geom type="mesh" mesh="utorso" contype="0" conaffinity="0" group="1"/>
+            <geom type="box" size="0.2 0.175 0.25" pos="-0.102 0 0.25" group="3"/>
+            <geom type="box" size="0.065 0.25 0.05" pos="0.2 0 0.46" quat="0.707141 0 0.707073 0" group="3"/>
+            <geom type="box" size="0.1 0.115 0.05" pos="0.2 0 0.285" quat="0.659983 0 0.75128 0" group="3"/>
+            <geom type="box" size="0.1 0.09 0.05" pos="0.15 0 0.1" quat="0.540302 0 0.841471 0" group="3"/>
+            <geom type="box" size="0.253153 0.170859 0.06" pos="-0.035 0 0.6265" group="3"/>
+            <geom type="cylinder" size="0.008 0.065" pos="0.208 0 0.8215" quat="0.707141 0.707073 0 0" group="3"/>
+            <geom type="cylinder" size="0.008 0.075" pos="0.208 -0.125 0.745" quat="0.981496 -0.191485 0 0" group="3"/>
+            <geom type="cylinder" size="0.008 0.075" pos="0.208 0.125 0.745" quat="0.981496 0.191485 0 0" group="3"/>
+            <geom type="cylinder" size="0.008 0.075" pos="0.063 -0.125 0.745" quat="0.981496 -0.191485 0 0" group="3"/>
+            <geom type="cylinder" size="0.008 0.075" pos="0.063 0.125 0.745" quat="0.981496 0.191485 0 0" group="3"/>
+            <geom type="cylinder" size="0.008 0.075" pos="0.14 0.06 0.8215" quat="0.500048 0.5 0.499952 0.5" group="3"/>
+            <geom type="cylinder" size="0.008 0.075" pos="0.14 -0.06 0.8215" quat="0.500048 0.5 0.499952 0.5" group="3"/>
+            <geom type="box" size="0.1 0.125 0.005" pos="-0.029 0 0.731" quat="0.947651 0 -0.319309 0" group="3"/>
+            <geom type="cylinder" size="0.008 0.065" pos="0.063 0 0.8215" quat="0.707141 0.707073 0 0" group="3"/>
+            <geom type="cylinder" size="0.055 0.008" pos="0.261 0.156 0.6215" quat="0.707141 0.707073 0 0" group="3"/>
+            <geom type="cylinder" size="0.055 0.008" pos="0.261 -0.156 0.6215" quat="0.707141 0.707073 0 0" group="3"/>
+            <body name="l_clav" pos="0.1406 0.2256 0.4776" quat="-1.03412e-13 -0 0 1">
+              <joint name="l_arm_shz" type="hinge" axis="0 0 1" range="-1.5708 0.785398" limited="true" damping="0.1"/>
+              <inertial pos="0 -0.048 -0.084" mass="4.466" fullinertia="0.011 0.009 0.004 0 0 0.004"/>
+              <geom type="mesh" mesh="r_clav" contype="0" conaffinity="0" group="1"/>
+              <geom type="cylinder" size="0.0555 0.07625" pos="0 -0.11 -0.248" quat="0.707107 0 0.707107 0" group="3"/>
+              <geom type="cylinder" size="0.067 0.13" pos="0.005 -0.015 -0.08" group="3"/>
+              <geom type="box" size="0.05 0.035 0.036" pos="0.004 -0.064 -0.247" quat="0.865324 0.501213 0 0" group="3"/>
+              <body name="l_scap" pos="0 -0.11 -0.245" quat="1 0 0 0">
+                <joint name="l_arm_shx" type="hinge" axis="-1 -0 -0" range="-1.5708 1.5708" limited="true" damping="0.1"/>
+                <inertial pos="0 0 0" mass="3.899" fullinertia="0.00319 0.00583 0.00583 0 0 0"/>
+                <geom type="mesh" mesh="r_scap" contype="0" conaffinity="0" group="1"/>
+                <geom type="cylinder" size="0.057 0.0525" pos="-0.005 -0.115 -0.014" quat="0.707107 0.707107 0 0" group="3"/>
+                <geom type="box" size="0.08 0.085 0.04" pos="-0.005 -0.075 -0.015" group="3"/>
+                <geom type="box" size="0.01 0.0145 0.009" pos="0.076 -0.0615 0.0128" quat="0.431177 0.902268 0 0" group="3"/>
+                <geom type="box" size="0.014 0.045 0.025" pos="-0.075 0.015 0.019" quat="0.877583 0.479426 0 0" group="3"/>
+                <body name="l_uarm" pos="0 -0.187 -0.016" quat="1 0 0 0">
+                  <joint name="l_arm_ely" type="hinge" axis="-0 -1 -0" range="0 3.14159" limited="true" damping="0.2"/>
+                  <inertial pos="0 0.065 0" mass="4.386" fullinertia="0.00656 0.00358 0.00656 0 0 0"/>
+                  <geom type="mesh" mesh="r_uarm" contype="0" conaffinity="0" group="1"/>
+                  <geom type="cylinder" size="0.065 0.055" pos="0 -0.035 0" quat="0.707105 0.707108 0 0" group="3"/>
+                  <geom type="cylinder" size="0.047 0.071" pos="-0.005 -0.111 0.017" quat="0.707105 0 0.707108 0" group="3"/>
+                  <geom type="box" size="0.025 0.035 0.075" pos="-0.001 -0.043 0.01" quat="0.707107 0 0.707107 0" group="3"/>
+                  <body name="l_larm" pos="0 -0.119 0.0092" quat="1 0 0 0">
+                    <joint name="l_arm_elx" type="hinge" axis="-1 -0 -0" range="0 2.35619" limited="true" damping="0.2"/>
+                    <inertial pos="0 0 0" mass="3.248" fullinertia="0.00265 0.00446 0.00446 0 0 0"/>
+                    <geom type="mesh" mesh="r_larm" contype="0" conaffinity="0" group="1"/>
+                    <geom type="cylinder" size="0.045 0.0625" pos="0.001 -0.127 0" quat="0.707107 0.707107 0 0" group="3"/>
+                    <geom type="box" size="0.0675 0.075 0.03" pos="0.001 -0.051 0" group="3"/>
+                    <body name="l_ufarm" pos="0 -0.187 -0.0092" quat="-1.03412e-13 -0 1 -0">
+                      <joint name="l_arm_wry" type="hinge" axis="-0 -1 -0" range="0 3.14159" limited="true" damping="0.1"/>
+                      <inertial pos="0 0.065 0" mass="4.386" fullinertia="0.00656 0.00358 0.00656 0 0 0"/>
+                      <geom type="mesh" mesh="r_farm" contype="0" conaffinity="0" group="1"/>
+                      <geom type="cylinder" size="0.045 0.0625" pos="0 -0.13 0.004" quat="0.707105 0 0.707108 0" group="3"/>
+                      <geom type="box" size="0.0675 0.05 0.0225" pos="0.001 -0.053 -0.002" group="3"/>
+                      <body name="l_lfarm" pos="0 -0.119 0.0092" quat="1 0 0 0">
+                        <joint name="l_arm_wrx" type="hinge" axis="1 0 0" range="-1.1781 1.1781" limited="true" damping="0.1"/>
+                        <inertial pos="0 0 0" mass="2.509" fullinertia="0.00265 0.00446 0.00446 0 0 0"/>
+                        <geom type="mesh" mesh="r_hand" quat="-1.03412e-13 -0 1 -0" contype="0" conaffinity="0" group="1"/>
+                        <geom type="cylinder" size="0.03 0.025" pos="0.001 -0.1 -0.01" quat="0.707107 0.707107 0 0" group="3"/>
+                        <geom type="box" size="0.065 0.045 0.035" pos="0.001 -0.05 -0.01" group="3"/>
+                        <body name="l_hand" pos="0 0 0" quat="-1.03412e-13 -0 1 -0">
+                          <joint name="l_arm_wry2" type="hinge" axis="0 1 0" range="-0.001 0.001" limited="true" damping="0.1"/>
+                          <inertial pos="0 0 0" mass="1" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+                          <geom type="sphere" size="0.03" pos="0 -0.15 0.01" material="dark" contype="0" conaffinity="0" group="1"/>
+                          <geom type="sphere" size="0.03" pos="0 -0.15 0.01" group="3"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+            <body name="head" pos="0.2546 0 0.6215" quat="1 0 0 0">
+              <joint name="neck_ry" type="hinge" axis="0 1 0" range="-0.602139 1.14319" limited="true" damping="0.1"/>
+              <inertial pos="-0.075493 3.3383e-05 0.02774" mass="1.41984" fullinertia="0.0039688 0.0041178 0.0035243 -1.5797e-06 -0.00089293 -6.8415e-07"/>
+              <geom type="mesh" mesh="head" contype="0" conaffinity="0" group="1"/>
+              <geom type="box" size="0.06555 0.06 0.02955" pos="-0.0503 0 -0.00195" group="3"/>
+              <geom type="box" size="0.0234 0.06 0.0592" pos="-0.093 0 0.0868" group="3"/>
+            </body>
+            <body name="r_clav" pos="0.1406 -0.2256 0.4776" quat="1 0 0 0">
+              <joint name="r_arm_shz" type="hinge" axis="0 0 1" range="-0.785398 1.5708" limited="true" damping="0.1"/>
+              <inertial pos="0 -0.048 -0.084" mass="4.466" fullinertia="0.011 0.009 0.004 0 0 0.004"/>
+              <geom type="mesh" mesh="r_clav" contype="0" conaffinity="0" group="1"/>
+              <geom type="cylinder" size="0.0555 0.07625" pos="0 -0.11 -0.248" quat="0.707107 0 0.707107 0" group="3"/>
+              <geom type="cylinder" size="0.067 0.13" pos="0.005 -0.015 -0.08" group="3"/>
+              <geom type="box" size="0.05 0.035 0.036" pos="0.004 -0.064 -0.247" quat="0.865324 0.501213 0 0" group="3"/>
+              <body name="r_scap" pos="0 -0.11 -0.245" quat="1 0 0 0">
+                <joint name="r_arm_shx" type="hinge" axis="1 0 0" range="-1.5708 1.5708" limited="true" damping="0.1"/>
+                <inertial pos="0 0 0" mass="3.899" fullinertia="0.00319 0.00583 0.00583 0 0 0"/>
+                <geom type="mesh" mesh="r_scap" contype="0" conaffinity="0" group="1"/>
+                <geom type="cylinder" size="0.057 0.0525" pos="-0.005 -0.115 -0.014" quat="0.707107 0.707107 0 0" group="3"/>
+                <geom type="box" size="0.08 0.085 0.04" pos="-0.005 -0.075 -0.015" group="3"/>
+                <geom type="box" size="0.01 0.0145 0.009" pos="0.076 -0.0615 0.0128" quat="0.431177 0.902268 0 0" group="3"/>
+                <geom type="box" size="0.014 0.045 0.025" pos="-0.075 0.015 0.019" quat="0.877583 0.479426 0 0" group="3"/>
+                <body name="r_uarm" pos="0 -0.187 -0.016" quat="1 0 0 0">
+                  <joint name="r_arm_ely" type="hinge" axis="0 1 0" range="0 3.14159" limited="true" damping="0.2"/>
+                  <inertial pos="0 0.065 0" mass="4.386" fullinertia="0.00656 0.00358 0.00656 0 0 0"/>
+                  <geom type="mesh" mesh="r_uarm" contype="0" conaffinity="0" group="1"/>
+                  <geom type="cylinder" size="0.065 0.055" pos="0 -0.035 0" quat="0.707105 0.707108 0 0" group="3"/>
+                  <geom type="cylinder" size="0.047 0.071" pos="-0.005 -0.111 0.017" quat="0.707105 0 0.707108 0" group="3"/>
+                  <geom type="box" size="0.025 0.035 0.075" pos="-0.001 -0.043 0.01" quat="0.707107 0 0.707107 0" group="3"/>
+                  <body name="r_larm" pos="0 -0.119 0.0092" quat="1 0 0 0">
+                    <joint name="r_arm_elx" type="hinge" axis="1 0 0" range="-2.35619 0" limited="true" damping="0.2"/>
+                    <inertial pos="0 0 0" mass="3.248" fullinertia="0.00265 0.00446 0.00446 0 0 0"/>
+                    <geom type="mesh" mesh="r_larm" contype="0" conaffinity="0" group="1"/>
+                    <geom type="cylinder" size="0.045 0.0625" pos="0.001 -0.127 0" quat="0.707107 0.707107 0 0" group="3"/>
+                    <geom type="box" size="0.0675 0.075 0.03" pos="0.001 -0.051 0" group="3"/>
+                    <body name="r_ufarm" pos="0 -0.187 -0.0092" quat="1 0 0 0">
+                      <joint name="r_arm_wry" type="hinge" axis="0 1 0" range="0 3.14159" limited="true" damping="0.1"/>
+                      <inertial pos="0 0.065 0" mass="4.386" fullinertia="0.00656 0.00358 0.00656 0 0 0"/>
+                      <geom type="mesh" mesh="r_farm" contype="0" conaffinity="0" group="1"/>
+                      <geom type="cylinder" size="0.045 0.0625" pos="0 -0.13 0.004" quat="0.707105 0 0.707108 0" group="3"/>
+                      <geom type="box" size="0.0675 0.05 0.0225" pos="0.001 -0.053 -0.002" group="3"/>
+                      <body name="r_lfarm" pos="0 -0.119 0.0092" quat="1 0 0 0">
+                        <joint name="r_arm_wrx" type="hinge" axis="1 0 0" range="-1.1781 1.1781" limited="true" damping="0.1"/>
+                        <inertial pos="0 0 0" mass="2.509" fullinertia="0.00265 0.00446 0.00446 0 0 0"/>
+                        <geom type="mesh" mesh="r_hand" quat="-1.03412e-13 -0 1 -0" contype="0" conaffinity="0" group="1"/>
+                        <geom type="cylinder" size="0.03 0.025" pos="0.001 -0.1 -0.01" quat="0.707107 0.707107 0 0" group="3"/>
+                        <geom type="box" size="0.065 0.045 0.035" pos="0.001 -0.05 -0.01" group="3"/>
+                        <body name="r_hand">
+                          <joint name="r_arm_wry2" type="hinge" axis="0 1 0" range="-0.001 0.001" limited="true" damping="0.1"/>
+                          <inertial pos="0 0 0" mass="1" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+                          <geom type="sphere" size="0.03" pos="0 -0.15 -0.01" material="dark" contype="0" conaffinity="0" group="1"/>
+                          <geom type="sphere" size="0.03" pos="0 -0.15 -0.01" group="3"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="l_uglut" pos="0 0.089 0" quat="1 0 0 0">
+        <joint name="l_leg_hpz" type="hinge" axis="0 0 1" range="-0.174358 0.786794" limited="true" damping="0.1"/>
+        <inertial pos="0.00529262 -0.00344732 0.00313046" mass="1.959" fullinertia="0.00074276 0.000688179 0.00041242 -3.79607e-08 -2.79549e-05 -3.2735e-08"/>
+        <geom type="mesh" mesh="l_uglut" contype="0" conaffinity="0" group="1"/>
+        <geom type="box" size="0.025 0.05 0.05" pos="0.01 0.005 0" quat="0.965694 0.259684 0 0" group="3"/>
+        <geom type="cylinder" size="0.019841 0.040421" group="3"/>
+        <body name="l_lglut">
+          <joint name="l_leg_hpx" type="hinge" axis="1 0 0" range="-0.523599 0.523599" limited="true" damping="0.1"/>
+          <inertial pos="0.0133341 0.0170484 -0.0312052" mass="0.898" fullinertia="0.000691326 0.00126856 0.00106487 -2.24344e-05 2.50508e-06 0.000137862"/>
+          <geom type="mesh" mesh="l_lglut" contype="0" conaffinity="0" group="1"/>
+          <geom type="box" size="0.0625 0.025 0.04" pos="0.015 0.026 -0.028" group="3"/>
+          <geom type="cylinder" size="0.0200969 0.030153" pos="0.05 0.027488 -0.067" quat="0.707107 0.707107 0 0" group="3"/>
+          <geom type="cylinder" size="0.02 0.072" pos="0.0115 0 0" quat="0.707107 0 0.707107 0" group="3"/>
+          <body name="l_uleg" pos="0.05 0.0225 -0.066" quat="1 0 0 0">
+            <joint name="l_leg_hpy" type="hinge" axis="0 1 0" range="-1.61234 0.65764" limited="true" damping="0.1"/>
+            <inertial pos="0 0 -0.21" mass="8.204" fullinertia="0.09 0.09 0.02 0 0 0"/>
+            <geom type="mesh" mesh="l_uleg" contype="0" conaffinity="0" group="1"/>
+            <geom type="cylinder" size="0.09 0.075" pos="-0.0199 0.00585 -0.122" group="3"/>
+            <geom type="cylinder" size="0.07 0.075" pos="-0.032 -0.005 -0.224" quat="0.988771 0 -0.149438 0" group="3"/>
+            <geom type="cylinder" size="0.05 0.075" pos="0.003 0.015 -0.254" quat="0.995083 -0.0747715 0.0647716 0.004867" group="3"/>
+            <geom type="box" size="0.035 0.019 0.075" pos="-0.007 -0.053 -0.052" group="3"/>
+            <geom type="box" size="0.035 0.019 0.07" pos="-0.017 0.0595 -0.049" group="3"/>
+            <body name="l_lleg" pos="-0.05 0 -0.374" quat="1 0 0 0">
+              <joint name="l_leg_kny" type="hinge" axis="0 1 0" range="0 2.35637" limited="true" damping="0.2"/>
+              <inertial pos="0.001 0 -0.187" mass="4.515" fullinertia="0.077 0.076 0.01 0 -0.003 0"/>
+              <geom type="mesh" mesh="l_lleg" contype="0" conaffinity="0" group="1"/>
+              <geom type="cylinder" size="0.07 0.2" pos="0.02 0.00295 -0.182" quat="0.99875 0 0.0499792 0" group="3"/>
+              <body name="l_talus" pos="0 0 -0.422" quat="1 0 0 0">
+                <joint name="l_leg_aky" type="hinge" axis="0 1 0" range="-1 0.7" limited="true" damping="0.1"/>
+                <inertial pos="0 0 0" mass="0.125" fullinertia="1.01674e-05 8.42775e-06 1.30101e-05 0 0 0"/>
+                <geom type="mesh" mesh="l_talus" contype="0" conaffinity="0" group="1"/>
+                <geom type="cylinder" size="0.010181 0.014771" quat="0.707107 0 0.707107 0" group="3"/>
+                <geom type="cylinder" size="0.010348 0.0050295" quat="0.707107 0.707107 0 0" group="3"/>
+                <body name="l_foot">
+                  <joint name="l_leg_akx" type="hinge" axis="1 0 0" range="-0.8 0.8" limited="true" damping="0.1"/>
+                  <inertial pos="0.027 0 -0.067" mass="2.41" fullinertia="0.002 0.007 0.008 0 0 0"/>
+                  <geom type="mesh" mesh="l_foot" contype="0" conaffinity="0" group="1"/>
+                  <geom type="box" size="0.1135 0.0669435 0.025" pos="0.023 0 -0.049119" group="3"/>
+                  <geom type="box" size="0.05 0.04 0.01" pos="0.1225 0 -0.0641" group="3"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="r_uglut" pos="0 -0.089 0" quat="1 0 0 0">
+        <joint name="r_leg_hpz" type="hinge" axis="0 0 1" range="-0.786794 0.174358" limited="true" damping="0.1"/>
+        <inertial pos="0.00529262 0.00344732 0.00313046" mass="1.959" fullinertia="0.00074276 0.000688179 0.00041242 3.79607e-08 -2.79549e-05 3.2735e-08"/>
+        <geom type="mesh" mesh="r_uglut" contype="0" conaffinity="0" group="1"/>
+        <geom type="box" size="0.025 0.05 0.05" pos="0.01 -0.005 0" quat="0.965694 -0.259684 0 0" group="3"/>
+        <geom type="cylinder" size="0.019841 0.040421" group="3"/>
+        <body name="r_lglut">
+          <joint name="r_leg_hpx" type="hinge" axis="1 0 0" range="-0.523599 0.523599" limited="true" damping="0.1"/>
+          <inertial pos="0.0133341 -0.0170484 -0.0312052" mass="0.898" fullinertia="0.000691326 0.00126856 0.00106487 2.24344e-05 2.50508e-06 -0.000137862"/>
+          <geom type="mesh" mesh="r_lglut" contype="0" conaffinity="0" group="1"/>
+          <geom type="box" size="0.0625 0.025 0.04" pos="0.015 -0.026 -0.028" group="3"/>
+          <geom type="cylinder" size="0.0200969 0.030153" pos="0.05 -0.027488 -0.067" quat="0.707107 0.707107 0 0" group="3"/>
+          <geom type="cylinder" size="0.02 0.071" pos="0.0105 0 0" quat="0.707107 0 0.707107 0" group="3"/>
+          <body name="r_uleg" pos="0.05 -0.0225 -0.066" quat="1 0 0 0">
+            <joint name="r_leg_hpy" type="hinge" axis="0 1 0" range="-1.61234 0.65764" limited="true" damping="0.1"/>
+            <inertial pos="0 0 -0.21" mass="8.204" fullinertia="0.09 0.09 0.02 0 0 0"/>
+            <geom type="mesh" mesh="r_uleg" contype="0" conaffinity="0" group="1"/>
+            <geom type="cylinder" size="0.09 0.075" pos="-0.0199 -0.00585 -0.122" group="3"/>
+            <geom type="cylinder" size="0.07 0.075" pos="-0.032 0.005 -0.224" quat="0.988771 0 -0.149438 0" group="3"/>
+            <geom type="cylinder" size="0.05 0.075" pos="0.003 -0.015 -0.254" quat="0.995083 0.0747715 0.0647716 -0.004867" group="3"/>
+            <geom type="box" size="0.035 0.019 0.075" pos="-0.007 0.053 -0.052" group="3"/>
+            <geom type="box" size="0.035 0.019 0.07" pos="-0.017 -0.0595 -0.049" group="3"/>
+            <body name="r_lleg" pos="-0.05 0 -0.374" quat="1 0 0 0">
+              <joint name="r_leg_kny" type="hinge" axis="0 1 0" range="0 2.35637" limited="true" damping="0.2"/>
+              <inertial pos="0.001 0 -0.187" mass="4.515" fullinertia="0.077 0.076 0.01 -0 -0.003 -0"/>
+              <geom type="mesh" mesh="r_lleg" contype="0" conaffinity="0" group="1"/>
+              <geom type="cylinder" size="0.07 0.2" pos="0.02 -0.00295 -0.182" quat="0.99875 0 0.0499792 0" group="3"/>
+              <body name="r_talus" pos="0 0 -0.422" quat="1 0 0 0">
+                <joint name="r_leg_aky" type="hinge" axis="0 1 0" range="-1 0.7" limited="true" damping="0.1"/>
+                <inertial pos="0 0 0" mass="0.125" fullinertia="1.01674e-05 8.42775e-06 1.30101e-05 0 0 0"/>
+                <geom type="mesh" mesh="r_talus" contype="0" conaffinity="0" group="1"/>
+                <geom type="cylinder" size="0.010181 0.014771" quat="0.707107 0 0.707107 0" group="3"/>
+                <geom type="cylinder" size="0.010348 0.0050295" quat="0.707107 0.707107 0 0" group="3"/>
+                <body name="r_foot">
+                  <joint name="r_leg_akx" type="hinge" axis="1 0 0" range="-0.8 0.8" limited="true" damping="0.1"/>
+                  <inertial pos="0.027 0 -0.067" mass="2.41" fullinertia="0.002 0.007 0.008 0 0 0"/>
+                  <geom type="mesh" mesh="r_foot" contype="0" conaffinity="0" group="1"/>
+                  <geom type="box" size="0.1135 0.0669435 0.025" pos="0.023 0 -0.049119" group="3"/>
+                  <geom type="box" size="0.05 0.04 0.01" pos="0.1225 0 -0.0641" group="3"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="back_bkx_act" joint="back_bkx" kp="50" dampratio="1" forcerange="-300 300"/>
+    <position name="back_bky_act" joint="back_bky" kp="50" dampratio="1" forcerange="-445 445"/>
+    <position name="back_bkz_act" joint="back_bkz" kp="50" dampratio="1" forcerange="-106 106"/>
+    <position name="l_arm_elx_act" joint="l_arm_elx" kp="50" dampratio="1" forcerange="-112 112"/>
+    <position name="l_arm_ely_act" joint="l_arm_ely" kp="50" dampratio="1" forcerange="-63 63"/>
+    <position name="l_arm_shx_act" joint="l_arm_shx" kp="50" dampratio="1" forcerange="-99 99"/>
+    <position name="l_arm_shz_act" joint="l_arm_shz" kp="50" dampratio="1" forcerange="-87 87"/>
+    <position name="l_arm_wrx_act" joint="l_arm_wrx" kp="50" dampratio="1" forcerange="-25 25"/>
+    <position name="l_arm_wry_act" joint="l_arm_wry" kp="50" dampratio="1" forcerange="-25 25"/>
+    <position name="l_arm_wry2_act" joint="l_arm_wry2" kp="50" dampratio="1" forcerange="-5 5"/>
+    <position name="l_leg_akx_act" joint="l_leg_akx" kp="50" dampratio="1" forcerange="-45 45"/>
+    <position name="l_leg_aky_act" joint="l_leg_aky" kp="50" dampratio="1" forcerange="-92 92"/>
+    <position name="l_leg_hpx_act" joint="l_leg_hpx" kp="50" dampratio="1" forcerange="-530 530"/>
+    <position name="l_leg_hpy_act" joint="l_leg_hpy" kp="50" dampratio="1" forcerange="-840 840"/>
+    <position name="l_leg_hpz_act" joint="l_leg_hpz" kp="50" dampratio="1" forcerange="-275 275"/>
+    <position name="l_leg_kny_act" joint="l_leg_kny" kp="50" dampratio="1" forcerange="-890 890"/>
+    <position name="neck_ry_act" joint="neck_ry" kp="50" dampratio="1" forcerange="-5 5"/>
+    <position name="r_arm_elx_act" joint="r_arm_elx" kp="50" dampratio="1" forcerange="-112 112"/>
+    <position name="r_arm_ely_act" joint="r_arm_ely" kp="50" dampratio="1" forcerange="-63 63"/>
+    <position name="r_arm_shx_act" joint="r_arm_shx" kp="50" dampratio="1" forcerange="-99 99"/>
+    <position name="r_arm_shz_act" joint="r_arm_shz" kp="50" dampratio="1" forcerange="-87 87"/>
+    <position name="r_arm_wrx_act" joint="r_arm_wrx" kp="50" dampratio="1" forcerange="-25 25"/>
+    <position name="r_arm_wry_act" joint="r_arm_wry" kp="50" dampratio="1" forcerange="-25 25"/>
+    <position name="r_arm_wry2_act" joint="r_arm_wry2" kp="50" dampratio="1" forcerange="-5 5"/>
+    <position name="r_leg_akx_act" joint="r_leg_akx" kp="50" dampratio="1" forcerange="-45 45"/>
+    <position name="r_leg_aky_act" joint="r_leg_aky" kp="50" dampratio="1" forcerange="-92 92"/>
+    <position name="r_leg_hpx_act" joint="r_leg_hpx" kp="50" dampratio="1" forcerange="-530 530"/>
+    <position name="r_leg_hpy_act" joint="r_leg_hpy" kp="50" dampratio="1" forcerange="-840 840"/>
+    <position name="r_leg_hpz_act" joint="r_leg_hpz" kp="50" dampratio="1" forcerange="-275 275"/>
+    <position name="r_leg_kny_act" joint="r_leg_kny" kp="50" dampratio="1" forcerange="-890 890"/>
+  </actuator>
+</mujoco>

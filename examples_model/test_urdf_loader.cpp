@@ -4,14 +4,13 @@
 #ifdef _WIN32
 #define _USE_MATH_DEFINES
 #endif // _WIN32
-#include "./utils/urdf_loader.h"
 #include <iostream>
 #include <graph.h>
 #define EIGEN_USE_THREADS
 #include <Eigen/Core>
 #include <cmath>
 #include "../utils/utils.h"
-
+#include "./utils/robot_loader.h"
 #include <robot_dynamics.h>
 
 using namespace std;
@@ -22,8 +21,8 @@ int main(int argc, char** argv) {
     std::string urdf_path = "ur10.urdf";
     std::shared_ptr<RDL::Graph> graph;
 	std::map<std::string, int> joint_map;
-    auto ur10_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map);
-
+    //auto ur10_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map);
+	auto ur10_dyn = Utils::load_RobotDynamics(urdf_path,joint_map,Utils::RobotFileType::URDF,false);
     Eigen::VectorXd q(6), qd(6), qdd(6);
 	q << 0, -M_PI / 4, 0, -M_PI / 2, 0, M_PI / 3;
 	qd << 0.27, -0.5, -0.2, 0.7, -1.3, 0.2;

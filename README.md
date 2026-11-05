@@ -145,10 +145,10 @@ endif()
    cmake ..
    make
    ```
-   Buld the project with URDF (urdfdom is required):
+   Buld the project with support for create dynamics from files (urdfdom and tinyxml2 are required):
    ```bash
    mkdir build && cd build
-   cmake -DWITH_EXAMPLES_URDF=ON ..
+   cmake -DWITH_EXAMPLES_MODEL=ON ..
    make
    ```
 4. Executables will be compiled into the build directory, with Windows DLLs automatically copied alongside them.

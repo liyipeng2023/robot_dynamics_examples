@@ -47,11 +47,11 @@ def main():
     M = pin.crba(model, data, q)
     C = pin.computeCoriolisMatrix(model, data, q, v)
     g = pin.computeGeneralizedGravity(model, data, q)
-    tau = M @ a + C @ v# + g
+    tau = M @ a + C @ v + g
 
-    print("Pinocchio M*a (前 6 位):", (M @ a)[:6])
-    print("Pinocchio g (前 6 位):", g[:6])
-    print("Pinocchio tau (前 6 位):", tau[:6])
+    print("Pinocchio M*a (前 6 位):", (M @ a))
+    print("Pinocchio g (前 6 位):", g)
+    print("Pinocchio tau (前 6 位):", tau)
 
     N = 50000
 

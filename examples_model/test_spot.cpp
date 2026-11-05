@@ -4,14 +4,13 @@
 #ifdef _WIN32
 #define _USE_MATH_DEFINES
 #endif // _WIN32
-#include "./utils/urdf_loader.h"
 #include <iostream>
 #include <graph.h>
 #define EIGEN_USE_THREADS
 #include <Eigen/Core>
 #include <cmath>
 #include "../utils/utils.h"
-
+#include "./utils/robot_loader.h"
 #include <robot_dynamics.h>
 
 using namespace std;
@@ -19,19 +18,19 @@ using namespace RDL;
 using namespace Eigen;
 
 int main(int argc, char** argv) {
-    std::string urdf_path = "spot.urdf";
+    std::string urdf_path = "boston-dynamics-spot.xml";
 
     std::map<std::string, int> joint_map;
-    auto spot_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map, true);
-
+    //auto spot_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map, true);
+    auto spot_dyn = RDL::Utils::load_RobotDynamics(urdf_path,joint_map,RDL::Utils::RobotFileType::MJCF, true);
     if (!spot_dyn) {
         cerr << "[Error] Failed to load Spot URDF from " << urdf_path << endl;
         return -1;
     }
 
 
-    const int dof_dyn = 18;
-    const int dof_q = 19;
+    const int dof_dyn = spot_dyn->DOF();
+    const int dof_q = spot_dyn->dim_position();
 
     Eigen::VectorXd q(dof_q), qd(dof_dyn), qdd(dof_dyn);
 
@@ -54,8 +53,8 @@ int main(int argc, char** argv) {
     qd = 0.1 * Eigen::VectorXd::Ones(dof_dyn);
     qdd = 0.2 * Eigen::VectorXd::Ones(dof_dyn);
 
-    qd(0) = 0.0;  qd(1) = 0.0;   qd(2) = 0.0;   // Angular velocity
-    qd(3) = 0.01; qd(4) = -0.03; qd(5) = 0.05;  // Linear velocity
+    //qd(0) = 0.0;  qd(1) = 0.0;   qd(2) = 0.0;   // Angular velocity
+    //qd(3) = 0.01; qd(4) = -0.03; qd(5) = 0.05;  // Linear velocity
 
     spot_dyn->forward_kinematics(q.data(), q.size());
 

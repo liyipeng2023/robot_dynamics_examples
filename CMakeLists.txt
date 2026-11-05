@@ -4,7 +4,7 @@ project(robot_dynamics_examples LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(WITH_EXAMPLES_URDF "Build examples with URDF support" OFF)
+option(WITH_EXAMPLES_MODEL "Build examples with support for loading model from files" OFF)
 
 # detect the type of operating system
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -40,8 +40,8 @@ message(STATUS "Eigen include: ${EIGEN3_INCLUDE_DIR}")
 # add examples
 add_subdirectory(examples)
 
-# add examples_urdf
-if (WITH_EXAMPLES_URDF)
-    message(STATUS "Add examples with dynamics created from urdf files (urdfdom is required).")
-    add_subdirectory(examples_urdf)
+# add examples_model
+if (WITH_EXAMPLES_MODEL)
+    message(STATUS "Add examples with dynamics created from files (urdfdom and tinyxml2 are required).")
+    add_subdirectory(examples_model)
 endif ()

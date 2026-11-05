@@ -1,0 +1,131 @@
+<mujoco model="spot">
+  <compiler angle="radian" coordinate="local" meshdir="meshes"/>
+  <option integrator="implicitfast"/>
+
+  <asset>
+    <mesh name="body_0" file="body_0.obj"/>
+    <mesh name="body_1" file="body_1.obj"/>
+    <mesh name="body_collision" file="body_collision.obj"/>
+    <mesh name="front_left_hip" file="front_left_hip.obj"/>
+    <mesh name="front_left_upper_leg_0" file="front_left_upper_leg_0.obj"/>
+    <mesh name="front_left_upper_leg_1" file="front_left_upper_leg_1.obj"/>
+    <mesh name="left_upper_leg_collision" file="left_upper_leg_collision.obj"/>
+    <mesh name="front_left_lower_leg" file="front_left_lower_leg.obj"/>
+    <mesh name="left_lower_leg_collision" file="left_lower_leg_collision.obj"/>
+    <mesh name="front_right_hip" file="front_right_hip.obj"/>
+    <mesh name="front_right_upper_leg_0" file="front_right_upper_leg_0.obj"/>
+    <mesh name="front_right_upper_leg_1" file="front_right_upper_leg_1.obj"/>
+    <mesh name="right_upper_leg_collision" file="right_upper_leg_collision.obj"/>
+    <mesh name="front_right_lower_leg" file="front_right_lower_leg.obj"/>
+    <mesh name="right_lower_leg_collision" file="right_lower_leg_collision.obj"/>
+    <mesh name="rear_left_hip" file="rear_left_hip.obj"/>
+    <mesh name="rear_left_upper_leg_0" file="rear_left_upper_leg_0.obj"/>
+    <mesh name="rear_left_upper_leg_1" file="rear_left_upper_leg_1.obj"/>
+    <mesh name="rear_left_lower_leg" file="rear_left_lower_leg.obj"/>
+    <mesh name="rear_right_hip" file="rear_right_hip.obj"/>
+    <mesh name="rear_right_upper_leg_0" file="rear_right_upper_leg_0.obj"/>
+    <mesh name="rear_right_upper_leg_1" file="rear_right_upper_leg_1.obj"/>
+    <material name="BlackAbs" rgba="0.1 0.1 0.1 1"/>
+    <material name="wrap" rgba="0.878431 0.666666 0.22745 1"/>
+  </asset>
+
+  <worldbody>
+    <body name="body">
+      <inertial pos="0.0063944 -9.81216e-05 0.000911379" mass="32.86" fullinertia="0.13144 0.13144 0.13144 0 0 0"/>
+      <geom type="mesh" mesh="body_0" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+      <geom type="mesh" mesh="body_1" material="wrap" contype="0" conaffinity="0" group="1"/>
+      <geom type="mesh" mesh="body_collision" group="3"/>
+      <body name="fl_hip" pos="0.29785 0.055 0" quat="1 0 0 0">
+        <joint name="fl_hx" type="hinge" axis="1 0 0" range="-0.785398 0.785398" limited="true"/>
+        <inertial pos="-0.00537435 0.0128418 9.87523e-05" mass="1.68" fullinertia="0.00211474 0.00181296 0.00226544 -1.84787e-20 9.22771e-21 1.13149e-36"/>
+        <geom type="mesh" mesh="front_left_hip" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+        <body name="fl_uleg" pos="0 0.1108 0" quat="1 0 0 0">
+          <joint name="fl_hy" type="hinge" axis="0 1 0" range="-0.898845 2.29511" limited="true"/>
+          <inertial pos="0.00514237 -0.00243237 -0.121009" mass="2.34" fullinertia="0.0275596 0.0273549 0.00284815 0 0 0"/>
+          <geom type="mesh" mesh="front_left_upper_leg_0" material="wrap" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="front_left_upper_leg_1" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="left_upper_leg_collision" group="3"/>
+          <body name="fl_lleg" pos="0.025 0 -0.32" quat="1 0 0 0">
+            <joint name="fl_kn" type="hinge" axis="0 1 0" range="-2.7929 -0.254402" limited="true"/>
+            <inertial pos="0.00225794 4.6076e-05 -0.180082" mass="0.35" fullinertia="0.00399902 0.00405032 0.00014934 -8.24967e-21 0 0"/>
+            <geom type="mesh" mesh="front_left_lower_leg" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="left_lower_leg_collision" group="3"/>
+            <geom type="sphere" size="0.036" pos="0 0 -0.3365" group="3"/>
+          </body>
+        </body>
+      </body>
+      <body name="fr_hip" pos="0.29785 -0.055 0" quat="1 0 0 0">
+        <joint name="fr_hx" type="hinge" axis="1 0 0" range="-0.785398 0.785398" limited="true"/>
+        <inertial pos="-0.00537435 -0.0128418 -9.87523e-05" mass="1.68" fullinertia="0.00211474 0.00181296 0.00226544 -1.84787e-20 9.22771e-21 1.13149e-36"/>
+        <geom type="mesh" mesh="front_right_hip" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+        <body name="fr_uleg" pos="0 -0.1108 0" quat="1 0 0 0">
+          <joint name="fr_hy" type="hinge" axis="0 1 0" range="-0.898845 2.24363" limited="true"/>
+          <inertial pos="0.00514237 0.00243237 -0.121009" mass="2.34" fullinertia="0.0275596 0.0273549 0.00284815 0 0 0"/>
+          <geom type="mesh" mesh="front_right_upper_leg_0" material="wrap" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="front_right_upper_leg_1" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="right_upper_leg_collision" group="3"/>
+          <body name="fr_lleg" pos="0.025 0 -0.32" quat="1 0 0 0">
+            <joint name="fr_kn" type="hinge" axis="0 1 0" range="-2.7929 -0.255648" limited="true"/>
+            <inertial pos="0.00225794 4.6076e-05 -0.180082" mass="0.35" fullinertia="0.00399902 0.00405032 0.00014934 -8.24967e-21 0 0"/>
+            <geom type="mesh" mesh="front_right_lower_leg" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="right_lower_leg_collision" group="3"/>
+            <geom type="sphere" size="0.036" pos="0 0 -0.3365" group="3"/>
+          </body>
+        </body>
+      </body>
+      <body name="hl_hip" pos="-0.29785 0.055 0" quat="1 0 0 0">
+        <joint name="hl_hx" type="hinge" axis="1 0 0" range="-0.785398 0.785398" limited="true"/>
+        <inertial pos="0.00537435 0.0128418 -9.87523e-05" mass="1.68" fullinertia="0.00211474 0.00181296 0.00226544 -1.84787e-20 9.22771e-21 1.13149e-36"/>
+        <geom type="mesh" mesh="rear_left_hip" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+        <body name="hl_uleg" pos="0 0.1108 0" quat="1 0 0 0">
+          <joint name="hl_hy" type="hinge" axis="0 1 0" range="-0.898845 2.29511" limited="true"/>
+          <inertial pos="0.00514237 -0.00243237 -0.121009" mass="2.34" fullinertia="0.0275596 0.0273549 0.00284815 0 0 0"/>
+          <geom type="mesh" mesh="rear_left_upper_leg_0" material="wrap" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="rear_left_upper_leg_1" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="left_upper_leg_collision" group="3"/>
+          <body name="hl_lleg" pos="0.025 0 -0.32" quat="1 0 0 0">
+            <joint name="hl_kn" type="hinge" axis="0 1 0" range="-2.7929 -0.247067" limited="true"/>
+            <inertial pos="0.00225794 4.6076e-05 -0.180082" mass="0.35" fullinertia="0.00399902 0.00405032 0.00014934 -8.24967e-21 0 0"/>
+            <geom type="mesh" mesh="rear_left_lower_leg" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="left_lower_leg_collision" group="3"/>
+            <geom type="sphere" size="0.036" pos="0 0 -0.3365" group="3"/>
+          </body>
+        </body>
+      </body>
+      <body name="hr_hip" pos="-0.29785 -0.055 0" quat="1 0 0 0">
+        <joint name="hr_hx" type="hinge" axis="1 0 0" range="-0.785398 0.785398" limited="true"/>
+        <inertial pos="0.00537435 -0.0128418 9.87523e-05" mass="1.68" fullinertia="0.00211474 0.00181296 0.00226544 -1.84787e-20 9.22771e-21 1.13149e-36"/>
+        <geom type="mesh" mesh="rear_right_hip" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+        <body name="hr_uleg" pos="0 -0.1108 0" quat="1 0 0 0">
+          <joint name="hr_hy" type="hinge" axis="0 1 0" range="-0.898845 2.29511" limited="true"/>
+          <inertial pos="0.00514237 0.00243237 -0.121009" mass="2.34" fullinertia="0.0275596 0.0273549 0.00284815 0 0 0"/>
+          <geom type="mesh" mesh="rear_right_upper_leg_0" material="wrap" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="rear_right_upper_leg_1" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="right_upper_leg_collision" group="3"/>
+          <body name="hr_lleg" pos="0.025 0 -0.32" quat="1 0 0 0">
+            <joint name="hr_kn" type="hinge" axis="0 1 0" range="-2.7929 -0.248282" limited="true"/>
+            <inertial pos="0.00225794 4.6076e-05 -0.180082" mass="0.35" fullinertia="0.00399902 0.00405032 0.00014934 -8.24967e-21 0 0"/>
+            <geom type="mesh" mesh="rear_left_lower_leg" material="BlackAbs" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="right_lower_leg_collision" group="3"/>
+            <geom type="sphere" size="0.036" pos="0 0 -0.3365" group="3"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="fl_hx_act" joint="fl_hx" kp="50" dampratio="1"/>
+    <position name="fl_hy_act" joint="fl_hy" kp="50" dampratio="1"/>
+    <position name="fl_kn_act" joint="fl_kn" kp="50" dampratio="1"/>
+    <position name="fr_hx_act" joint="fr_hx" kp="50" dampratio="1"/>
+    <position name="fr_hy_act" joint="fr_hy" kp="50" dampratio="1"/>
+    <position name="fr_kn_act" joint="fr_kn" kp="50" dampratio="1"/>
+    <position name="hl_hx_act" joint="hl_hx" kp="50" dampratio="1"/>
+    <position name="hl_hy_act" joint="hl_hy" kp="50" dampratio="1"/>
+    <position name="hl_kn_act" joint="hl_kn" kp="50" dampratio="1"/>
+    <position name="hr_hx_act" joint="hr_hx" kp="50" dampratio="1"/>
+    <position name="hr_hy_act" joint="hr_hy" kp="50" dampratio="1"/>
+    <position name="hr_kn_act" joint="hr_kn" kp="50" dampratio="1"/>
+  </actuator>
+</mujoco>

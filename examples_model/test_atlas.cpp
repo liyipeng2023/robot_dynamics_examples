@@ -4,14 +4,13 @@
 #ifdef _WIN32
 #define _USE_MATH_DEFINES
 #endif // _WIN32
-#include "./utils/urdf_loader.h"
 #include <iostream>
 #include <graph.h>
 #define EIGEN_USE_THREADS
 #include <Eigen/Core>
 #include <cmath>
 #include "../utils/utils.h"
-
+#include "./utils/robot_loader.h"
 #include <robot_dynamics.h>
 
 using namespace std;
@@ -22,10 +21,10 @@ int main(int argc, char** argv) {
     std::string urdf_path = "atlas.urdf";
     std::map<std::string, int> joint_map;
 
-    auto atlas_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map, true);
-
-    const int dof_dyn = 36;
-    const int dof_q = 37;
+    //auto atlas_dyn = RDL::Utils::load_RobotDynamics_from_URDF(urdf_path, joint_map, true);
+    auto atlas_dyn = RDL::Utils::load_RobotDynamics(urdf_path,joint_map,RDL::Utils::RobotFileType::URDF, true);
+    const int dof_dyn = atlas_dyn->DOF();//36;
+    const int dof_q = atlas_dyn->dim_position();
 
     Eigen::VectorXd q(dof_q), qd(dof_dyn), qdd(dof_dyn);
 
@@ -46,8 +45,8 @@ int main(int argc, char** argv) {
     }
     qd = 0.1*Eigen::VectorXd::Ones(dof_dyn);
     qdd = 0.2*Eigen::VectorXd::Ones(dof_dyn);
-    qd(0) = 0; qd(1) = 0; qd(2) = 0;
-    qd(3) = 0.01; qd(4) = -0.03; qd(5) = 0.05;
+    //qd(0) = 0; qd(1) = 0; qd(2) = 0;
+    //qd(3) = 0.01; qd(4) = -0.03; qd(5) = 0.05;
     VectorXd a0(6);
     a0.setZero();
     a0(5) = -g_acc;

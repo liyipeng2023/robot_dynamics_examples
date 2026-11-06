@@ -12,8 +12,8 @@ test_cases = [
     {"model": "../models/atlas.urdf", "floating": 1}
 ]
 
-rdl_bin = "../build/benchmark/benchmark_rdl"
-pin_bin = "../build/benchmark/benchmark_pinocchio"
+rdl_bin = "../cmake-build-release/benchmark/benchmark_rdl"
+pin_bin = "../cmake-build-release/benchmark/benchmark_pinocchio"
 results = []
 
 if not os.path.exists(rdl_bin) or not os.path.exists(pin_bin):
@@ -43,9 +43,9 @@ for case in test_cases:
         except Exception as e:
             print(f"[Error] Exception running {name}: {e}")
             return None
-
-    rdl_out = run_binary(rdl_bin, "RDL")
     pin_out = run_binary(pin_bin, "Pinocchio")
+    rdl_out = run_binary(rdl_bin, "RDL")
+    
     
     if not rdl_out or not pin_out:
         continue

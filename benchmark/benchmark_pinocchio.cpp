@@ -5,7 +5,7 @@
 #include <random>
 
 #include <pinocchio/parsers/urdf.hpp>
-#include <pinocchio/parsers/mjcf.hpp>
+//#include <pinocchio/parsers/mjcf.hpp>
 #include <pinocchio/algorithm/kinematics.hpp>
 #include <pinocchio/algorithm/crba.hpp>
 #include <pinocchio/algorithm/rnea.hpp>
@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     pinocchio::Model model;
     try {
         if (model_file.find(".xml") != std::string::npos || model_file.find(".mjcf") != std::string::npos) {
-            pinocchio::mjcf::buildModel(model_file, model);
+            //pinocchio::mjcf::buildModel(model_file, model);
         } else {
             pinocchio::urdf::buildModel(model_file, pinocchio::JointModelFreeFlyer(), model);
         }
@@ -44,19 +44,31 @@ int main(int argc, char** argv) {
     std::uniform_real_distribution<double> dist(-0.5, 0.5);
 
     Eigen::VectorXd q = pinocchio::neutral(model);
-    Eigen::VectorXd v = Eigen::VectorXd::Random(model.nv);
-    Eigen::VectorXd a = Eigen::VectorXd::Random(model.nv);
-    Eigen::VectorXd tau = Eigen::VectorXd::Random(model.nv);
+    if (model.nq >= 7) {
+        q(3) = 0.0;
+        q(4) = 0.0;
+        q(5) = 0.0;
+        q(6) = 1.0; // 四元数 w = 1.0
+        // 如果需要和 RDL 高度一致（例如 Z 轴给 0.92）：
+        q(2) = 0.92; // 根据具体的 FreeFlyer 翻译顺序调整索引
+    }
+
+    Eigen::VectorXd v = Eigen::VectorXd::Zero(model.nv);
+    Eigen::VectorXd a = Eigen::VectorXd::Zero(model.nv);
+    Eigen::VectorXd tau = Eigen::VectorXd::Zero(model.nv);
 
     const size_t NUM_ITERATIONS = 50000;
 
     // ----------------------------------------------------
     // 1. CRBA Benchmark
     // ----------------------------------------------------
+    pinocchio::forwardKinematics(model, data, q);
     auto start_crba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        q = pinocchio::randomConfiguration(model);
-        pinocchio::forwardKinematics(model, data, q);
+        // 仿照 RDL：跳过前 7 位（浮动基座），只对关节自由度赋予随机数
+        for (int k = 7; k < model.nq; ++k) {
+            q(k) = dist(rng);
+        }
         pinocchio::crba(model, data, q);
     }
     auto end_crba = std::chrono::high_resolution_clock::now();
@@ -68,9 +80,13 @@ int main(int argc, char** argv) {
     // ----------------------------------------------------
     auto start_rnea = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        q = pinocchio::randomConfiguration(model);
-        v.setRandom();
-        a.setRandom();
+        for (int k = 7; k < model.nq; ++k) {
+            q(k) = dist(rng);
+        }
+        for (int k = 0; k < model.nv; ++k) {
+            v(k) = dist(rng);
+            a(k) = dist(rng);
+        }
         pinocchio::rnea(model, data, q, v, a);
     }
     auto end_rnea = std::chrono::high_resolution_clock::now();
@@ -82,9 +98,13 @@ int main(int argc, char** argv) {
     // ----------------------------------------------------
     auto start_aba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        q = pinocchio::randomConfiguration(model);
-        v.setRandom();
-        tau.setRandom();
+        for (int k = 7; k < model.nq; ++k) {
+            q(k) = dist(rng);
+        }
+        for (int k = 0; k < model.nv; ++k) {
+            v(k) = dist(rng);
+            tau(k) = dist(rng);
+        }
         pinocchio::aba(model, data, q, v, tau);
     }
     auto end_aba = std::chrono::high_resolution_clock::now();

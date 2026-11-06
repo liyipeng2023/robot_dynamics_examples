@@ -9,7 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include "../utils/utils.h"
+#include "../utils/include/utils.h"
 
 using namespace std;
 using namespace RDL;

@@ -38,6 +38,9 @@ find_package(rdl REQUIRED)
 set(EIGEN3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rdparties/eigen3.4.1")
 message(STATUS "Eigen include: ${EIGEN3_INCLUDE_DIR}")
 
+# Add shared utility targets.
+add_subdirectory(utils)
+
 # add examples
 add_subdirectory(examples)
 

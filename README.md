@@ -46,8 +46,11 @@ your_project/
 │   ├── rdl-linux-x86_64/       # Linux x86_64 binaries and cmake configs
 │   ├── rdl-windows-arm64/      # Windows ARM64 binaries, headers, and DLLs
 |   └── rdl-windows-x86_64/     # Windows x86_64 binaries, headers, and DLLs
+├── utils/
+│   ├── CMakeLists.txt
+│   ├── include/                # Utility headers
+│   └── src/                    # Utility implementations
 ├── examples/
-│   ├── utils/
 │   ├── test_3DOF_S_dynamics.cpp
 │   ├── test_6DOF_S_dynamics.cpp
 │   ├── test_dual_floating_robots

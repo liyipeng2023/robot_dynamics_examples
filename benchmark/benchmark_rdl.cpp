@@ -6,7 +6,7 @@
 #include <Eigen/Dense>
 #include <graph.h>
 #include <robot_dynamics.h>
-#include "../utils/robot_loader.h"
+#include "../utils/include/robot_loader.h"
 
 int main(int argc, char** argv) {
     std::string model_file = "atlas.urdf";
@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
     // ----------------------------------------------------
     // 1. CRBA Benchmark
     // ----------------------------------------------------
+    M.setZero();
     auto start_crba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
         for (int k = 7; k < dof_q; ++k) q(k) = dist(rng);
@@ -62,15 +63,17 @@ int main(int argc, char** argv) {
     auto end_crba = std::chrono::high_resolution_clock::now();
     double crba_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count();
     std::cout << "--> RDL CRBA Average Time:   " << (crba_us / NUM_ITERATIONS) << " us/call\n";
-
+    //std::cout << "M: " << M << std::endl;
     // ----------------------------------------------------
     // 2. RNEA (Coriolis + Gravity) Benchmark
     // ----------------------------------------------------
+
     auto start_rnea = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
+
         for (int k = 7; k < dof_q; ++k) q(k) = dist(rng);
         for (int k = 0; k < dof_dyn; ++k) v(k) = dist(rng);
-        
+        for (int k = 0; k < dof_dyn; ++k) a(k) = dist(rng);
         rdl_dyn->forward_kinematics(q.data(), q.size());
         rdl_dyn->forward_iterations(v.data(),a.data(),a.size());
         rdl_dyn->backward_iterations(tau.data(),tau.size());
@@ -79,11 +82,12 @@ int main(int argc, char** argv) {
     }
     auto end_rnea = std::chrono::high_resolution_clock::now();
     double rnea_us = std::chrono::duration<double, std::micro>(end_rnea - start_rnea).count();
-    std::cout << "--> RDL RNEA/Coriolis Time:  " << (rnea_us / NUM_ITERATIONS) << " us/call\n";
-
+    std::cout << "--> RDL RNEA Average Time:  " << (rnea_us / NUM_ITERATIONS) << " us/call\n";
+    //std::cout << "tau: " << tau.transpose() << std::endl;
     // ----------------------------------------------------
     // 3. ABA Benchmark
     // ----------------------------------------------------
+
     auto start_aba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
         for (int k = 7; k < dof_q; ++k) q(k) = dist(rng);
@@ -98,6 +102,7 @@ int main(int argc, char** argv) {
     double aba_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count();
     std::cout << "--> RDL ABA Average Time:    " << (aba_us / NUM_ITERATIONS) << " us/call\n";
     std::cout << "========================================\n";
+    //std::cout << "qdd_aba: " << qdd_aba.transpose() << std::endl;
 
     return 0;
 }

@@ -9,8 +9,8 @@
 #define EIGEN_USE_THREADS
 #include <Eigen/Core>
 #include <cmath>
-#include "../utils/utils.h"
-#include "../utils/robot_loader.h"
+#include "../utils/include/utils.h"
+#include "../utils/include/robot_loader.h"
 #include <robot_dynamics.h>
 
 using namespace std;

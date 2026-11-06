@@ -1,26 +1,4 @@
-message(STATUS "[RDL] Configuring support for examples_model...")
-
-find_package(urdfdom REQUIRED)
-find_package(tinyxml2 REQUIRED)
-
-if(NOT TARGET rdl_model_loader)
-    add_library(rdl_model_loader STATIC
-            ../utils/robot_loader.cpp
-            ../utils/urdf_parser_impl.cpp
-            ../utils/mjcf_parser_impl.cpp
-    )
-    target_include_directories(rdl_model_loader PRIVATE ${EIGEN3_INCLUDE_DIR})
-    target_link_libraries(rdl_model_loader PUBLIC
-            rdl::rdl_core
-            urdfdom::urdfdom_model
-            urdfdom::urdfdom_world
-            tinyxml2::tinyxml2
-    )
-
-    target_include_directories(rdl_model_loader PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/utils>
-    )
-endif()
+#message(STATUS "[RDL] Configuring support for examples_model...")
 
 file(GLOB URDF_EXAMPLE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 

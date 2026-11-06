@@ -9,7 +9,7 @@
 #define EIGEN_USE_THREADS
 #include <Eigen/Core>
 #include <cmath>
-#include "../utils/utils.h"
+#include "../utils/include/utils.h"
 
 using namespace std;
 using namespace RDL;

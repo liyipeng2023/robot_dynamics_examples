@@ -1,0 +1,345 @@
+<?xml version="1.0"?>
+<robot name="fr3">
+  <material name="black">
+    <color rgba="0.2 0.2 0.2 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0.072272 0.039546 1"/>
+  </material>
+  <material name="gray">
+    <color rgba="0.863156 0.863156 0.863157 1"/>
+  </material>
+  <material name="button_green">
+    <color rgba="0.102241 0.571125 0.102242 1"/>
+  </material>
+  <material name="button_red">
+    <color rgba="0.520996 0.008023 0.013702 1"/>
+  </material>
+  <material name="button_blue">
+    <color rgba="0.024157 0.445201 0.737911 1"/>
+  </material>
+  <link name="base">
+  </link>
+  <link name="fr3_link0">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_0.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_1.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_2.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_3.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_4.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_5.obj"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link0_6.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision name="fr3_link0_collision">
+      <geometry>
+        <mesh filename="meshes/link0.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link1">
+    <inertial>
+      <origin xyz="0.0000004128 -0.0181251 -0.0386036" rpy="-0.12105901743903731 0.008928745026649745 0.021521753134633323"/>
+      <mass value="2.92747"/>
+      <inertia ixx="0.0239286" ixy="0" ixz="0" iyy="0.0227246" iyz="0" izz="0.00610634"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link1.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision name="fr3_link1_collision">
+      <geometry>
+        <mesh filename="meshes/link1.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link2">
+    <inertial>
+      <origin xyz="0.00318289 -0.0743222 0.00881461" rpy="2.142230254511828 -1.3519062642846593 -0.5209203682981132"/>
+      <mass value="2.93554"/>
+      <inertia ixx="0.0629567" ixy="0" ixz="0" iyy="0.0411924" iyz="0" izz="0.0246371"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link2.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision name="fr3_link2_collision">
+      <geometry>
+        <mesh filename="meshes/link2.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link3">
+    <inertial>
+      <origin xyz="0.0407016 -0.00482006 -0.0289731" rpy="-0.41698122363149004 0.4261264104517043 0.46028868159336267"/>
+      <mass value="2.2449"/>
+      <inertia ixx="0.0267409" ixy="0" ixz="0" iyy="0.0189869" iyz="0" izz="0.0171587"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link3_0.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link3_1.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision name="fr3_link3_collision">
+      <geometry>
+        <mesh filename="meshes/link3.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link4">
+    <inertial>
+      <origin xyz="-0.0459101 0.0630493 -0.00851879" rpy="1.9588852461423245 -0.6943925796027254 0.5000913749429721"/>
+      <mass value="2.6156"/>
+      <inertia ixx="0.05139" ixy="0" ixz="0" iyy="0.0372717" iyz="0" izz="0.0160047"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link4_0.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link4_1.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision name="fr3_link4_collision">
+      <geometry>
+        <mesh filename="meshes/link4.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link5">
+    <inertial>
+      <origin xyz="-0.00160396 0.0292536 -0.0972966" rpy="0.18170140810885352 0.23215867227501033 -0.736746924286951"/>
+      <mass value="2.32712"/>
+      <inertia ixx="0.0579335" ixy="0" ixz="0" iyy="0.0449144" iyz="0" izz="0.0130634"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link5_0.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link5_1.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link5_2.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision name="fr3_link5_collision">
+      <geometry>
+        <mesh filename="meshes/link5.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link6">
+    <inertial>
+      <origin xyz="0.0597131 -0.0410295 -0.0101693" rpy="1.7136864523859925 0.4011511898562939 1.1418354925474927"/>
+      <mass value="1.81704"/>
+      <inertia ixx="0.0175039" ixy="0" ixz="0" iyy="0.0161123" iyz="0" izz="0.00193529"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_0.obj"/>
+      </geometry>
+      <material name="button_green"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_1.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_2.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_3.obj"/>
+      </geometry>
+      <material name="gray"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_4.obj"/>
+      </geometry>
+      <material name="button_red"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_5.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_6.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link6_7.obj"/>
+      </geometry>
+      <material name="button_blue"/>
+    </visual>
+    <collision name="fr3_link6_collision">
+      <geometry>
+        <mesh filename="meshes/link6.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="fr3_link7">
+    <inertial>
+      <origin xyz="0.00452258 0.00862619 -0.0161633" rpy="-0.198384695331344 -0.5075815978453885 1.481540679509996"/>
+      <mass value="0.627143"/>
+      <inertia ixx="0.000223836" ixy="0" ixz="0" iyy="0.000223642" iyz="0" izz="0.000000564132"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link7_0.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link7_1.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link7_2.obj"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/link7_3.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision name="fr3_link7_collision">
+      <geometry>
+        <mesh filename="meshes/link7.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="fr3_link0_fixed" type="fixed">
+    <parent link="base"/>
+    <child link="fr3_link0"/>
+  </joint>
+  <joint name="fr3_joint1" type="revolute">
+    <origin xyz="0 0 0.333" rpy="0 0 0"/>
+    <parent link="fr3_link0"/>
+    <child link="fr3_link1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.7437" upper="2.7437" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="1.137"/>
+  </joint>
+  <joint name="fr3_joint2" type="revolute">
+    <origin xyz="0 0 0" rpy="-1.5707963267948968 0 0"/>
+    <parent link="fr3_link1"/>
+    <child link="fr3_link2"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.7837" upper="1.7837" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="1.137"/>
+  </joint>
+  <joint name="fr3_joint3" type="revolute">
+    <origin xyz="0 -0.316 0" rpy="1.5707963267948968 0 0"/>
+    <parent link="fr3_link2"/>
+    <child link="fr3_link3"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.9007" upper="2.9007" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="1.137"/>
+  </joint>
+  <joint name="fr3_joint4" type="revolute">
+    <origin xyz="0.0825 0 0" rpy="1.5707963267948968 0 0"/>
+    <parent link="fr3_link3"/>
+    <child link="fr3_link4"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.0421" upper="-0.1518" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="1.137"/>
+  </joint>
+  <joint name="fr3_joint5" type="revolute">
+    <origin xyz="-0.0825 0.384 0" rpy="-1.5707963267948968 0 0"/>
+    <parent link="fr3_link4"/>
+    <child link="fr3_link5"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.8065" upper="2.8065" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="0.763"/>
+  </joint>
+  <joint name="fr3_joint6" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5707963267948968 0 0"/>
+    <parent link="fr3_link5"/>
+    <child link="fr3_link6"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.5445" upper="4.5169" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="0.44"/>
+  </joint>
+  <joint name="fr3_joint7" type="revolute">
+    <origin xyz="0.088 0 0" rpy="1.5707963267948968 0 0"/>
+    <parent link="fr3_link6"/>
+    <child link="fr3_link7"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.0159" upper="3.0159" effort="0" velocity="0"/>
+    <dynamics damping="0.21" friction="0.248"/>
+  </joint>
+</robot>

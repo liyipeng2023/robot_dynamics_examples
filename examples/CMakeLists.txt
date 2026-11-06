@@ -4,8 +4,8 @@ set(RDL_EXAMPLE_EXECUTABLES "")
 foreach(src_file ${EXAMPLE_SOURCES})
     get_filename_component(example_name ${src_file} NAME_WE)
     add_executable(${example_name} ${src_file})
+    target_link_libraries(${example_name} PRIVATE rdl_model_loader)
     target_include_directories(${example_name} PRIVATE ${EIGEN3_INCLUDE_DIR})
-
     # 读取 cpp 文件内容，静态分析其头文件包含情况
     file(READ ${src_file} file_content)
 

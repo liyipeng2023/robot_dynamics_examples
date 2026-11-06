@@ -10,7 +10,7 @@
 #include <Eigen/Core>
 #include <cmath>
 #include <math_utils.h>
-#include "../utils/utils.h"
+#include "../utils/include/utils.h"
 
 using namespace std;
 using namespace RDL;

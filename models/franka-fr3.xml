@@ -1,0 +1,131 @@
+<mujoco model="fr3">
+  <compiler angle="radian" coordinate="local" meshdir="meshes"/>
+  <option integrator="implicitfast"/>
+
+  <asset>
+    <mesh name="link0_0" file="link0_0.obj"/>
+    <mesh name="link0_1" file="link0_1.obj"/>
+    <mesh name="link0_2" file="link0_2.obj"/>
+    <mesh name="link0_3" file="link0_3.obj"/>
+    <mesh name="link0_4" file="link0_4.obj"/>
+    <mesh name="link0_5" file="link0_5.obj"/>
+    <mesh name="link0_6" file="link0_6.obj"/>
+    <mesh name="link0" file="link0.stl"/>
+    <mesh name="link1" file="link1.obj"/>
+    <mesh name="link1_1" file="link1.stl"/>
+    <mesh name="link2" file="link2.obj"/>
+    <mesh name="link2_1" file="link2.stl"/>
+    <mesh name="link3_0" file="link3_0.obj"/>
+    <mesh name="link3_1" file="link3_1.obj"/>
+    <mesh name="link3" file="link3.stl"/>
+    <mesh name="link4_0" file="link4_0.obj"/>
+    <mesh name="link4_1" file="link4_1.obj"/>
+    <mesh name="link4" file="link4.stl"/>
+    <mesh name="link5_0" file="link5_0.obj"/>
+    <mesh name="link5_1" file="link5_1.obj"/>
+    <mesh name="link5_2" file="link5_2.obj"/>
+    <mesh name="link5" file="link5.stl"/>
+    <mesh name="link6_0" file="link6_0.obj"/>
+    <mesh name="link6_1" file="link6_1.obj"/>
+    <mesh name="link6_2" file="link6_2.obj"/>
+    <mesh name="link6_3" file="link6_3.obj"/>
+    <mesh name="link6_4" file="link6_4.obj"/>
+    <mesh name="link6_5" file="link6_5.obj"/>
+    <mesh name="link6_6" file="link6_6.obj"/>
+    <mesh name="link6_7" file="link6_7.obj"/>
+    <mesh name="link6" file="link6.stl"/>
+    <mesh name="link7_0" file="link7_0.obj"/>
+    <mesh name="link7_1" file="link7_1.obj"/>
+    <mesh name="link7_2" file="link7_2.obj"/>
+    <mesh name="link7_3" file="link7_3.obj"/>
+    <mesh name="link7" file="link7.stl"/>
+    <material name="black" rgba="0.2 0.2 0.2 1"/>
+    <material name="white" rgba="1 1 1 1"/>
+    <material name="red" rgba="1 0.072272 0.039546 1"/>
+    <material name="gray" rgba="0.863156 0.863156 0.863157 1"/>
+    <material name="button_green" rgba="0.102241 0.571125 0.102242 1"/>
+    <material name="button_red" rgba="0.520996 0.008023 0.013702 1"/>
+    <material name="button_blue" rgba="0.024157 0.445201 0.737911 1"/>
+  </asset>
+
+  <worldbody>
+    <body name="base">
+      <body name="fr3_link0">
+        <geom type="mesh" mesh="link0_0" material="black" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0_1" material="white" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0_2" material="white" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0_3" material="white" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0_4" material="white" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0_5" material="red" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0_6" material="black" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="link0" group="3"/>
+        <body name="fr3_link1" pos="0 0 0.333" quat="1 0 0 0">
+          <joint name="fr3_joint1" type="hinge" axis="0 0 1" range="-2.7437 2.7437" limited="true" damping="0.21" frictionloss="1.137"/>
+          <inertial pos="4.128e-07 -0.0181251 -0.0386036" mass="2.92747" fullinertia="0.0239273 0.0224821 0.0063501 1.33173e-05 -0.000114051 -0.00199503"/>
+          <geom type="mesh" mesh="link1" material="white" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="link1_1" group="3"/>
+          <body name="fr3_link2" pos="0 0 0" quat="0.707107 -0.707107 0 0">
+            <joint name="fr3_joint2" type="hinge" axis="0 0 1" range="-1.7837 1.7837" limited="true" damping="0.21" frictionloss="1.137"/>
+            <inertial pos="0.00318289 -0.0743222 0.00881461" mass="2.93554" fullinertia="0.0419389 0.0251452 0.0617021 0.000202601 0.00407778 -0.00422523"/>
+            <geom type="mesh" mesh="link2" material="white" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="link2_1" group="3"/>
+            <body name="fr3_link3" pos="0 -0.316 0" quat="0.707107 0.707107 0 0">
+              <joint name="fr3_joint3" type="hinge" axis="0 0 1" range="-2.9007 2.9007" limited="true" damping="0.21" frictionloss="1.137"/>
+              <inertial pos="0.0407016 -0.00482006 -0.0289731" mass="2.2449" fullinertia="0.0241014 0.0197405 0.0190445 0.00240468 -0.00285627 -0.00210421"/>
+              <geom type="mesh" mesh="link3_0" material="white" contype="0" conaffinity="0" group="1"/>
+              <geom type="mesh" mesh="link3_1" material="black" contype="0" conaffinity="0" group="1"/>
+              <geom type="mesh" mesh="link3" group="3"/>
+              <body name="fr3_link4" pos="0.0825 0 0" quat="0.707107 0.707107 0 0">
+                <joint name="fr3_joint4" type="hinge" axis="0 0 1" range="-3.0421 -0.1518" limited="true" damping="0.21" frictionloss="1.137"/>
+                <inertial pos="-0.0459101 0.0630493 -0.00851879" mass="2.6156" fullinertia="0.03453 0.0288817 0.0412547 0.0132255 0.0101514 -0.000976307"/>
+                <geom type="mesh" mesh="link4_0" material="white" contype="0" conaffinity="0" group="1"/>
+                <geom type="mesh" mesh="link4_1" material="black" contype="0" conaffinity="0" group="1"/>
+                <geom type="mesh" mesh="link4" group="3"/>
+                <body name="fr3_link5" pos="-0.0825 0.384 0" quat="0.707107 -0.707107 0 0">
+                  <joint name="fr3_joint5" type="hinge" axis="0 0 1" range="-2.8065 2.8065" limited="true" damping="0.21" frictionloss="0.763"/>
+                  <inertial pos="-0.00160396 0.0292536 -0.0972966" mass="2.32712" fullinertia="0.0516103 0.0478773 0.0164237 -0.00571518 -0.00356732 0.010674"/>
+                  <geom type="mesh" mesh="link5_0" material="white" contype="0" conaffinity="0" group="1"/>
+                  <geom type="mesh" mesh="link5_1" material="white" contype="0" conaffinity="0" group="1"/>
+                  <geom type="mesh" mesh="link5_2" material="black" contype="0" conaffinity="0" group="1"/>
+                  <geom type="mesh" mesh="link5" group="3"/>
+                  <body name="fr3_link6" pos="0 0 0" quat="0.707107 0.707107 0 0">
+                    <joint name="fr3_joint6" type="hinge" axis="0 0 1" range="0.5445 4.5169" limited="true" damping="0.21" frictionloss="0.44"/>
+                    <inertial pos="0.0597131 -0.0410295 -0.0101693" mass="1.81704" fullinertia="0.00541232 0.0140583 0.0160808 0.00619345 0.00142192 -0.00131407"/>
+                    <geom type="mesh" mesh="link6_0" material="button_green" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_1" material="white" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_2" material="white" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_3" material="gray" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_4" material="button_red" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_5" material="white" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_6" material="black" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6_7" material="button_blue" contype="0" conaffinity="0" group="1"/>
+                    <geom type="mesh" mesh="link6" group="3"/>
+                    <body name="fr3_link7" pos="0.088 0 0" quat="0.707107 0.707107 0 0">
+                      <joint name="fr3_joint7" type="hinge" axis="0 0 1" range="-3.0159 3.0159" limited="true" damping="0.21" frictionloss="0.248"/>
+                      <inertial pos="0.00452258 0.00862619 -0.0161633" mass="0.627143" fullinertia="0.000210924 0.000177186 5.9932e-05 -2.4333e-05 4.56448e-05 8.74408e-05"/>
+                      <geom type="mesh" mesh="link7_0" material="black" contype="0" conaffinity="0" group="1"/>
+                      <geom type="mesh" mesh="link7_1" material="white" contype="0" conaffinity="0" group="1"/>
+                      <geom type="mesh" mesh="link7_2" material="white" contype="0" conaffinity="0" group="1"/>
+                      <geom type="mesh" mesh="link7_3" material="black" contype="0" conaffinity="0" group="1"/>
+                      <geom type="mesh" mesh="link7" group="3"/>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="fr3_joint1_act" joint="fr3_joint1" kp="50" dampratio="1"/>
+    <position name="fr3_joint2_act" joint="fr3_joint2" kp="50" dampratio="1"/>
+    <position name="fr3_joint3_act" joint="fr3_joint3" kp="50" dampratio="1"/>
+    <position name="fr3_joint4_act" joint="fr3_joint4" kp="50" dampratio="1"/>
+    <position name="fr3_joint5_act" joint="fr3_joint5" kp="50" dampratio="1"/>
+    <position name="fr3_joint6_act" joint="fr3_joint6" kp="50" dampratio="1"/>
+    <position name="fr3_joint7_act" joint="fr3_joint7" kp="50" dampratio="1"/>
+  </actuator>
+</mujoco>

@@ -5,7 +5,6 @@
 #include <random>
 
 #include <pinocchio/parsers/urdf.hpp>
-//#include <pinocchio/parsers/mjcf.hpp>
 #include <pinocchio/algorithm/kinematics.hpp>
 #include <pinocchio/algorithm/crba.hpp>
 #include <pinocchio/algorithm/rnea.hpp>
@@ -14,19 +13,25 @@
 
 int main(int argc, char** argv) {
     std::string model_file = "atlas.urdf";
+    bool is_floating_base = true;
+
     if (argc > 1) {
         model_file = argv[1];
     }
+    if (argc > 2) {
+        is_floating_base = (std::stoi(argv[2]) != 0);
+    }
 
     std::cout << "========================================\n";
-    std::cout << "[Pinocchio Benchmark] Loading Model: " << model_file << "\n";
+    std::cout << "[Pinocchio Benchmark] Loading Model: " << model_file 
+              << " (Floating Base: " << (is_floating_base ? "Yes" : "No") << ")\n";
 
     pinocchio::Model model;
     try {
-        if (model_file.find(".xml") != std::string::npos || model_file.find(".mjcf") != std::string::npos) {
-            //pinocchio::mjcf::buildModel(model_file, model);
-        } else {
+        if (is_floating_base) {
             pinocchio::urdf::buildModel(model_file, pinocchio::JointModelFreeFlyer(), model);
+        } else {
+            pinocchio::urdf::buildModel(model_file, model);
         }
     } catch (const std::exception& e) {
         std::cerr << "Error loading model: " << e.what() << std::endl;
@@ -44,13 +49,12 @@ int main(int argc, char** argv) {
     std::uniform_real_distribution<double> dist(-0.5, 0.5);
 
     Eigen::VectorXd q = pinocchio::neutral(model);
-    if (model.nq >= 7) {
+    if (is_floating_base && model.nq >= 7) {
         q(3) = 0.0;
         q(4) = 0.0;
         q(5) = 0.0;
         q(6) = 1.0; // 四元数 w = 1.0
-        // 如果需要和 RDL 高度一致（例如 Z 轴给 0.92）：
-        q(2) = 0.92; // 根据具体的 FreeFlyer 翻译顺序调整索引
+        q(2) = 0.92; // 默认高度
     }
 
     Eigen::VectorXd v = Eigen::VectorXd::Zero(model.nv);
@@ -58,6 +62,7 @@ int main(int argc, char** argv) {
     Eigen::VectorXd tau = Eigen::VectorXd::Zero(model.nv);
 
     const size_t NUM_ITERATIONS = 50000;
+    int q_start_idx = is_floating_base ? 7 : 0;
 
     // ----------------------------------------------------
     // 1. CRBA Benchmark
@@ -65,8 +70,7 @@ int main(int argc, char** argv) {
     pinocchio::forwardKinematics(model, data, q);
     auto start_crba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        // 仿照 RDL：跳过前 7 位（浮动基座），只对关节自由度赋予随机数
-        for (int k = 7; k < model.nq; ++k) {
+        for (int k = q_start_idx; k < model.nq; ++k) {
             q(k) = dist(rng);
         }
         pinocchio::crba(model, data, q);
@@ -80,7 +84,7 @@ int main(int argc, char** argv) {
     // ----------------------------------------------------
     auto start_rnea = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        for (int k = 7; k < model.nq; ++k) {
+        for (int k = q_start_idx; k < model.nq; ++k) {
             q(k) = dist(rng);
         }
         for (int k = 0; k < model.nv; ++k) {
@@ -98,7 +102,7 @@ int main(int argc, char** argv) {
     // ----------------------------------------------------
     auto start_aba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        for (int k = 7; k < model.nq; ++k) {
+        for (int k = q_start_idx; k < model.nq; ++k) {
             q(k) = dist(rng);
         }
         for (int k = 0; k < model.nv; ++k) {

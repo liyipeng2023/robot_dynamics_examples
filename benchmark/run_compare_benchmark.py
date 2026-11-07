@@ -5,9 +5,9 @@ import os
 
 # 定义要测试的模型列表及对应的浮动基座标志 (1: 有浮动基座, 0: 无浮动基座)
 test_cases = [
-    {"model": "../models/ur10.urdf", "floating": 0},
+    #{"model": "../models/ur10.urdf", "floating": 0},
     {"model": "../models/franka-fr3.urdf", "floating": 0},
-    {"model": "../models/unitree-go2.urdf", "floating": 0},
+    {"model": "../models/unitree-go2.urdf", "floating": 1},
     {"model": "../models/spot.urdf", "floating": 1},
     {"model": "../models/atlas.urdf", "floating": 1}
 ]

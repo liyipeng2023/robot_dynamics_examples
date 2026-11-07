@@ -1,5 +1,5 @@
 Model,DOF,ModelLabel,FloatingBase,CRBA_Max_Error,RNEA_Max_Error,ABA_Max_Error
-franka-fr3,0,franka-fr3(0dof),0,3.10862e-15,1.42109e-14,2.72848e-12
-unitree-go2,0,unitree-go2(0dof),0,5.55112e-17,6.66134e-16,1.7053e-13
+franka-fr3,0,franka-fr3(0dof),0,2.66454e-15,1.42109e-14,2.72848e-12
+unitree-go2,0,unitree-go2(0dof),1,2.13163e-14,2.84217e-14,2.27374e-13
 spot,0,spot(0dof),1,5.68434e-14,1.13687e-13,7.10543e-14
 atlas,0,atlas(0dof),1,2.55795e-13,1.13687e-12,7.67386e-13

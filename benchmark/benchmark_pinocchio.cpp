@@ -50,70 +50,72 @@ int main(int argc, char** argv) {
 
     Eigen::VectorXd q = pinocchio::neutral(model);
     if (is_floating_base && model.nq >= 7) {
-        q(3) = 0.0;
-        q(4) = 0.0;
-        q(5) = 0.0;
-        q(6) = 1.0; // 四元数 w = 1.0
-        q(2) = 0.92; // 默认高度
+        q(3) = 0.0; q(4) = 0.0; q(5) = 0.0; q(6) = 1.0;
+        q(2) = 0.92;
     }
 
     Eigen::VectorXd v = Eigen::VectorXd::Zero(model.nv);
     Eigen::VectorXd a = Eigen::VectorXd::Zero(model.nv);
     Eigen::VectorXd tau = Eigen::VectorXd::Zero(model.nv);
 
-    const size_t NUM_ITERATIONS = 50000;
+    const size_t NUM_ITERATIONS = 100000;
     int q_start_idx = is_floating_base ? 7 : 0;
+
+    // ----------------------------------------------------
+    // 0. Forward Kinematics (FK) Benchmark
+    // ----------------------------------------------------
+    auto start_fk = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
+        for (int k = q_start_idx; k < model.nq; ++k) q(k) = dist(rng);
+        pinocchio::forwardKinematics(model, data, q);
+    }
+    auto end_fk = std::chrono::high_resolution_clock::now();
+    double fk_us = std::chrono::duration<double, std::micro>(end_fk - start_fk).count() / NUM_ITERATIONS;
+    std::cout << "--> Pinocchio FK Average Time:     " << fk_us << " us/call\n";
 
     // ----------------------------------------------------
     // 1. CRBA Benchmark
     // ----------------------------------------------------
-    pinocchio::forwardKinematics(model, data, q);
     auto start_crba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        for (int k = q_start_idx; k < model.nq; ++k) {
-            q(k) = dist(rng);
-        }
+        for (int k = q_start_idx; k < model.nq; ++k) q(k) = dist(rng);
         pinocchio::crba(model, data, q);
     }
     auto end_crba = std::chrono::high_resolution_clock::now();
-    double crba_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count();
-    std::cout << "--> Pinocchio CRBA Average Time: " << (crba_us / NUM_ITERATIONS) << " us/call\n";
+    double crba_total_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count() / NUM_ITERATIONS;
+    double crba_pure_us = std::max(0.0, crba_total_us - fk_us);
+    std::cout << "--> Pinocchio CRBA Total Time:   " << crba_total_us << " us/call\n";
+    std::cout << "--> Pinocchio CRBA Pure Time:    " << crba_pure_us << " us/call\n";
 
     // ----------------------------------------------------
     // 2. RNEA Benchmark
     // ----------------------------------------------------
     auto start_rnea = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        for (int k = q_start_idx; k < model.nq; ++k) {
-            q(k) = dist(rng);
-        }
-        for (int k = 0; k < model.nv; ++k) {
-            v(k) = dist(rng);
-            a(k) = dist(rng);
-        }
+        for (int k = q_start_idx; k < model.nq; ++k) q(k) = dist(rng);
+        for (int k = 0; k < model.nv; ++k) { v(k) = dist(rng); a(k) = dist(rng); }
         pinocchio::rnea(model, data, q, v, a);
     }
     auto end_rnea = std::chrono::high_resolution_clock::now();
-    double rnea_us = std::chrono::duration<double, std::micro>(end_rnea - start_rnea).count();
-    std::cout << "--> Pinocchio RNEA Average Time: " << (rnea_us / NUM_ITERATIONS) << " us/call\n";
+    double rnea_total_us = std::chrono::duration<double, std::micro>(end_rnea - start_rnea).count() / NUM_ITERATIONS;
+    double rnea_pure_us = std::max(0.0, rnea_total_us - fk_us);
+    std::cout << "--> Pinocchio RNEA Total Time:   " << rnea_total_us << " us/call\n";
+    std::cout << "--> Pinocchio RNEA Pure Time:    " << rnea_pure_us << " us/call\n";
 
     // ----------------------------------------------------
     // 3. ABA Benchmark
     // ----------------------------------------------------
     auto start_aba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
-        for (int k = q_start_idx; k < model.nq; ++k) {
-            q(k) = dist(rng);
-        }
-        for (int k = 0; k < model.nv; ++k) {
-            v(k) = dist(rng);
-            tau(k) = dist(rng);
-        }
+        for (int k = q_start_idx; k < model.nq; ++k) q(k) = dist(rng);
+        for (int k = 0; k < model.nv; ++k) { v(k) = dist(rng); tau(k) = dist(rng); }
         pinocchio::aba(model, data, q, v, tau);
     }
     auto end_aba = std::chrono::high_resolution_clock::now();
-    double aba_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count();
-    std::cout << "--> Pinocchio ABA Average Time:  " << (aba_us / NUM_ITERATIONS) << " us/call\n";
+    double aba_total_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count() / NUM_ITERATIONS;
+    double aba_pure_us = std::max(0.0, aba_total_us - fk_us);
+    std::cout << "--> Pinocchio ABA Total Time:    " << aba_total_us << " us/call\n";
+    std::cout << "--> Pinocchio ABA Pure Time:     " << aba_pure_us << " us/call\n";
     std::cout << "========================================\n";
 
     return 0;

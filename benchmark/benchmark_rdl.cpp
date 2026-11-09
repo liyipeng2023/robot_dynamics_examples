@@ -12,12 +12,8 @@ int main(int argc, char** argv) {
     std::string model_file = "atlas.urdf";
     bool is_floating_base = true;
 
-    if (argc > 1) {
-        model_file = argv[1];
-    }
-    if (argc > 2) {
-        is_floating_base = (std::stoi(argv[2]) != 0);
-    }
+    if (argc > 1) model_file = argv[1];
+    if (argc > 2) is_floating_base = (std::stoi(argv[2]) != 0);
 
     std::cout << "========================================\n";
     std::cout << "[RDL Benchmark] Loading Model: " << model_file 
@@ -47,15 +43,27 @@ int main(int argc, char** argv) {
     Eigen::VectorXd qdd_aba(dof_dyn);
 
     if (is_floating_base && dof_q >= 7) {
-        q(3) = 1.0; // 浮动基座四元数 w
-        q(6) = 0.92; // 默认高度
+        q(3) = 1.0;
+        q(6) = 0.92;
     }
 
     std::mt19937 rng(1337);
     std::uniform_real_distribution<double> dist(-0.5, 0.5);
 
-    const size_t NUM_ITERATIONS = 50000;
+    const size_t NUM_ITERATIONS = 100000;
     int q_start_idx = is_floating_base ? 7 : 0;
+
+    // ----------------------------------------------------
+    // 0. Forward Kinematics (FK) Benchmark
+    // ----------------------------------------------------
+    auto start_fk = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
+        for (int k = q_start_idx; k < dof_q; ++k) q(k) = dist(rng);
+        rdl_dyn->forward_kinematics(q.data(), q.size());
+    }
+    auto end_fk = std::chrono::high_resolution_clock::now();
+    double fk_us = std::chrono::duration<double, std::micro>(end_fk - start_fk).count() / NUM_ITERATIONS;
+    std::cout << "--> RDL FK Average Time:        " << fk_us << " us/call\n";
 
     // ----------------------------------------------------
     // 1. CRBA Benchmark
@@ -68,8 +76,10 @@ int main(int argc, char** argv) {
         rdl_dyn->forward_dynamics_crba(M.data(), dof_dyn);
     }
     auto end_crba = std::chrono::high_resolution_clock::now();
-    double crba_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count();
-    std::cout << "--> RDL CRBA Average Time:   " << (crba_us / NUM_ITERATIONS) << " us/call\n";
+    double crba_total_us = std::chrono::duration<double, std::micro>(end_crba - start_crba).count() / NUM_ITERATIONS;
+    double crba_pure_us = std::max(0.0, crba_total_us - fk_us);
+    std::cout << "--> RDL CRBA Total Time:      " << crba_total_us << " us/call\n";
+    std::cout << "--> RDL CRBA Pure Time:       " << crba_pure_us << " us/call\n";
 
     // ----------------------------------------------------
     // 2. RNEA Benchmark
@@ -77,15 +87,16 @@ int main(int argc, char** argv) {
     auto start_rnea = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
         for (int k = q_start_idx; k < dof_q; ++k) q(k) = dist(rng);
-        for (int k = 0; k < dof_dyn; ++k) v(k) = dist(rng);
-        for (int k = 0; k < dof_dyn; ++k) a(k) = dist(rng);
+        for (int k = 0; k < dof_dyn; ++k) { v(k) = dist(rng); a(k) = dist(rng); }
         rdl_dyn->forward_kinematics(q.data(), q.size());
         rdl_dyn->forward_iterations(v.data(), a.data(), a.size());
         rdl_dyn->backward_iterations(tau.data(), tau.size());
     }
     auto end_rnea = std::chrono::high_resolution_clock::now();
-    double rnea_us = std::chrono::duration<double, std::micro>(end_rnea - start_rnea).count();
-    std::cout << "--> RDL RNEA Average Time:  " << (rnea_us / NUM_ITERATIONS) << " us/call\n";
+    double rnea_total_us = std::chrono::duration<double, std::micro>(end_rnea - start_rnea).count() / NUM_ITERATIONS;
+    double rnea_pure_us = std::max(0.0, rnea_total_us - fk_us);
+    std::cout << "--> RDL RNEA Total Time:      " << rnea_total_us << " us/call\n";
+    std::cout << "--> RDL RNEA Pure Time:       " << rnea_pure_us << " us/call\n";
 
     // ----------------------------------------------------
     // 3. ABA Benchmark
@@ -93,16 +104,15 @@ int main(int argc, char** argv) {
     auto start_aba = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < NUM_ITERATIONS; ++i) {
         for (int k = q_start_idx; k < dof_q; ++k) q(k) = dist(rng);
-        for (int k = 0; k < dof_dyn; ++k) {
-            v(k) = dist(rng);
-            tau(k) = dist(rng);
-        }
+        for (int k = 0; k < dof_dyn; ++k) { v(k) = dist(rng); tau(k) = dist(rng); }
         rdl_dyn->forward_kinematics(q.data(), q.size());
         rdl_dyn->forward_dynamics_aba(v.data(), tau.data(), qdd_aba.data(), dof_dyn, false);
     }
     auto end_aba = std::chrono::high_resolution_clock::now();
-    double aba_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count();
-    std::cout << "--> RDL ABA Average Time:    " << (aba_us / NUM_ITERATIONS) << " us/call\n";
+    double aba_total_us = std::chrono::duration<double, std::micro>(end_aba - start_aba).count() / NUM_ITERATIONS;
+    double aba_pure_us = std::max(0.0, aba_total_us - fk_us);
+    std::cout << "--> RDL ABA Total Time:       " << aba_total_us << " us/call\n";
+    std::cout << "--> RDL ABA Pure Time:        " << aba_pure_us << " us/call\n";
     std::cout << "========================================\n";
 
     return 0;

@@ -53,4 +53,10 @@ elseif(UNIX)
     else()
         set(CMAKE_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../rdl/lib")
     endif()
+
+    foreach(test_target ${RDL_BENCHMARK_EXECUTABLES})
+        set_target_properties(${test_target} PROPERTIES
+                INSTALL_RPATH "${CMAKE_INSTALL_RPATH}"
+        )
+    endforeach()
 endif()

@@ -150,6 +150,10 @@ int main(int argc, char** argv) {
         std::cerr << "RDL model load failed for: " << model_file << "\n";
         return -1;
     }
+    std::cout << "[Comparison] Model Name: " << pin_model.name << "\n";
+    std::cout << "[Comparison] Total Joints (nv): " << pin_model.nv << "\n";
+    std::cout << "[Comparison] Total Position DOFs (nq): " << pin_model.nq << "\n";
+    std::cout << "========================================\n";
 
     int nv = pin_model.nv;
     int nq = pin_model.nq;

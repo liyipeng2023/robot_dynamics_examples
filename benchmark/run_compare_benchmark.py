@@ -9,7 +9,8 @@ test_cases = [
     {"model": "../models/franka-fr3.urdf", "floating": 0},
     {"model": "../models/unitree-go2.urdf", "floating": 1},
     {"model": "../models/spot.urdf", "floating": 1},
-    {"model": "../models/atlas.urdf", "floating": 1}
+    {"model": "../models/atlas.urdf", "floating": 1},
+    {"model": "../models/unitree-h1-2.urdf", "floating": 1}
 ]
 
 binary_path = "../build/benchmark/compare_rdl_pinocchio"

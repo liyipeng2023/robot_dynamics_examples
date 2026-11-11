@@ -188,7 +188,7 @@ int main(int argc, char** argv) {
 
         // Normalize quaternion if floating base is present
         if (has_floating_base && nq >= 7) {
-            if (q_pin.segment<4>(3).norm() > 1e-6) {
+            if (q_pin.segment<4>(3).norm() > 1e-8) {
                 q_pin.segment<4>(3).normalize();
             } else {
                 q_pin.segment<4>(3) << 0, 0, 0, 1;
@@ -236,12 +236,13 @@ int main(int argc, char** argv) {
         }
 
         // 3. ABA Comparison (Forward Dynamics qdd)
-        pinocchio::aba(pin_model, pin_data, q_pin, v_pin, tau_pin);
+        pinocchio::aba(pin_model, pin_data, q_pin, v_pin, pin_tau_rnea);
         Eigen::VectorXd pin_acc_aba = pin_data.ddq;
-
+        std::cout << "pin: " << (pin_acc_aba-a_pin).norm() << std::endl;
         Eigen::VectorXd rdl_acc_aba_rdl(dof_dyn);
         rdl_acc_aba_rdl.setZero();
-        rdl_dyn->forward_dynamics_aba(v_rdl.data(), tau_rdl.data(), rdl_acc_aba_rdl.data(), dof_dyn, false);
+        rdl_dyn->forward_dynamics_aba(v_rdl.data(), rdl_tau_rnea_rdl.data(), rdl_acc_aba_rdl.data(), dof_dyn, false);
+        std::cout <<"rdl: " << (rdl_acc_aba_rdl-a_rdl).norm() << std::endl;
 
         Eigen::VectorXd rdl_acc_aba_converted = convertTangent(rdl_acc_aba_rdl, has_floating_base);
 

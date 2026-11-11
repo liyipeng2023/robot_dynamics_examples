@@ -1,6 +1,7 @@
 Model,DOF,ModelLabel,FloatingBase,CRBA_Max_Error,RNEA_Max_Error,ABA_Max_Error
-ur10,6,ur10(6dof),0,7.10543e-15,4.9738e-14,1.13687e-13
-franka-fr3,7,franka-fr3(7dof),0,3.55271e-15,1.06581e-14,9.09495e-13
-unitree-go2,18,unitree-go2(18dof),1,2.13163e-14,5.68434e-14,3.41061e-13
-spot,18,spot(18dof),1,5.68434e-14,1.7053e-13,9.9476e-14
-atlas,36,atlas(36dof),1,2.55795e-13,9.09495e-13,1.15818e-12
+ur10,6,ur10(6dof),0,7.10543e-15,4.9738e-14,3.88023e-14
+franka-fr3,7,franka-fr3(7dof),0,3.55271e-15,7.10543e-15,2.5302e-13
+unitree-go2,18,unitree-go2(18dof),1,1.77636e-14,5.68434e-14,1.67144e-13
+spot,18,spot(18dof),1,5.68434e-14,1.13687e-13,7.72299e-14
+atlas,36,atlas(36dof),1,2.55795e-13,9.09495e-13,1.11006e-12
+unitree-h1-2,57,unitree-h1-2(57dof),1,7.10543e-14,2.27374e-13,1.24845e-12

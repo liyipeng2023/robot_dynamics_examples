@@ -12,7 +12,7 @@ target_link_libraries(compare_rdl_pinocchio PRIVATE
 )
 
 # 2. Pinocchio performance test
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -flto -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
 add_executable(benchmark_pinocchio benchmark_pinocchio.cpp)
 target_include_directories(benchmark_pinocchio PRIVATE ${pinocchio_INCLUDE_DIRS} )
 target_link_libraries(benchmark_pinocchio PRIVATE

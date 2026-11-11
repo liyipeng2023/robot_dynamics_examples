@@ -65,7 +65,7 @@ std::shared_ptr<RobotDynamics> load_RobotDynamics(
             joint_map[nodes[i].joint_name] = i;
         }
     }
-
+    internal_graph->print();
     // 5. 统一构建动力学模型
     std::shared_ptr<RobotDynamics> robot_dyn(createRobotDynamics(internal_graph.get()), deleteRobotDynamics);
 

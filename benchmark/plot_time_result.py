@@ -38,9 +38,9 @@ print("[Completed] Saved: time_benchmark_comparison_kin.png")
 
 full_algos = [
     #("Forward Kinematics (FK)", "RDL_FK", "Pin_FK"),
-    ("CRBA (Total)", "RDL_CRBA_Total", "Pin_CRBA_Total"),
-    ("RNEA (Total)", "RDL_RNEA_Total", "Pin_RNEA_Total"),
-    ("ABA (Total)", "RDL_ABA_Total", "Pin_ABA_Total")
+    ("CRBA_Total", "RDL_CRBA_Total", "Pin_CRBA_Total"),
+    ("RNEA_Total", "RDL_RNEA_Total", "Pin_RNEA_Total"),
+    ("ABA_Total", "RDL_ABA_Total", "Pin_ABA_Total")
 ]
 
 for i, (title, rdl_col, pin_col) in enumerate(full_algos):
@@ -69,9 +69,9 @@ for i, (title, rdl_col, pin_col) in enumerate(full_algos):
 #fig2, axes2 = plt.subplots(1, 3, figsize=(18, 5), sharey=False)
 
 pure_algos = [
-    ("Pure CRBA (Excl. FK)", "RDL_CRBA_Pure", "Pin_CRBA_Pure"),
-    ("Pure RNEA (Excl. FK)", "RDL_RNEA_Pure", "Pin_RNEA_Pure"),
-    ("Pure ABA (Excl. FK)", "RDL_ABA_Pure", "Pin_ABA_Pure")
+    ("Pure_CRBA_Excl_FK", "RDL_CRBA_Pure", "Pin_CRBA_Pure"),
+    ("Pure_RNEA_Excl_FK", "RDL_RNEA_Pure", "Pin_RNEA_Pure"),
+    ("Pure_ABA_Excl_FK", "RDL_ABA_Pure", "Pin_ABA_Pure")
 ]
 
 for i, (title, rdl_col, pin_col) in enumerate(pure_algos):

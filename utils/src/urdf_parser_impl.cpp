@@ -223,6 +223,7 @@ static void parseTopologyAndLumpFixedJointsDFS(
 
     // 将当前连杆标记为已访问
     visited_links.insert(current_link->name);
+    std::cout << "current name: " << current_link->name << std::endl;
 
     for (const auto& joint : current_link->child_joints) {
         auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
@@ -298,6 +299,8 @@ bool URDFParser::parse(
     std::vector<RobotNodeInfo>& nodes,
     bool is_floating_base)
 {
+    // 注意：对于 ms-human-700 这种已显式写出 6DOF 基座关节的 URDF，
+    // 调用时应当传入 is_floating_base = false，由文件中的 prismatic 和 continuous 关节直接表达基座。
     std::shared_ptr<urdf::ModelInterface> model = urdf::parseURDFFile(file_path);
     if (!model) {
         std::cerr << "[URDFParser] Error: Failed to parse URDF file: " << file_path << "\n";
@@ -318,10 +321,11 @@ bool URDFParser::parse(
     world_node.parent_id = -1;
     nodes.push_back(world_node);
 
-    // 初始化闭环检测集合
     std::unordered_set<std::string> visited_links;
 
     if (is_floating_base) {
+        // 如果确实需要对无基座关节的纯自由体模型套用隐式浮动基，才走这里
+        // 但对于包含 pelvis_tz/ty/tx 的 URDF，建议直接走下面的 else 分支
         RobotNodeInfo base_node;
         base_node.node_name = root_link->name;
         base_node.joint_name = root_link->name + "_floating_joint";
@@ -335,11 +339,10 @@ bool URDFParser::parse(
         base_node.accumulated_spatial_inertia = base_inertia;
         nodes.push_back(base_node);
 
-        // 传入 visited_links
         parseTopologyAndLumpFixedJointsDFS(root_link, 1, Eigen::Matrix4d::Identity(), Eigen::Matrix3d::Identity(), model, nodes, visited_links);
-
     } else {
-        // 传入 visited_links
+        // 标准正向树遍历：从 world 开始，依次经过 pelvis_tz, pelvis_ty, pelvis_tx,
+        // pelvis_tilt, pelvis_list, pelvis_rotation，完整保留所有中间节点！
         parseTopologyAndLumpFixedJointsDFS(root_link, 0, Eigen::Matrix4d::Identity(), Eigen::Matrix3d::Identity(), model, nodes, visited_links);
     }
 

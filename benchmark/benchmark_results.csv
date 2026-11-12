@@ -1,8 +1,7 @@
 Model,DOF,ModelLabel,FloatingBase,CRBA_Max_Error,RNEA_Max_Error,ABA_Max_Error
-ur10,6,ur10(6dof),0,7.10543e-15,4.9738e-14,3.88023e-14
-franka-fr3,7,franka-fr3(7dof),0,3.55271e-15,7.10543e-15,2.5302e-13
-unitree-go2,18,unitree-go2(18dof),1,0.0,0.0,8.37663e-14
-spot,18,spot(18dof),1,0.0,0.0,6.7224e-14
-atlas,36,atlas(36dof),1,0.0,0.0,8.20864e-13
-unitree-h1-2,57,unitree-h1-2(57dof),1,0.0,0.0,1.40499e-12
-HumanURDFmodel,54,HumanURDFmodel(54dof),1,0.0,0.0,2.52243e-13
+franka-fr3,7,franka-fr3(7dof),0,2.66454e-15,1.42109e-14,2.74284e-13
+unitree-go2,18,unitree-go2(18dof),1,2.13163e-14,2.84217e-14,1.16546e-13
+spot,18,spot(18dof),1,5.68434e-14,1.13687e-13,5.9508e-14
+atlas,36,atlas(36dof),1,2.55795e-13,1.13687e-12,1.24134e-12
+unitree-h1-2,57,unitree-h1-2(57dof),1,7.10543e-14,2.27374e-13,1.49011e-12
+HumanURDFmodel,54,HumanURDFmodel(54dof),1,7.81597e-14,2.27374e-13,3.11529e-13

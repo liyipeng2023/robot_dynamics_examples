@@ -15,7 +15,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_options(compare_rdl_pinocchio PRIVATE $<$<CONFIG:Release>:/O2 /arch:AVX2 /Gy /GL /DNDEBUG /DEIGEN_NO_DEBUG>)
 else()
-    target_compile_options(compare_rdl_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -mpu=native -DNDEBUG>)
+    target_compile_options(compare_rdl_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -mcpu=native -DNDEBUG>)
 endif()
 
 # 2. Pinocchio performance test
@@ -29,7 +29,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_options(benchmark_pinocchio PRIVATE $<$<CONFIG:Release>:/O2 /arch:AVX2 /Gy /GL /DNDEBUG /DEIGEN_NO_DEBUG>)
 else()
-    target_compile_options(benchmark_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -mpu=native -DNDEBUG>)
+    target_compile_options(benchmark_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -mcpu=native -DNDEBUG>)
 endif()
 
 # 3. RDL performance test

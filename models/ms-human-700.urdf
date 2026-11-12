@@ -1,0 +1,4738 @@
+<?xml version="1.0"?>
+<!--
+  Converted by urdfbase. The following could not be carried across:
+  - 14× link …: capsule in collision became a cylinder — URDF has no capsule primitive, the rounded caps are lost (femur_r, tibia_r, calcn_r, …)
+  - 3× joint … slides with no limits; URDF requires a range, so ±1e16 m is written, which is how SDF says none (pelvis_tz, pelvis_ty, pelvis_tx)
+  - verified by reading it back: the converted file describes the same robot
+  - 25 link(s) declare no mass (world, rib1_R, rib1_L, …): the tool that loads this may fold it into its parent
+-->
+<robot name="MS_Human_700_Primary_Model">
+  <material name="tablecube">
+    <color rgba="0.8 0.8 0.8 1"/>
+  </material>
+  <material name="colour_2">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_3">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_4">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_5">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_6">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_7">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_8">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_9">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_10">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_11">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_12">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_13">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_14">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_15">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_16">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_17">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_18">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_19">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_20">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_21">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_22">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_23">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_24">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_25">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_26">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_27">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_28">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_29">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_30">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_31">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_32">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_33">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_34">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_35">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_36">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_37">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_38">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_39">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_40">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_41">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_42">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_43">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_44">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_45">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_46">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_47">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_48">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_49">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_50">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_51">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_52">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_53">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_54">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_55">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_56">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_57">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_58">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_59">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_60">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_61">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_62">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_63">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_64">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_65">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_66">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_67">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_68">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_69">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_70">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_71">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_72">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_73">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_74">
+    <color rgba="0.8 0.7 0.5 0.2"/>
+  </material>
+  <material name="colour_75">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_76">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_77">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_78">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_79">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_80">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_81">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_82">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_83">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_84">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_85">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_86">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_87">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_88">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_89">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_90">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_91">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_92">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_93">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_94">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_95">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_96">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_97">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_98">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_99">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_100">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_101">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_102">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_103">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_104">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_105">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_106">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_107">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_108">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_109">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_110">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_111">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_112">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_113">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_114">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_115">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_116">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_117">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_118">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_119">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_120">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_121">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_122">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_123">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_124">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_125">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_126">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_127">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_128">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_129">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_130">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_131">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_132">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_133">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_134">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_135">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_136">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_137">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_138">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_139">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_140">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_141">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_142">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_143">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_144">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_145">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_146">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_147">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_148">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_149">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_150">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_151">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_152">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_153">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_154">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_155">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_156">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_157">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_158">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_159">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_160">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_161">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_162">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_163">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_164">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_165">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_166">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_167">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_168">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_169">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_170">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_171">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_172">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_173">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_174">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_175">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_176">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_177">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_178">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_179">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_180">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_181">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_182">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_183">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_184">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_185">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_186">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_187">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_188">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_189">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_190">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_191">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_192">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_193">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_194">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_195">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_196">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_197">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_198">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_199">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_200">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_201">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_202">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_203">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_204">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_205">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_206">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_207">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_208">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_209">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_210">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_211">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_212">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_213">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_214">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_215">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_216">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_217">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_218">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_219">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_220">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_221">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_222">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_223">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_224">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_225">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_226">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_227">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_228">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_229">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_230">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_231">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_232">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_233">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_234">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_235">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_236">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_237">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_238">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_239">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_240">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_241">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_242">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_243">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_244">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_245">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_246">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_247">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_248">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_249">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_250">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_251">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_252">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_253">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_254">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_255">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_256">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_257">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_258">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_259">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_260">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_261">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_262">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_263">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_264">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_265">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_266">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_267">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_268">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_269">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_270">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_271">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_272">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_273">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_274">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_275">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_276">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_277">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_278">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_279">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_280">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_281">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_282">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_283">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_284">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_285">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_286">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_287">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_288">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_289">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_290">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_291">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_292">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_293">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_294">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_295">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_296">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_297">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_298">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_299">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_300">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_301">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_302">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_303">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_304">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_305">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_306">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_307">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_308">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_309">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_310">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_311">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_312">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_313">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_314">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_315">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_316">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_317">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_318">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_319">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_320">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_321">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_322">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_323">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_324">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_325">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+  <material name="colour_326">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_327">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_328">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_329">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_330">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_331">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_332">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_333">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_334">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_335">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_336">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_337">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_338">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_339">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_340">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_341">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_342">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_343">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_344">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_345">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_346">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_347">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_348">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <material name="colour_349">
+    <color rgba="0.9 0.7 0.5 1"/>
+  </material>
+  <link name="world">
+  </link>
+  <link name="pelvis_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="pelvis_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="pelvis_dof3">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="pelvis_dof4">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="pelvis_dof5">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="pelvis">
+    <inertial>
+      <origin xyz="-0.0707 0 0" rpy="0 0 0"/>
+      <mass value="8.147"/>
+      <inertia ixx="0.033" ixy="0" ixz="0" iyy="0.0606" iyz="0" izz="0.0403"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="meshes/r_pelvis.stl"/>
+      </geometry>
+    </collision>
+    <collision>
+      <geometry>
+        <mesh filename="meshes/l_pelvis.stl"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.071 -0.065 -0.0756" rpy="0.38375022633659295 -0.10635174050284942 0.9182335597815524"/>
+      <geometry>
+        <cylinder radius="0.0549" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.071 -0.065 0.0756" rpy="-0.38375022633659295 0.10635174050284942 0.9182335597815524"/>
+      <geometry>
+        <cylinder radius="0.0549" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.074 -0.06 -0.0656" rpy="0.2834064559047672 0.23459522963773827 0.16774960228815858"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.074 -0.06 0.0656" rpy="-0.2834064559047672 -0.23459522963773827 0.16774960228815858"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.083 -0.088 -0.068" rpy="0.10000008741050684 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.08 -0.083 -0.068" rpy="0.7890008380117082 -0.28189793943359825 -0.27318580957287375"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.077 -0.099 -0.061" rpy="0.6497272377265433 -0.36718915965631344 -0.26627659904386186"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.15"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.083 -0.088 0.068" rpy="-0.10000008741050684 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.08 -0.083 0.068" rpy="-0.7890008380117082 0.28189793943359825 -0.27318580957287375"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.077 -0.099 0.061" rpy="-0.6497272377265433 0.36718915965631344 -0.26627659904386186"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.15"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="femur_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="femur_r_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="femur_r">
+    <inertial>
+      <origin xyz="0 -0.17 0" rpy="0 0 0"/>
+      <mass value="6.269"/>
+      <inertia ixx="0.0902465" ixy="-0.00000000000000000407744" ixz="0.000000000000000000301257" iyy="0.0236569" iyz="0.000000000000000000000000000000000249671" izz="0.0951664"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_femur.stl"/>
+      </geometry>
+      <material name="colour_14"/>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.22 0.005" rpy="-1.541392359075765 0 0"/>
+      <geometry>
+        <cylinder radius="0.067" length="0.340148"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00608573 -0.0845029 0.0304405" rpy="1.804099007511939 -0.06547244277712248 0.26866914920924245"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0226511 -0.376831 -0.00315437" rpy="1.6965147301822205 0.06256686973768717 -0.45942431223226704"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.24"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0316065 -0.260736 0.0093646" rpy="1.7094617196071829 -0.02609489028072004 0.18482357767173438"/>
+      <geometry>
+        <cylinder radius="0.0218" length="0.2"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0230125 -0.160711 0.0205842" rpy="1.6110122146833668 -0.005524672237895846 0.13644893180480316"/>
+      <geometry>
+        <cylinder radius="0.0214" length="0.12"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00518299 -0.0728948 0.025403" rpy="1.610558875403814 -0.007503247163404276 0.18641075809010993"/>
+      <geometry>
+        <cylinder radius="0.0211" length="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307327 -0.231909 0.0151137" rpy="1.7752441029467385 -0.027876971563869347 0.13362902008336297"/>
+      <geometry>
+        <cylinder radius="0.0201" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0146434 -0.112595 0.023365" rpy="1.6600026820575562 -0.016821929657423282 0.18589322861826565"/>
+      <geometry>
+        <cylinder radius="0.0165" length="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00188828 -0.402732 0.00209111" rpy="-0.06241677626536106 0.05066144546499939 -0.003164872279986353"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00358828 -0.402732 0.00209111" rpy="-0.06241677626536106 0.05066144546499939 -0.003164872279986353"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.005 -0.41 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.005 -0.41 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.026" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="tibia_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_r_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_r_dof3">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_r_dof4">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_r_dof5">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_r">
+    <inertial>
+      <origin xyz="0.00809 -0.183165 0.001485" rpy="0 0 0"/>
+      <mass value="2.836"/>
+      <inertia ixx="0.0385528" ixy="-0.0000000000000000021218" ixz="0.0000000000000000000327838" iyy="0.00390118" iyz="0.000000000000000000000000000000000129923" izz="0.0390882"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.00809 0.003535 0.001485" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_tibia.stl"/>
+      </geometry>
+      <material name="colour_27"/>
+    </visual>
+    <visual>
+      <origin xyz="0.00809 0.003535 0.001485" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_fibula.stl"/>
+      </geometry>
+      <material name="colour_28"/>
+    </visual>
+    <collision>
+      <origin xyz="0.00309 -0.171465 0.003985" rpy="-1.5850822836340883 0.02856076476537155 -0.02897166800781511"/>
+      <geometry>
+        <cylinder radius="0.048" length="0.350178"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03091 -0.056465 0.001485" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.029" length="0.15"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00609 -0.016965 0.001485" rpy="0 -0.19999999987321332 0"/>
+      <geometry>
+        <cylinder radius="0.0425" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00709 -0.016465 0.001485" rpy="0 -0.10000008741050684 0"/>
+      <geometry>
+        <cylinder radius="0.0345" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00509 -0.016465 0.001485" rpy="0 -0.3999991838579209 0"/>
+      <geometry>
+        <cylinder radius="0.036" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00069 -0.070465 -0.001815" rpy="3.0974535174357283 0.1710193260729469 1.4767810773900363"/>
+      <geometry>
+        <cylinder radius="0.059" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00069 -0.070465 -0.001815" rpy="-2.8787550358994367 0.19921376012112466 1.4799288819760905"/>
+      <geometry>
+        <cylinder radius="0.055" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="talus_r">
+    <inertial>
+      <origin xyz="0.00593729 0.000343512 -0.00168399" rpy="0 0 0"/>
+      <mass value="0.161"/>
+      <inertia ixx="0.0000189876" ixy="-0.00000149395" ixz="0.000000197177" iyy="0.0000318015" iyz="-0.000000227137" izz="0.0000227744"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_talus.stl"/>
+      </geometry>
+      <material name="colour_36"/>
+    </visual>
+  </link>
+  <link name="calcn_r">
+    <inertial>
+      <origin xyz="0.0719814 0.0149052 -0.00451819" rpy="0 0 0"/>
+      <mass value="0.617"/>
+      <inertia ixx="0.000295389" ixy="0.0000921587" ixz="0.0000193656" iyy="0.0016955" iyz="0.00000336321" izz="0.00155653"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_foot.stl"/>
+      </geometry>
+      <material name="colour_37"/>
+    </visual>
+    <collision>
+      <origin xyz="0.03 0.0175 -0.0065" rpy="2.1112112571417945 -1.378824801076885 -1.9379183372031814"/>
+      <geometry>
+        <cylinder radius="0.028" length="0.0305614"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.105 0.0075 0.0315" rpy="-2.2848847240462775 -1.2944863539928924 2.0547096463413306"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.0727598"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.125 0.0075 -0.0275" rpy="-1.2490440976998174 -1.4280341363562368 1.1165713983480887"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.1111306"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="toes_r">
+    <inertial>
+      <origin xyz="0.0216583 -0.00127638 0.00916254" rpy="0 0 0"/>
+      <mass value="0.081"/>
+      <inertia ixx="0.0000471266" ixy="0.0000018892" ixz="0.0000266827" iyy="0.0000960872" iyz="-0.0000000103145" izz="0.000052654"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_bofoot.stl"/>
+      </geometry>
+      <material name="colour_41"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.005" rpy="3.141592653589793 0.4955511772358908 3.141592653589793"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.084119"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0385 -0.002 0.0115" rpy="3.141592653589793 0.6692566866608051 3.141592653589793"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.0854284"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="patella_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="patella_r_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="patella_r">
+    <inertial>
+      <origin xyz="0.00247467 0.0279667 0.000739699" rpy="0 0 0"/>
+      <mass value="0.062"/>
+      <inertia ixx="0.000015032" ixy="-0.000000495373" ixz="0.0000000272712" iyy="0.00000814049" iyz="0.000000185611" izz="0.0000106058"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_patella.stl"/>
+      </geometry>
+      <material name="colour_44"/>
+    </visual>
+  </link>
+  <link name="femur_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="femur_l_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="femur_l">
+    <inertial>
+      <origin xyz="0 -0.17 0" rpy="0 0 0"/>
+      <mass value="6.269"/>
+      <inertia ixx="0.0902465" ixy="-0.00000000000000000407744" ixz="0.000000000000000000301257" iyy="0.0236569" iyz="0.000000000000000000000000000000000249671" izz="0.0951664"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_femur.stl"/>
+      </geometry>
+      <material name="colour_45"/>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.22 -0.005" rpy="-1.6002002945140286 0 0"/>
+      <geometry>
+        <cylinder radius="0.067" length="0.340148"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00608573 -0.0845029 -0.0304405" rpy="-1.804099007511939 0.06547244277712248 0.26866914920924245"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0226511 -0.376831 0.00315437" rpy="-1.6965147301822205 -0.06256686973768717 -0.45942431223226704"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.24"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0316065 -0.260736 -0.0093646" rpy="-1.7094617196071829 0.02609489028072004 0.18482357767173438"/>
+      <geometry>
+        <cylinder radius="0.0218" length="0.2"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0230125 -0.160711 -0.0205842" rpy="-1.6110122146833668 0.005524672237895846 0.13644893180480316"/>
+      <geometry>
+        <cylinder radius="0.0214" length="0.12"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00518299 -0.0728948 -0.025403" rpy="-1.610558875403814 0.007503247163404276 0.18641075809010993"/>
+      <geometry>
+        <cylinder radius="0.0211" length="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307327 -0.231909 -0.0151137" rpy="-1.7752441029467385 0.027876971563869347 0.13362902008336297"/>
+      <geometry>
+        <cylinder radius="0.0201" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0146434 -0.112595 -0.023365" rpy="-1.6600026820575562 0.016821929657423282 0.18589322861826565"/>
+      <geometry>
+        <cylinder radius="0.0165" length="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00188828 -0.402732 -0.00209111" rpy="0.06241677626536106 -0.05066144546499939 -0.003164872279986353"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00358828 -0.402732 -0.00209111" rpy="0.06241677626536106 -0.05066144546499939 -0.003164872279986353"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.005 -0.41 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.005 -0.41 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.026" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="tibia_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_l_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_l_dof3">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_l_dof4">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_l_dof5">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="tibia_l">
+    <inertial>
+      <origin xyz="0.00809 -0.183165 -0.001485" rpy="0 0 0"/>
+      <mass value="2.836"/>
+      <inertia ixx="0.0385528" ixy="-0.0000000000000000021218" ixz="0.0000000000000000000327838" iyy="0.00390118" iyz="0.000000000000000000000000000000000129923" izz="0.0390882"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.00809 0.003535 -0.001485" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_tibia.stl"/>
+      </geometry>
+      <material name="colour_58"/>
+    </visual>
+    <visual>
+      <origin xyz="0.00809 0.003535 -0.001485" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_fibula.stl"/>
+      </geometry>
+      <material name="colour_59"/>
+    </visual>
+    <collision>
+      <origin xyz="0.00309 -0.171465 -0.003985" rpy="-1.5565115887029715 0.02856072487380044 -0.028155682761670544"/>
+      <geometry>
+        <cylinder radius="0.048" length="0.350178"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03091 -0.056465 -0.001485" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.029" length="0.15"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00609 -0.016965 -0.001485" rpy="0 0.19999999987321332 0"/>
+      <geometry>
+        <cylinder radius="0.0425" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00709 -0.016465 -0.001485" rpy="0 0.10000008741050684 0"/>
+      <geometry>
+        <cylinder radius="0.0345" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00509 -0.016465 -0.001485" rpy="0 0.3999991838579209 0"/>
+      <geometry>
+        <cylinder radius="0.036" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00069 -0.070465 0.001815" rpy="-3.0974535174357283 -0.1710193260729469 1.4767810773900363"/>
+      <geometry>
+        <cylinder radius="0.059" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.00069 -0.070465 0.001815" rpy="2.8787550358994367 -0.19921376012112466 1.4799288819760905"/>
+      <geometry>
+        <cylinder radius="0.055" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="talus_l">
+    <inertial>
+      <origin xyz="0.00593729 0.000343512 0.00168399" rpy="0 0 0"/>
+      <mass value="0.161"/>
+      <inertia ixx="0.0000189876" ixy="-0.00000149395" ixz="-0.000000197177" iyy="0.0000318015" iyz="0.000000227137" izz="0.0000227744"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_talus.stl"/>
+      </geometry>
+      <material name="colour_67"/>
+    </visual>
+  </link>
+  <link name="calcn_l">
+    <inertial>
+      <origin xyz="0.0719814 0.0149052 0.00451819" rpy="0 0 0"/>
+      <mass value="0.617"/>
+      <inertia ixx="0.000295389" ixy="0.0000921587" ixz="-0.0000193656" iyy="0.0016955" iyz="-0.00000336321" izz="0.00155653"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_foot.stl"/>
+      </geometry>
+      <material name="colour_68"/>
+    </visual>
+    <collision>
+      <origin xyz="0.03 0.0175 0.0065" rpy="1.0303797813122895 -1.3788245665419745 -0.8733744472340081"/>
+      <geometry>
+        <cylinder radius="0.028" length="0.0305614"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.105 0.0075 -0.0315" rpy="-0.8567059721566035 -1.2944863518825245 0.6646938319753909"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.0727598"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.125 0.0075 0.0275" rpy="-1.8925471318154223 -1.428034468402199 1.7539645507699761"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.1111306"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="toes_l">
+    <inertial>
+      <origin xyz="0.0216583 -0.00127638 -0.00916254" rpy="0 0 0"/>
+      <mass value="0.081"/>
+      <inertia ixx="0.0000471266" ixy="0.0000018892" ixz="-0.0000266827" iyy="0.0000960872" iyz="0.0000000103145" izz="0.000052654"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_bofoot.stl"/>
+      </geometry>
+      <material name="colour_72"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.005" rpy="0 0.49555117723589076 0"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.084119"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0385 -0.002 -0.0115" rpy="0 0.6692566866608051 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.0854284"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="patella_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="patella_l_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="patella_l">
+    <inertial>
+      <origin xyz="0.00247467 0.0279667 -0.000739699" rpy="0 0 0"/>
+      <mass value="0.062"/>
+      <inertia ixx="0.000015032" ixy="-0.000000495373" ixz="-0.0000000272712" iyy="0.00000814049" iyz="-0.000000185611" izz="0.0000106058"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_patella.stl"/>
+      </geometry>
+      <material name="colour_75"/>
+    </visual>
+  </link>
+  <link name="sacrum">
+    <inertial>
+      <origin xyz="-0.13 0 0" rpy="0 0 0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0002"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0.10000008741050684"/>
+      <geometry>
+        <mesh filename="meshes/sacrum.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="Abdomen">
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="lumbar5_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="lumbar5_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="lumbar5">
+    <inertial>
+      <origin xyz="0.0137071 0.0250511 0" rpy="0 0 0"/>
+      <mass value="0.627"/>
+      <inertia ixx="0.000393659" ixy="-0.000150235" ixz="0" iyy="0.000750389" iyz="0" izz="0.00049838"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lumbar5.stl"/>
+      </geometry>
+      <material name="colour_77"/>
+    </visual>
+    <collision>
+      <origin xyz="0.042 0.04 0.068" rpy="1.5709904520189735 -0.00005937482873674444 0.29999927548211003"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.042 0.04 -0.068" rpy="-1.5709904520189735 0.00005937482873674444 0.29999927548211003"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="lumbar4">
+    <inertial>
+      <origin xyz="0.0172503 0.0193022 0" rpy="0 0 0"/>
+      <mass value="1.057"/>
+      <inertia ixx="0.00256543" ixy="-0.000121867" ixz="0" iyy="0.00407575" iyz="0" izz="0.00162518"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lumbar4.stl"/>
+      </geometry>
+      <material name="colour_80"/>
+    </visual>
+    <collision>
+      <origin xyz="0.03 0.02 0.056" rpy="1.5709999734841562 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 0.02 -0.056" rpy="-1.5709999734841562 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="lumbar3">
+    <inertial>
+      <origin xyz="0.0272081 0.0140683 0" rpy="0 0 0"/>
+      <mass value="1.14"/>
+      <inertia ixx="0.00329775" ixy="0.000237533" ixz="0" iyy="0.00523904" iyz="0" izz="0.00211269"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lumbar3.stl"/>
+      </geometry>
+      <material name="colour_83"/>
+    </visual>
+    <collision>
+      <origin xyz="0.03 0.01 0.055" rpy="1.5709955158526723 0.000040452479433489204 -0.1999999488452553"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 0.01 -0.055" rpy="-1.5709955158526723 -0.000040452479433489204 -0.1999999488452553"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="lumbar2">
+    <inertial>
+      <origin xyz="0.0344986 0.00713231 0" rpy="0 0 0"/>
+      <mass value="1.174"/>
+      <inertia ixx="0.00370747" ixy="0.000615607" ixz="0" iyy="0.00596119" iyz="0" izz="0.00268039"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lumbar2.stl"/>
+      </geometry>
+      <material name="colour_86"/>
+    </visual>
+    <collision>
+      <origin xyz="0.03 0.015 0.055" rpy="1.5709999734841562 0 0"/>
+      <geometry>
+        <cylinder radius="0.061" length="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 0.015 -0.055" rpy="-1.5709999734841562 0 0"/>
+      <geometry>
+        <cylinder radius="0.061" length="0.02"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="lumbar1">
+    <inertial>
+      <origin xyz="0.0411684 0.00111451 0" rpy="0 0 0"/>
+      <mass value="1.155"/>
+      <inertia ixx="0.00371262" ixy="0.00089051" ixz="0" iyy="0.00566315" iyz="0" izz="0.00273659"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lumbar1.stl"/>
+      </geometry>
+      <material name="colour_89"/>
+    </visual>
+  </link>
+  <link name="thoracic12_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="thoracic12_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="thoracic12">
+    <inertial>
+      <origin xyz="0.0521765 -0.00207232 0" rpy="0 0 0"/>
+      <mass value="1.277"/>
+      <inertia ixx="0.00527476" ixy="0.00126415" ixz="0" iyy="0.00772989" iyz="0" izz="0.00364315"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic12.stl"/>
+      </geometry>
+      <material name="colour_90"/>
+    </visual>
+  </link>
+  <link name="thoracic11">
+    <inertial>
+      <origin xyz="0.0564797 -0.00142132 0" rpy="0 0 0"/>
+      <mass value="1.364"/>
+      <inertia ixx="0.00767458" ixy="0.00163924" ixz="0" iyy="0.0118952" iyz="0" izz="0.00551158"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic11.stl"/>
+      </geometry>
+      <material name="colour_91"/>
+    </visual>
+  </link>
+  <link name="thoracic10">
+    <inertial>
+      <origin xyz="0.0604203 0.00275905 0" rpy="0 0 0"/>
+      <mass value="1.442"/>
+      <inertia ixx="0.00860922" ixy="0.0015502" ixz="0" iyy="0.0144805" iyz="0" izz="0.0068125"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic10.stl"/>
+      </geometry>
+      <material name="colour_92"/>
+    </visual>
+  </link>
+  <link name="thoracic9">
+    <inertial>
+      <origin xyz="0.0643355 0.00466918 0" rpy="0 0 0"/>
+      <mass value="1.445"/>
+      <inertia ixx="0.00949972" ixy="0.00143862" ixz="0" iyy="0.0174752" iyz="0" izz="0.00868491"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic9.stl"/>
+      </geometry>
+      <material name="colour_93"/>
+    </visual>
+  </link>
+  <link name="thoracic8">
+    <inertial>
+      <origin xyz="0.059938 0.0102116 0" rpy="0 0 0"/>
+      <mass value="1.36"/>
+      <inertia ixx="0.00822057" ixy="0.000727321" ixz="-0.0000000000000000000322446" iyy="0.0166097" iyz="0.00000000000000000000277483" izz="0.00868652"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic8.stl"/>
+      </geometry>
+      <material name="colour_94"/>
+    </visual>
+  </link>
+  <link name="thoracic7">
+    <inertial>
+      <origin xyz="0.0556167 0.0168529 0" rpy="0 0 0"/>
+      <mass value="1.275"/>
+      <inertia ixx="0.00650894" ixy="-0.000128152" ixz="0.0000000000000000000701805" iyy="0.0132998" iyz="0.00000000000000000000132392" izz="0.00694301"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic7.stl"/>
+      </geometry>
+      <material name="colour_95"/>
+    </visual>
+  </link>
+  <link name="thoracic6">
+    <inertial>
+      <origin xyz="0.0511811 0.021861 0" rpy="0 0 0"/>
+      <mass value="1.044"/>
+      <inertia ixx="0.00430342" ixy="-0.000543509" ixz="0.0000000000000000000484775" iyy="0.00861231" iyz="0.00000000000000000000602048" izz="0.00453969"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic6.stl"/>
+      </geometry>
+      <material name="colour_96"/>
+    </visual>
+  </link>
+  <link name="thoracic5">
+    <inertial>
+      <origin xyz="0.0443324 0.0258505 0" rpy="0 0 0"/>
+      <mass value="0.937"/>
+      <inertia ixx="0.00324259" ixy="-0.000664053" ixz="0" iyy="0.0059469" iyz="0" izz="0.00308777"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic5.stl"/>
+      </geometry>
+      <material name="colour_97"/>
+    </visual>
+  </link>
+  <link name="thoracic4">
+    <inertial>
+      <origin xyz="0.0363922 0.0269448 0" rpy="0 0 0"/>
+      <mass value="0.802"/>
+      <inertia ixx="0.00224459" ixy="-0.000704681" ixz="0.0000000000000000000519383" iyy="0.00403873" iyz="0.0000000000000000000179603" izz="0.00234265"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic4.stl"/>
+      </geometry>
+      <material name="colour_98"/>
+    </visual>
+  </link>
+  <link name="thoracic3">
+    <inertial>
+      <origin xyz="0.0244422 0.0230274 0" rpy="0 0 0"/>
+      <mass value="0.566"/>
+      <inertia ixx="0.000758903" ixy="-0.000269765" ixz="0.0000000000000000000195933" iyy="0.00127718" iyz="0.00000000000000000000834734" izz="0.000776411"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic3.stl"/>
+      </geometry>
+      <material name="colour_99"/>
+    </visual>
+  </link>
+  <link name="thoracic2">
+    <inertial>
+      <origin xyz="0.0187755 0.0205432 0" rpy="0 0 0"/>
+      <mass value="0.491"/>
+      <inertia ixx="0.000547797" ixy="-0.000156404" ixz="0" iyy="0.000790918" iyz="0" izz="0.000421581"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic2.stl"/>
+      </geometry>
+      <material name="colour_100"/>
+    </visual>
+  </link>
+  <link name="thoracic1">
+    <inertial>
+      <origin xyz="0.00444495 0.0146739 0" rpy="0 0 0"/>
+      <mass value="0.385"/>
+      <inertia ixx="0.00028612" ixy="-0.000080919" ixz="0" iyy="0.000403326" iyz="0" izz="0.000216314"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/thoracic1.stl"/>
+      </geometry>
+      <material name="colour_101"/>
+    </visual>
+  </link>
+  <link name="head_neck_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="head_neck_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="head_neck">
+    <inertial>
+      <origin xyz="0.0294875 0.172952 0.00000925669" rpy="0 0 0"/>
+      <mass value="3.664"/>
+      <inertia ixx="0.0137316" ixy="0.000999559" ixz="0.000000459551" iyy="0.0104333" iyz="0.00000376424" izz="0.0160456"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/rotatedcerv7.stl"/>
+      </geometry>
+      <material name="colour_102"/>
+    </visual>
+    <visual>
+      <origin xyz="0.0038 0.0164 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/cerv6.stl"/>
+      </geometry>
+      <material name="colour_103"/>
+    </visual>
+    <visual>
+      <origin xyz="0.008 0.0343 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/cerv5.stl"/>
+      </geometry>
+      <material name="colour_104"/>
+    </visual>
+    <visual>
+      <origin xyz="0.0114 0.0535 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/cerv4.stl"/>
+      </geometry>
+      <material name="colour_105"/>
+    </visual>
+    <visual>
+      <origin xyz="0.014 0.069 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/cerv3.stl"/>
+      </geometry>
+      <material name="colour_106"/>
+    </visual>
+    <visual>
+      <origin xyz="0.0139 0.0852 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/cerv2.stl"/>
+      </geometry>
+      <material name="colour_107"/>
+    </visual>
+    <visual>
+      <origin xyz="-0.0217 0.103 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/cerv1.stl"/>
+      </geometry>
+      <material name="colour_108"/>
+    </visual>
+    <visual>
+      <origin xyz="0.0216 0.1179 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/jaw.stl"/>
+      </geometry>
+      <material name="colour_109"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0216 0.1179 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/skull.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="sternum">
+    <inertial>
+      <origin xyz="0.013316 -0.0472913 0.000940853" rpy="0 0 0"/>
+      <mass value="0.032"/>
+      <inertia ixx="0.0000455155" ixy="0.0000154991" ixz="0.000000201711" iyy="0.0000103872" iyz="-0.00000037303" izz="0.0000474921"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.0335" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/Sternum.obj"/>
+      </geometry>
+      <material name="colour_111"/>
+    </visual>
+  </link>
+  <link name="clavicle_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="clavicle_r">
+    <inertial>
+      <origin xyz="-0.0115404 0.00621639 0.0517142" rpy="0 0 0"/>
+      <mass value="0.147"/>
+      <inertia ixx="0.000211579" ixy="0.0000133537" ixz="0.000053399" iyy="0.000219969" iyz="-0.0000433995" izz="0.000032662"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/clavicle.stl"/>
+      </geometry>
+      <material name="colour_112"/>
+    </visual>
+  </link>
+  <link name="clavphant_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="clavphant_r">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="scapula_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapula_r_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapula_r">
+    <inertial>
+      <origin xyz="-0.0551769 -0.0374594 -0.0480278" rpy="0 0 0"/>
+      <mass value="0.432"/>
+      <inertia ixx="0.000623715" ixy="-0.000240668" ixz="-0.000239729" iyy="0.000601783" iyz="-0.000165529" izz="0.000683975"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/scapula.stl"/>
+      </geometry>
+      <material name="colour_113"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0058 -0.0378 0.0096" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.035"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0359 -0.0309 -0.0132" rpy="-1.3378150533698296 -0.6350705803239519 2.7017475147792402"/>
+      <geometry>
+        <cylinder radius="0.003" length="0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="scapphant_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapphant_r_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapphant_r">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="humphant_r">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="humphant1_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="humphant1_r">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="humerus_r">
+    <inertial>
+      <origin xyz="0.018064 -0.140141 -0.012746" rpy="0 0 0"/>
+      <mass value="1.94"/>
+      <inertia ixx="0.0119238" ixy="0" ixz="0" iyy="0.0024778" iyz="0" izz="0.0122163"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/humerus.stl"/>
+      </geometry>
+      <material name="colour_116"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.005 -0.29 -0.033" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.3 0.005" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.027"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 0 0.006" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 0 0.006" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0033 0.005 0.0003" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.022"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0134 -0.2861 -0.0008" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0078 -0.0041 -0.0014" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0016 0.0092 0.0052" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0086 0.0021 -0.0004" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0025 0.00079 -0.0045" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0002 0.0077 0.0043" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0027 -0.1202 -0.0059" rpy="-1.6287977878907205 0.8708516899148286 -0.14044171701922273"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0028 -0.2919 -0.0119" rpy="-0.13944515641321079 0.015420993460149057 0.15435388851587956"/>
+      <geometry>
+        <cylinder radius="0.016" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0019 -0.289 -0.014" rpy="-0.12559973507762132 0.1402999788073407 0.013011664763391004"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0224 0.0102 0.0094" rpy="-0.2279397648643263 -0.20537135439480594 -0.6602015062502817"/>
+      <geometry>
+        <cylinder radius="0.007" length="0.045"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0009 -0.0551 -0.0004" rpy="-0.962896677825103 -1.3424510920036434 2.4892892832885822"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.002 -0.0508 -0.0017" rpy="1.5517191913701192 0.9249213976940808 -0.09273019793494808"/>
+      <geometry>
+        <cylinder radius="0.009" length="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0443 -0.0055" rpy="1.351122371328136 -1.4126915727131608 0.15328247396988656"/>
+      <geometry>
+        <cylinder radius="0.007" length="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.003 -0.0255 0.0013" rpy="-1.4733125127591005 0.07046798387891716 -3.1116984576465896"/>
+      <geometry>
+        <cylinder radius="0.0215" length="0.113"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0019 -0.019 0.0022" rpy="1.5216985083650336 0.6449746968185853 -0.374808200225228"/>
+      <geometry>
+        <cylinder radius="0.0235" length="0.115"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0017 -0.0958 0.0011" rpy="1.550897187708692 -0.06004473596837125 -0.018769701123957375"/>
+      <geometry>
+        <cylinder radius="0.0109" length="0.12"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="ulna_r">
+    <inertial>
+      <origin xyz="0.00971783 -0.0959509 0.024286" rpy="0 0 0"/>
+      <mass value="0.563"/>
+      <inertia ixx="0.00275723" ixy="0" ixz="0" iyy="0.000587388" iyz="0" izz="0.00251809"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/ulna.stl"/>
+      </geometry>
+      <material name="colour_138"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0012 -0.2092 0.0428" rpy="0.32420927634766794 -1.3818585190037702 1.3111862631353504"/>
+      <geometry>
+        <cylinder radius="0.007" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="radius_r">
+    <inertial>
+      <origin xyz="0.0336341 -0.181559 0.0156" rpy="0 0 0"/>
+      <mass value="0.544"/>
+      <inertia ixx="0.00102132" ixy="0" ixz="0" iyy="0.000206314" iyz="0" izz="0.000937556"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/radius.stl"/>
+      </geometry>
+      <material name="colour_140"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0163 -0.2417 0.0349" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.003"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0281 -0.1986 0.0288" rpy="1.6117200810202754 -0.45148310799479374 3.136478770108316"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0045 -0.0437 0.0059" rpy="-1.4222188099047202 0.6581974139983475 -2.744074263699652"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="proximal_row_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="proximal_row_r">
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_lunate.stl"/>
+      </geometry>
+      <material name="colour_144"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfastSCAPHOIDw.stl"/>
+      </geometry>
+      <material name="colour_145"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfastPISIFORMw.stl"/>
+      </geometry>
+      <material name="colour_146"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfastTRIQUETRALw.stl"/>
+      </geometry>
+      <material name="colour_147"/>
+    </visual>
+    <collision>
+      <origin xyz="0.02 -0.025 -0.0033" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.009 -0.0149 0.0211" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0035"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0007 -0.0117 0.0191" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0035"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0098 -0.0137 0.0166" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.003"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0128 -0.0133 0.0148" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0032 -0.0045 -0.019" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0126 -0.0095 0.0186" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.002"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0222 -0.0096 0.0208" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.008"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.00146 -0.012 -0.00893" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02374"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0167 -0.0022 0.0048" rpy="0.3801712245025114 -1.4019999321348109 2.78502605646974"/>
+      <geometry>
+        <cylinder radius="0.014" length="0.036"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0022 -0.0069 0.0032" rpy="-1.5497009396191985 0.22303704603587593 -1.3663762417326621"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0012 -0.0057 -0.0003" rpy="-0.09510941939362506 1.4795904706643555 -0.0962669404837408"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="hand_r_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="hand_r">
+    <inertial>
+      <origin xyz="0.00563478 -0.0507406 -0.00922445" rpy="0 0 0"/>
+      <mass value="0.393"/>
+      <inertia ixx="0.000372626" ixy="0.0000182324" ixz="0.0000488264" iyy="0.000267135" iyz="-0.0000682253" izz="0.000416762"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_5mc.stl"/>
+      </geometry>
+      <material name="colour_160"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_4mc.stl"/>
+      </geometry>
+      <material name="colour_161"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_3mc.stl"/>
+      </geometry>
+      <material name="colour_162"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_2mc.stl"/>
+      </geometry>
+      <material name="colour_163"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_trapezium.stl"/>
+      </geometry>
+      <material name="colour_164"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_trapezoid.stl"/>
+      </geometry>
+      <material name="colour_165"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_hamate.stl"/>
+      </geometry>
+      <material name="colour_166"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_capitate.stl"/>
+      </geometry>
+      <material name="colour_167"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_2proxph.stl"/>
+      </geometry>
+      <material name="colour_168"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_2midph.stl"/>
+      </geometry>
+      <material name="colour_169"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_2distph.stl"/>
+      </geometry>
+      <material name="colour_170"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_3proxph.stl"/>
+      </geometry>
+      <material name="colour_171"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_3midph.stl"/>
+      </geometry>
+      <material name="colour_172"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_3distph.stl"/>
+      </geometry>
+      <material name="colour_173"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_4proxph.stl"/>
+      </geometry>
+      <material name="colour_174"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_4midph.stl"/>
+      </geometry>
+      <material name="colour_175"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_4distph.stl"/>
+      </geometry>
+      <material name="colour_176"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_5proxph.stl"/>
+      </geometry>
+      <material name="colour_177"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_5midph.stl"/>
+      </geometry>
+      <material name="colour_178"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_5distph.stl"/>
+      </geometry>
+      <material name="colour_179"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_thumbprox.stl"/>
+      </geometry>
+      <material name="colour_180"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_thumbdist.stl"/>
+      </geometry>
+      <material name="colour_181"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_1mc.stl"/>
+      </geometry>
+      <material name="colour_182"/>
+    </visual>
+    <collision>
+      <origin xyz="0.007 -0.0741 -0.0457" rpy="0.8233645949444565 0.8594256055784675 0.12970481690462596"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0741 -0.0457" rpy="0.8233645949444565 0.8594256055784675 0.12970481690462596"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0152 -0.0785 -0.0328" rpy="0.072701877945569 1.18038193411325 -0.5746695849476753"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0153 -0.0786 -0.0329" rpy="-0.9958926984592456 0.7981304166643916 -1.78967819046857"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0154 -0.0784 -0.0329" rpy="-0.7668911981000104 1.0155867685302125 -1.501369759706287"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0094 -0.0778 -0.0469" rpy="0.9210714780083022 0.759876168352485 0.6135187637067673"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0094 -0.0778 -0.0469" rpy="0.9210714780083022 0.759876168352485 0.6135187637067673"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.0871 -0.0289" rpy="-0.7188753430078447 0.9635829131705569 -1.2258056820461851"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.0871 -0.0289" rpy="-0.7188753430078447 0.9635829131705569 -1.2258056820461851"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.0871 -0.0289" rpy="-0.7188753430078447 0.9635829131705569 -1.2258056820461851"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.019 -0.0814 -0.0494" rpy="1.1618631657292213 1.0006999010205635 1.0293354920724729"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.019 -0.0814 -0.0494" rpy="1.1618631657292213 1.0006999010205635 1.0293354920724729"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0122 -0.0934 -0.0238" rpy="-1.3670547497440884 1.0055540348499323 -1.3509380378535858"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0122 -0.0934 -0.0238" rpy="-1.3670547497440884 1.0055540348499323 -1.3509380378535858"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0122 -0.0934 -0.0238" rpy="-1.3670547497440884 1.0055540348499323 -1.3509380378535858"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0396 -0.0713 -0.0365" rpy="0.32810921110933927 0.058856324953631925 -0.25231045734801016"/>
+      <geometry>
+        <cylinder radius="0.0045" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0402 -0.0405 -0.0271" rpy="0.1419035742164431 0.30897303701360207 -0.7947905125142265"/>
+      <geometry>
+        <cylinder radius="0.0085" length="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0295 -0.0815 -0.0441" rpy="1.528548034278491 0.3449218793954156 -1.4023910177201604"/>
+      <geometry>
+        <cylinder radius="0.003" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0306 -0.0911 -0.0223" rpy="1.7147493235818734 -0.5065589738912597 -1.4841711766739512"/>
+      <geometry>
+        <cylinder radius="0.004" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0291 -0.0821 -0.045" rpy="1.6002265115350556 1.084365893256674 1.8243422282254829"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0291 -0.0821 -0.045" rpy="1.6002265115350556 1.084365893256674 1.8243422282254829"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307 -0.0924 -0.0222" rpy="-1.575229831570545 1.0189407333291802 -1.2518636166520678"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307 -0.0924 -0.0222" rpy="-1.575229831570545 1.0189407333291802 -1.2518636166520678"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307 -0.0924 -0.0222" rpy="-1.575229831570545 1.0189407333291802 -1.2518636166520678"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0235 -0.0561 -0.0057" rpy="-1.003936569722966 0.37479279146631767 -1.639677484366335"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0235 -0.0561 -0.0057" rpy="-1.036222952664273 -0.1960977266837469 -1.9834742952283329"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0235 -0.0561 -0.0057" rpy="-1.0475313796560377 0.000013276184215928227 -1.8686107003281163"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0139 -0.0642 0.0033" rpy="-1.20975291373432 -0.5799708630058781 -2.1411776332868415"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0139 -0.0642 0.0033" rpy="-1.270830688492153 -0.00004787742432574315 -1.9371505703089835"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0139 -0.0642 0.0033" rpy="-1.270830688492153 -0.00004787742432574315 -1.9371505703089835"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0655 0.0092" rpy="1.3494711990837363 -0.668465602611233 1.5388177047059413"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0046 -0.0662 0.0099" rpy="1.3283696254288937 -0.7703936992814624 1.570796181466367"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0655 0.0092" rpy="1.3283696254288937 -0.7703936992814624 1.570796181466367"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0182 -0.0659 0.0087" rpy="-1.5113280208349966 0.17434445573473253 -1.6000723359693756"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0182 -0.0659 0.0087" rpy="-1.5120885982591763 -0.06957414902064829 -1.614487115601269"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0182 -0.0659 0.0087" rpy="-1.5122297924430759 0.00011636530076935261 -1.6103934760867187"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="clavicle_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="clavicle_l">
+    <inertial>
+      <origin xyz="-0.0115467 0.00621419 -0.0517053" rpy="0 0 0"/>
+      <mass value="0.147"/>
+      <inertia ixx="0.000211429" ixy="0.0000133607" ixz="-0.0000534234" iyy="0.000219835" iyz="0.0000433773" izz="0.0000326758"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/clavicle_mirror.stl"/>
+      </geometry>
+      <material name="colour_219"/>
+    </visual>
+  </link>
+  <link name="clavphant_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="clavphant_l">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="scapula_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapula_l_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapula_l">
+    <inertial>
+      <origin xyz="-0.0551789 -0.0374478 0.0480352" rpy="0 0 0"/>
+      <mass value="0.432"/>
+      <inertia ixx="0.000623886" ixy="-0.000240846" ixz="0.000239764" iyy="0.000601898" iyz="0.000165677" izz="0.00068426"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/scapula_mirror.stl"/>
+      </geometry>
+      <material name="colour_220"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0058 -0.0378 -0.0096" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.035"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0359 -0.0309 0.0132" rpy="1.3378150533698296 0.6350705803239519 2.7017475147792402"/>
+      <geometry>
+        <cylinder radius="0.003" length="0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="scapphant_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapphant_l_dof2">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="scapphant_l">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="humphant_l">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="humphant1_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="humphant1_l">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <link name="humerus_l">
+    <inertial>
+      <origin xyz="0.018064 -0.140141 0.012746" rpy="0 0 0"/>
+      <mass value="1.94"/>
+      <inertia ixx="0.0119238" ixy="0" ixz="0" iyy="0.0024778" iyz="0" izz="0.0122163"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/humerus_mirror.stl"/>
+      </geometry>
+      <material name="colour_223"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.005 -0.29 0.033" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.3 -0.005" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.027"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 0 -0.006" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 0 -0.006" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0033 0.005 -0.0003" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.022"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0134 -0.2861 0.0008" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0078 -0.0041 0.0014" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0016 0.0092 -0.0052" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0086 0.0021 0.0004" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0025 0.00079 0.0045" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0002 0.0077 -0.0043" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0027 -0.1202 0.0059" rpy="1.6287977878907205 -0.8708516899148286 -0.14044171701922273"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0028 -0.2919 0.0119" rpy="0.13944515641321079 -0.015420993460149057 0.15435388851587956"/>
+      <geometry>
+        <cylinder radius="0.016" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0019 -0.289 0.014" rpy="0.12559973507762132 -0.1402999788073407 0.013011664763391004"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0224 0.0102 -0.0094" rpy="0.2279397648643263 0.20537135439480594 -0.6602015062502817"/>
+      <geometry>
+        <cylinder radius="0.007" length="0.045"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0009 -0.0551 0.0004" rpy="0.962896677825103 1.3424510920036434 2.4892892832885822"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.002 -0.0508 0.0017" rpy="-1.5517191913701192 -0.9249213976940808 -0.09273019793494808"/>
+      <geometry>
+        <cylinder radius="0.009" length="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0443 0.0055" rpy="-1.351122371328136 1.4126915727131608 0.15328247396988656"/>
+      <geometry>
+        <cylinder radius="0.007" length="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.003 -0.0255 -0.0013" rpy="1.4733125127591005 -0.07046798387891716 -3.1116984576465896"/>
+      <geometry>
+        <cylinder radius="0.0215" length="0.113"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0019 -0.019 -0.0022" rpy="-1.5216985083650336 -0.6449746968185853 -0.374808200225228"/>
+      <geometry>
+        <cylinder radius="0.0235" length="0.115"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0017 -0.0958 -0.0011" rpy="-1.550897187708692 0.06004473596837125 -0.018769701123957375"/>
+      <geometry>
+        <cylinder radius="0.0109" length="0.12"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="ulna_l">
+    <inertial>
+      <origin xyz="0.00971783 -0.0959509 -0.024286" rpy="0 0 0"/>
+      <mass value="0.563"/>
+      <inertia ixx="0.00275723" ixy="0" ixz="0" iyy="0.000587388" iyz="0" izz="0.00251809"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/ulna_mirror.stl"/>
+      </geometry>
+      <material name="colour_245"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0012 -0.2092 -0.0428" rpy="-0.32420927634766794 1.3818585190037702 1.3111862631353504"/>
+      <geometry>
+        <cylinder radius="0.007" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="radius_l">
+    <inertial>
+      <origin xyz="0.0336341 -0.181559 -0.0156" rpy="0 0 0"/>
+      <mass value="0.544"/>
+      <inertia ixx="0.00102132" ixy="0" ixz="0" iyy="0.000206314" iyz="0" izz="0.000937556"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/radius_mirror.stl"/>
+      </geometry>
+      <material name="colour_247"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0163 -0.2417 -0.0349" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.003"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0281 -0.1986 -0.0288" rpy="-1.6117200810202754 0.45148310799479374 3.136478770108316"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.1"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0045 -0.0437 -0.0059" rpy="1.4222188099047202 -0.6581974139983475 -2.744074263699652"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="proximal_row_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="proximal_row_l">
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_lunate_mirror.stl"/>
+      </geometry>
+      <material name="colour_251"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfastSCAPHOIDw_mirror.stl"/>
+      </geometry>
+      <material name="colour_252"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfastPISIFORMw_mirror.stl"/>
+      </geometry>
+      <material name="colour_253"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfastTRIQUETRALw_mirror.stl"/>
+      </geometry>
+      <material name="colour_254"/>
+    </visual>
+    <collision>
+      <origin xyz="0.02 -0.025 0.0033" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.009 -0.0149 -0.0211" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0035"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0007 -0.0117 -0.0191" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0035"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0098 -0.0137 -0.0166" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.003"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0128 -0.0133 -0.0148" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.004"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0032 -0.0045 0.019" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0015"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0126 -0.0095 -0.0186" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.002"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0222 -0.0096 -0.0208" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.008"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.00146 -0.012 0.00893" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02374"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0167 -0.0022 -0.0048" rpy="-0.3801712245025114 1.4019999321348109 2.78502605646974"/>
+      <geometry>
+        <cylinder radius="0.014" length="0.036"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0022 -0.0069 -0.0032" rpy="1.5497009396191985 -0.22303704603587593 -1.3663762417326621"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0012 -0.0057 0.0003" rpy="0.09510941939362506 -1.4795904706643555 -0.0962669404837408"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="hand_l_dof1">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <link name="hand_l">
+    <inertial>
+      <origin xyz="0.00563347 -0.0507365 0.00922098" rpy="0 0 0"/>
+      <mass value="0.393"/>
+      <inertia ixx="0.0003726" ixy="0.0000182309" ixz="-0.0000488182" iyy="0.000267107" iyz="0.000068208" izz="0.000416759"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_5mc_mirror.stl"/>
+      </geometry>
+      <material name="colour_267"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_4mc_mirror.stl"/>
+      </geometry>
+      <material name="colour_268"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_3mc_mirror.stl"/>
+      </geometry>
+      <material name="colour_269"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_2mc_mirror.stl"/>
+      </geometry>
+      <material name="colour_270"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_trapezium_mirror.stl"/>
+      </geometry>
+      <material name="colour_271"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_trapezoid_mirror.stl"/>
+      </geometry>
+      <material name="colour_272"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/sdfast_1seg_hand_fr_c_hamate_mirror.stl"/>
+      </geometry>
+      <material name="colour_273"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_capitate_mirror.stl"/>
+      </geometry>
+      <material name="colour_274"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_2proxph_mirror.stl"/>
+      </geometry>
+      <material name="colour_275"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_2midph_mirror.stl"/>
+      </geometry>
+      <material name="colour_276"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_2distph_mirror.stl"/>
+      </geometry>
+      <material name="colour_277"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_3proxph_mirror.stl"/>
+      </geometry>
+      <material name="colour_278"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_3midph_mirror.stl"/>
+      </geometry>
+      <material name="colour_279"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_3distph_mirror.stl"/>
+      </geometry>
+      <material name="colour_280"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_4proxph_mirror.stl"/>
+      </geometry>
+      <material name="colour_281"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_4midph_mirror.stl"/>
+      </geometry>
+      <material name="colour_282"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_4distph_mirror.stl"/>
+      </geometry>
+      <material name="colour_283"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_5proxph_mirror.stl"/>
+      </geometry>
+      <material name="colour_284"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_5midph_mirror.stl"/>
+      </geometry>
+      <material name="colour_285"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_5distph_mirror.stl"/>
+      </geometry>
+      <material name="colour_286"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_thumbprox_mirror.stl"/>
+      </geometry>
+      <material name="colour_287"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_thumbdist_mirror.stl"/>
+      </geometry>
+      <material name="colour_288"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hand_1mc_mirror.stl"/>
+      </geometry>
+      <material name="colour_289"/>
+    </visual>
+    <collision>
+      <origin xyz="0.007 -0.0741 0.0457" rpy="-0.8233645949444565 -0.8594256055784675 0.12970481690462596"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0741 0.0457" rpy="-0.8233645949444565 -0.8594256055784675 0.12970481690462596"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0152 -0.0785 0.0328" rpy="-0.072701877945569 -1.18038193411325 -0.5746695849476753"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0153 -0.0786 0.0329" rpy="0.9958926984592456 -0.7981304166643916 -1.78967819046857"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0154 -0.0784 0.0329" rpy="0.7668911981000104 -1.0155867685302125 -1.501369759706287"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0094 -0.0778 0.0469" rpy="-0.9210714780083022 -0.759876168352485 0.6135187637067673"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0094 -0.0778 0.0469" rpy="-0.9210714780083022 -0.759876168352485 0.6135187637067673"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.0871 0.0289" rpy="0.7188753430078447 -0.9635829131705569 -1.2258056820461851"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.0871 0.0289" rpy="0.7188753430078447 -0.9635829131705569 -1.2258056820461851"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.005 -0.0871 0.0289" rpy="0.7188753430078447 -0.9635829131705569 -1.2258056820461851"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.019 -0.0814 0.0494" rpy="-1.1618631657292213 -1.0006999010205635 1.0293354920724729"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.019 -0.0814 0.0494" rpy="-1.1618631657292213 -1.0006999010205635 1.0293354920724729"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0122 -0.0934 0.0238" rpy="1.3670547497440884 -1.0055540348499323 -1.3509380378535858"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0122 -0.0934 0.0238" rpy="1.3670547497440884 -1.0055540348499323 -1.3509380378535858"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0122 -0.0934 0.0238" rpy="1.3670547497440884 -1.0055540348499323 -1.3509380378535858"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0396 -0.0713 0.0365" rpy="-0.32810921110933927 -0.058856324953631925 -0.25231045734801016"/>
+      <geometry>
+        <cylinder radius="0.0045" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0402 -0.0405 0.0271" rpy="-0.1419035742164431 -0.30897303701360207 -0.7947905125142265"/>
+      <geometry>
+        <cylinder radius="0.0085" length="0.02"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0295 -0.0815 0.0441" rpy="-1.528548034278491 -0.3449218793954156 -1.4023910177201604"/>
+      <geometry>
+        <cylinder radius="0.003" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0306 -0.0911 0.0223" rpy="-1.7147493235818734 0.5065589738912597 -1.4841711766739512"/>
+      <geometry>
+        <cylinder radius="0.004" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0291 -0.0821 0.045" rpy="-1.6002265115350556 -1.084365893256674 1.8243422282254829"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0291 -0.0821 0.045" rpy="-1.6002265115350556 -1.084365893256674 1.8243422282254829"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307 -0.0924 0.0222" rpy="1.575229831570545 -1.0189407333291802 -1.2518636166520678"/>
+      <geometry>
+        <cylinder radius="0.0055" length="0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307 -0.0924 0.0222" rpy="1.575229831570545 -1.0189407333291802 -1.2518636166520678"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0307 -0.0924 0.0222" rpy="1.575229831570545 -1.0189407333291802 -1.2518636166520678"/>
+      <geometry>
+        <cylinder radius="0.0075" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0235 -0.0561 0.0057" rpy="1.003936569722966 -0.37479279146631767 -1.639677484366335"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0235 -0.0561 0.0057" rpy="1.036222952664273 0.1960977266837469 -1.9834742952283329"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0235 -0.0561 0.0057" rpy="1.0475313796560377 -0.000013276184215928227 -1.8686107003281163"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.012"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0139 -0.0642 -0.0033" rpy="1.20975291373432 0.5799708630058781 -2.1411776332868415"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0139 -0.0642 -0.0033" rpy="1.270830688492153 0.00004787742432574315 -1.9371505703089835"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0139 -0.0642 -0.0033" rpy="1.270830688492153 0.00004787742432574315 -1.9371505703089835"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0655 -0.0092" rpy="-1.3494711990837363 0.668465602611233 1.5388177047059413"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0046 -0.0662 -0.0099" rpy="-1.3283696254288937 0.7703936992814624 1.570796181466367"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0007 -0.0655 -0.0092" rpy="-1.3283696254288937 0.7703936992814624 1.570796181466367"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0182 -0.0659 -0.0087" rpy="1.5113280208349966 -0.17434445573473253 -1.6000723359693756"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0182 -0.0659 -0.0087" rpy="1.5120885982591763 0.06957414902064829 -1.614487115601269"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.01"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0182 -0.0659 -0.0087" rpy="1.5122297924430759 -0.00011636530076935261 -1.6103934760867187"/>
+      <geometry>
+        <cylinder radius="0.013" length="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="rib1_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib1R.obj"/>
+      </geometry>
+      <material name="colour_326"/>
+    </visual>
+  </link>
+  <link name="rib1_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib1L.obj"/>
+      </geometry>
+      <material name="colour_327"/>
+    </visual>
+  </link>
+  <link name="rib2_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib2R.obj"/>
+      </geometry>
+      <material name="colour_328"/>
+    </visual>
+  </link>
+  <link name="rib2_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib2L.obj"/>
+      </geometry>
+      <material name="colour_329"/>
+    </visual>
+  </link>
+  <link name="rib3_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib3R.obj"/>
+      </geometry>
+      <material name="colour_330"/>
+    </visual>
+  </link>
+  <link name="rib3_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib3L.obj"/>
+      </geometry>
+      <material name="colour_331"/>
+    </visual>
+  </link>
+  <link name="rib4_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib4R.obj"/>
+      </geometry>
+      <material name="colour_332"/>
+    </visual>
+  </link>
+  <link name="rib4_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib4L.obj"/>
+      </geometry>
+      <material name="colour_333"/>
+    </visual>
+  </link>
+  <link name="rib5_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib5R.obj"/>
+      </geometry>
+      <material name="colour_334"/>
+    </visual>
+  </link>
+  <link name="rib5_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib5L.obj"/>
+      </geometry>
+      <material name="colour_335"/>
+    </visual>
+  </link>
+  <link name="rib6_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib6R.obj"/>
+      </geometry>
+      <material name="colour_336"/>
+    </visual>
+  </link>
+  <link name="rib6_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib6L.obj"/>
+      </geometry>
+      <material name="colour_337"/>
+    </visual>
+  </link>
+  <link name="rib7_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib7R.obj"/>
+      </geometry>
+      <material name="colour_338"/>
+    </visual>
+  </link>
+  <link name="rib7_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib7L.obj"/>
+      </geometry>
+      <material name="colour_339"/>
+    </visual>
+  </link>
+  <link name="rib8_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib8R.obj"/>
+      </geometry>
+      <material name="colour_340"/>
+    </visual>
+  </link>
+  <link name="rib8_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib8L.obj"/>
+      </geometry>
+      <material name="colour_341"/>
+    </visual>
+  </link>
+  <link name="rib9_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib9R.obj"/>
+      </geometry>
+      <material name="colour_342"/>
+    </visual>
+  </link>
+  <link name="rib9_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib9L.obj"/>
+      </geometry>
+      <material name="colour_343"/>
+    </visual>
+  </link>
+  <link name="rib10_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib10R.obj"/>
+      </geometry>
+      <material name="colour_344"/>
+    </visual>
+  </link>
+  <link name="rib10_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib10L.obj"/>
+      </geometry>
+      <material name="colour_345"/>
+    </visual>
+  </link>
+  <link name="rib11_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib11R.obj"/>
+      </geometry>
+      <material name="colour_346"/>
+    </visual>
+  </link>
+  <link name="rib11_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib11L.obj"/>
+      </geometry>
+      <material name="colour_347"/>
+    </visual>
+  </link>
+  <link name="rib12_R">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib12R.obj"/>
+      </geometry>
+      <material name="colour_348"/>
+    </visual>
+  </link>
+  <link name="rib12_L">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/Rib12L.obj"/>
+      </geometry>
+      <material name="colour_349"/>
+    </visual>
+  </link>
+  <joint name="pelvis_tz" type="prismatic">
+    <origin xyz="0 0 0.95" rpy="1.5707963267948968 0 0"/>
+    <parent link="world"/>
+    <child link="pelvis_dof1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-10000000000000000" upper="10000000000000000" effort="0" velocity="0"/>
+  </joint>
+  <joint name="pelvis_ty" type="prismatic">
+    <parent link="pelvis_dof1"/>
+    <child link="pelvis_dof2"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-10000000000000000" upper="10000000000000000" effort="0" velocity="0"/>
+  </joint>
+  <joint name="pelvis_tx" type="prismatic">
+    <parent link="pelvis_dof2"/>
+    <child link="pelvis_dof3"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-10000000000000000" upper="10000000000000000" effort="0" velocity="0"/>
+  </joint>
+  <joint name="pelvis_tilt" type="continuous">
+    <parent link="pelvis_dof3"/>
+    <child link="pelvis_dof4"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="pelvis_list" type="continuous">
+    <parent link="pelvis_dof4"/>
+    <child link="pelvis_dof5"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+  <joint name="pelvis_rotation" type="continuous">
+    <parent link="pelvis_dof5"/>
+    <child link="pelvis"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="hip_flexion_r" type="revolute">
+    <origin xyz="-0.056276 -0.07849 0.07726" rpy="0 0 0"/>
+    <parent link="pelvis"/>
+    <child link="femur_r_dof1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.52" upper="2" effort="0" velocity="0"/>
+    <dynamics damping="1" friction="0"/>
+  </joint>
+  <joint name="hip_adduction_r" type="revolute">
+    <parent link="femur_r_dof1"/>
+    <child link="femur_r_dof2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.85" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="1" friction="0"/>
+  </joint>
+  <joint name="hip_rotation_r" type="revolute">
+    <parent link="femur_r_dof2"/>
+    <child link="femur_r"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.65" upper="0.65" effort="0" velocity="0"/>
+    <dynamics damping="1" friction="0"/>
+  </joint>
+  <joint name="knee_angle_r_translation3" type="prismatic">
+    <origin xyz="-0.00809046 -0.40796 -0.00275026" rpy="0 0 0"/>
+    <parent link="femur_r"/>
+    <child link="tibia_r_dof1"/>
+    <axis xyz="0.992246 0.123982 -0.00878916"/>
+    <limit lower="-0.00187973" upper="0.00365968" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="0.00626543" offset="-0.0000146191"/>
+  </joint>
+  <joint name="knee_angle_r_translation2" type="prismatic">
+    <parent link="tibia_r_dof1"/>
+    <child link="tibia_r_dof2"/>
+    <axis xyz="0.992246 0.123982 -0.00878916"/>
+    <limit lower="0.0000000000769254" upper="0.006792" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="0.00587971" offset="0.0000000000769254"/>
+  </joint>
+  <joint name="knee_angle_r_translation1" type="prismatic">
+    <parent link="tibia_r_dof2"/>
+    <child link="tibia_r_dof3"/>
+    <axis xyz="-0.124293 0.989762 -0.0701648"/>
+    <limit lower="0.0000000953733" upper="0.00159883" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="0.00312879" offset="0.0000000953733"/>
+  </joint>
+  <joint name="knee_angle_r" type="revolute">
+    <parent link="tibia_r_dof3"/>
+    <child link="tibia_r_dof4"/>
+    <axis xyz="-0.000000000398373 -0.0707131 -0.997497"/>
+    <limit lower="0" upper="2.4" effort="0" velocity="0"/>
+    <dynamics damping="0.5" friction="0"/>
+  </joint>
+  <joint name="knee_angle_r_rotation2" type="revolute">
+    <parent link="tibia_r_dof4"/>
+    <child link="tibia_r_dof5"/>
+    <axis xyz="0.992246 0.123982 -0.00878916"/>
+    <limit lower="-0.00167821" upper="0.0335354" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="0.0791" offset="-0.0000000147325"/>
+  </joint>
+  <joint name="knee_angle_r_rotation3" type="revolute">
+    <parent link="tibia_r_dof5"/>
+    <child link="tibia_r"/>
+    <axis xyz="-0.124293 0.989762 -0.0701648"/>
+    <limit lower="0.0000000108939" upper="0.262788" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="0.369499" offset="0.0000000108939"/>
+  </joint>
+  <joint name="ankle_angle_r" type="revolute">
+    <origin xyz="-0.00191 -0.396465 0.001485" rpy="0 0 0"/>
+    <parent link="tibia_r"/>
+    <child link="talus_r"/>
+    <axis xyz="-0.105014 -0.174022 0.979126"/>
+    <limit lower="-0.68" upper="0.52" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="subtalar_angle_r" type="revolute">
+    <origin xyz="-0.04877 -0.04195 0.00792" rpy="0 0 0"/>
+    <parent link="talus_r"/>
+    <child link="calcn_r"/>
+    <axis xyz="0.78718 0.604747 -0.120949"/>
+    <limit lower="-0.34" upper="0.34" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="mtp_angle_r" type="revolute">
+    <origin xyz="0.1788 -0.002 0.00108" rpy="0 0 0"/>
+    <parent link="calcn_r"/>
+    <child link="toes_r"/>
+    <axis xyz="0.580954 0 -0.813936"/>
+    <limit lower="-0.5" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="0.05" friction="0"/>
+  </joint>
+  <joint name="knee_angle_r_beta_translation2" type="prismatic">
+    <origin xyz="-0.00809 -0.40796 0" rpy="0 0 0"/>
+    <parent link="femur_r"/>
+    <child link="patella_r_dof1"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.0408267" upper="-0.0108281" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="-0.0487847" offset="-0.0108281"/>
+  </joint>
+  <joint name="knee_angle_r_beta_translation1" type="prismatic">
+    <parent link="patella_r_dof1"/>
+    <child link="patella_r_dof2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.0227731" upper="0.0524192" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="-0.0150188" offset="0.0524192"/>
+  </joint>
+  <joint name="knee_angle_r_beta_rotation1" type="revolute">
+    <parent link="patella_r_dof2"/>
+    <child link="patella_r"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.79241" upper="0.010506" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_r" multiplier="0.0247615" offset="0.010506"/>
+  </joint>
+  <joint name="hip_flexion_l" type="revolute">
+    <origin xyz="-0.056276 -0.07849 -0.07726" rpy="0 0 0"/>
+    <parent link="pelvis"/>
+    <child link="femur_l_dof1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.52" upper="2" effort="0" velocity="0"/>
+    <dynamics damping="1" friction="0"/>
+  </joint>
+  <joint name="hip_adduction_l" type="revolute">
+    <parent link="femur_l_dof1"/>
+    <child link="femur_l_dof2"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-0.85" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="1" friction="0"/>
+  </joint>
+  <joint name="hip_rotation_l" type="revolute">
+    <parent link="femur_l_dof2"/>
+    <child link="femur_l"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.65" upper="0.65" effort="0" velocity="0"/>
+    <dynamics damping="1" friction="0"/>
+  </joint>
+  <joint name="knee_angle_l_translation3" type="prismatic">
+    <origin xyz="-0.00809046 -0.40796 0.00275026" rpy="0 0 0"/>
+    <parent link="femur_l"/>
+    <child link="tibia_l_dof1"/>
+    <axis xyz="-0.992246 -0.123982 -0.00878916"/>
+    <limit lower="-0.00365968" upper="0.00187973" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="-0.00626543" offset="0.0000146191"/>
+  </joint>
+  <joint name="knee_angle_l_translation2" type="prismatic">
+    <parent link="tibia_l_dof1"/>
+    <child link="tibia_l_dof2"/>
+    <axis xyz="-0.992246 -0.123982 -0.00878916"/>
+    <limit lower="-0.006792" upper="-0.0000000000769254" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="-0.00587971" offset="-0.0000000000769254"/>
+  </joint>
+  <joint name="knee_angle_l_translation1" type="prismatic">
+    <parent link="tibia_l_dof2"/>
+    <child link="tibia_l_dof3"/>
+    <axis xyz="-0.124293 0.989762 0.0701648"/>
+    <limit lower="0.0000000953733" upper="0.00159883" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="0.00312879" offset="0.0000000953733"/>
+  </joint>
+  <joint name="knee_angle_l" type="revolute">
+    <parent link="tibia_l_dof3"/>
+    <child link="tibia_l_dof4"/>
+    <axis xyz="0.000000000398373 0.0707131 -0.997497"/>
+    <limit lower="0" upper="2.4" effort="0" velocity="0"/>
+    <dynamics damping="0.5" friction="0"/>
+  </joint>
+  <joint name="knee_angle_l_rotation2" type="revolute">
+    <parent link="tibia_l_dof4"/>
+    <child link="tibia_l_dof5"/>
+    <axis xyz="-0.992246 -0.123982 -0.00878916"/>
+    <limit lower="-0.00167821" upper="0.0335354" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="0.0791" offset="-0.0000000147325"/>
+  </joint>
+  <joint name="knee_angle_l_rotation3" type="revolute">
+    <parent link="tibia_l_dof5"/>
+    <child link="tibia_l"/>
+    <axis xyz="-0.124293 0.989762 0.0701648"/>
+    <limit lower="-0.262788" upper="-0.0000000108939" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="-0.369499" offset="-0.0000000108939"/>
+  </joint>
+  <joint name="ankle_angle_l" type="revolute">
+    <origin xyz="-0.00191 -0.396465 -0.001485" rpy="0 0 0"/>
+    <parent link="tibia_l"/>
+    <child link="talus_l"/>
+    <axis xyz="0.105014 0.174022 0.979126"/>
+    <limit lower="-0.68" upper="0.52" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="subtalar_angle_l" type="revolute">
+    <origin xyz="-0.04877 -0.04195 -0.00792" rpy="0 0 0"/>
+    <parent link="talus_l"/>
+    <child link="calcn_l"/>
+    <axis xyz="-0.78718 -0.604747 -0.120949"/>
+    <limit lower="-0.34" upper="0.34" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="mtp_angle_l" type="revolute">
+    <origin xyz="0.1788 -0.002 -0.00108" rpy="0 0 0"/>
+    <parent link="calcn_l"/>
+    <child link="toes_l"/>
+    <axis xyz="-0.580954 0 -0.813936"/>
+    <limit lower="-0.5" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="0.05" friction="0"/>
+  </joint>
+  <joint name="knee_angle_l_beta_translation2" type="prismatic">
+    <origin xyz="-0.00809 -0.40796 0" rpy="0 0 0"/>
+    <parent link="femur_l"/>
+    <child link="patella_l_dof1"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.0408267" upper="-0.0108281" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="-0.0487847" offset="-0.0108281"/>
+  </joint>
+  <joint name="knee_angle_l_beta_translation1" type="prismatic">
+    <parent link="patella_l_dof1"/>
+    <child link="patella_l_dof2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.0227731" upper="0.0524192" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="-0.0150188" offset="0.0524192"/>
+  </joint>
+  <joint name="knee_angle_l_beta_rotation1" type="revolute">
+    <parent link="patella_l_dof2"/>
+    <child link="patella_l"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.79241" upper="0.010506" effort="0" velocity="0"/>
+    <dynamics damping="0.01" friction="0"/>
+    <mimic joint="knee_angle_l" multiplier="0.0247615" offset="0.010506"/>
+  </joint>
+  <joint name="sacrum_fixed" type="fixed">
+    <origin xyz="0.015 -0.02 0" rpy="0 0 0"/>
+    <parent link="pelvis"/>
+    <child link="sacrum"/>
+  </joint>
+  <joint name="Abdomen_fixed" type="fixed">
+    <origin xyz="0.012 0.161 0" rpy="0 0 0"/>
+    <parent link="sacrum"/>
+    <child link="Abdomen"/>
+  </joint>
+  <joint name="L5_S1_FE" type="revolute">
+    <origin xyz="-0.098 0.071 0" rpy="0 0 -0.3665200423527365"/>
+    <parent link="sacrum"/>
+    <child link="lumbar5_dof1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="L5_S1_LB" type="revolute">
+    <parent link="lumbar5_dof1"/>
+    <child link="lumbar5_dof2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.3" upper="0.3" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="L5_S1_AR" type="revolute">
+    <parent link="lumbar5_dof2"/>
+    <child link="lumbar5"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.3" upper="0.3" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="lumbar4_fixed" type="fixed">
+    <origin xyz="0 0.039581 0" rpy="0 0 0.314160428667963"/>
+    <parent link="lumbar5"/>
+    <child link="lumbar4"/>
+  </joint>
+  <joint name="lumbar3_fixed" type="fixed">
+    <origin xyz="0 0.036802 0" rpy="0 0 0.20944055594930602"/>
+    <parent link="lumbar4"/>
+    <child link="lumbar3"/>
+  </joint>
+  <joint name="lumbar2_fixed" type="fixed">
+    <origin xyz="0 0.036764 0" rpy="0 0 0.12216994970120594"/>
+    <parent link="lumbar3"/>
+    <child link="lumbar2"/>
+  </joint>
+  <joint name="lumbar1_fixed" type="fixed">
+    <origin xyz="0 0.034054 0" rpy="0 0 0.10471999354150292"/>
+    <parent link="lumbar2"/>
+    <child link="lumbar1"/>
+  </joint>
+  <joint name="T12_L1_FE" type="revolute">
+    <origin xyz="0 0.035497 0" rpy="0 0 -0.03490696146573337"/>
+    <parent link="lumbar1"/>
+    <child link="thoracic12_dof1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="T12_L1_LB" type="revolute">
+    <parent link="thoracic12_dof1"/>
+    <child link="thoracic12_dof2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.3" upper="0.3" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="T12_L1_AR" type="revolute">
+    <parent link="thoracic12_dof2"/>
+    <child link="thoracic12"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.3" upper="0.3" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="thoracic11_fixed" type="fixed">
+    <origin xyz="0 0.033837 0" rpy="0 0 -0.06981296471873016"/>
+    <parent link="thoracic12"/>
+    <child link="thoracic11"/>
+  </joint>
+  <joint name="thoracic10_fixed" type="fixed">
+    <origin xyz="0 0.029544 0" rpy="0 0 -0.08726610755615333"/>
+    <parent link="thoracic11"/>
+    <child link="thoracic10"/>
+  </joint>
+  <joint name="thoracic9_fixed" type="fixed">
+    <origin xyz="0 0.029 0" rpy="0 0 -0.06981296471873016"/>
+    <parent link="thoracic10"/>
+    <child link="thoracic9"/>
+  </joint>
+  <joint name="thoracic8_fixed" type="fixed">
+    <origin xyz="0 0.025135 0" rpy="0 0 -0.08726610755615333"/>
+    <parent link="thoracic9"/>
+    <child link="thoracic8"/>
+  </joint>
+  <joint name="thoracic7_fixed" type="fixed">
+    <origin xyz="0 0.024615 0" rpy="0 0 -0.10471999354150292"/>
+    <parent link="thoracic8"/>
+    <child link="thoracic7"/>
+  </joint>
+  <joint name="thoracic6_fixed" type="fixed">
+    <origin xyz="0 0.025934 0" rpy="0 0 -0.10471999354150292"/>
+    <parent link="thoracic7"/>
+    <child link="thoracic6"/>
+  </joint>
+  <joint name="thoracic5_fixed" type="fixed">
+    <origin xyz="0 0.025672 0" rpy="0 0 -0.10471999354150292"/>
+    <parent link="thoracic6"/>
+    <child link="thoracic5"/>
+  </joint>
+  <joint name="thoracic4_fixed" type="fixed">
+    <origin xyz="0 0.026267 0" rpy="0 0 -0.10471999354150292"/>
+    <parent link="thoracic5"/>
+    <child link="thoracic4"/>
+  </joint>
+  <joint name="thoracic3_fixed" type="fixed">
+    <origin xyz="0 0.024475 0" rpy="0 0 -0.06981296471873016"/>
+    <parent link="thoracic4"/>
+    <child link="thoracic3"/>
+  </joint>
+  <joint name="thoracic2_fixed" type="fixed">
+    <origin xyz="0 0.02221 0" rpy="0 0 -0.05235999792243205"/>
+    <parent link="thoracic3"/>
+    <child link="thoracic2"/>
+  </joint>
+  <joint name="thoracic1_fixed" type="fixed">
+    <origin xyz="0 0.020271 0" rpy="0 0 -0.017453000191531332"/>
+    <parent link="thoracic2"/>
+    <child link="thoracic1"/>
+  </joint>
+  <joint name="T1_head_neck_FE" type="revolute">
+    <origin xyz="-0.00684 0.020271 0" rpy="0 0 0.5236005303984493"/>
+    <parent link="thoracic1"/>
+    <child link="head_neck_dof1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="T1_head_neck_LB" type="revolute">
+    <parent link="head_neck_dof1"/>
+    <child link="head_neck_dof2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.3" upper="0.3" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="T1_head_neck_AR" type="revolute">
+    <parent link="head_neck_dof2"/>
+    <child link="head_neck"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.3" upper="0.3" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="sternum_fixed" type="fixed">
+    <origin xyz="0.082 0.008 0" rpy="0 0 0.5999993031906475"/>
+    <parent link="thoracic1"/>
+    <child link="sternum"/>
+  </joint>
+  <joint name="sternoclavicular_r2_r" type="revolute">
+    <origin xyz="0 0 0.0335" rpy="0 -0.26179897045933426 0"/>
+    <parent link="sternum"/>
+    <child link="clavicle_r_dof1"/>
+    <axis xyz="0.0153 0.989299 -0.1451"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="-0.242001" offset="0"/>
+  </joint>
+  <joint name="sternoclavicular_r3_r" type="revolute">
+    <parent link="clavicle_r_dof1"/>
+    <child link="clavicle_r"/>
+    <axis xyz="-0.994473 0 -0.104997"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="0.1025" offset="0"/>
+  </joint>
+  <joint name="unrotscap_r3_r" type="revolute">
+    <origin xyz="-0.01433 0.02007 0.135535" rpy="0 0 0"/>
+    <parent link="clavicle_r"/>
+    <child link="clavphant_r_dof1"/>
+    <axis xyz="-0.994473 0 -0.104997"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="-0.1025" offset="0"/>
+  </joint>
+  <joint name="unrotscap_r2_r" type="revolute">
+    <parent link="clavphant_r_dof1"/>
+    <child link="clavphant_r"/>
+    <axis xyz="0.0153 0.989299 -0.1451"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="0.242001" offset="0"/>
+  </joint>
+  <joint name="acromioclavicular_r2_r" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0.34906970121436953 0"/>
+    <parent link="clavphant_r"/>
+    <child link="scapula_r_dof1"/>
+    <axis xyz="0.157095 0.947269 -0.279291"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="-0.0490002" offset="0"/>
+  </joint>
+  <joint name="acromioclavicular_r3_r" type="revolute">
+    <parent link="scapula_r_dof1"/>
+    <child link="scapula_r_dof2"/>
+    <axis xyz="-0.754084 0.297594 0.585487"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="0.396002" offset="0"/>
+  </joint>
+  <joint name="acromioclavicular_r1_r" type="revolute">
+    <parent link="scapula_r_dof2"/>
+    <child link="scapula_r"/>
+    <axis xyz="0.6377 0.1186 0.7611"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="0.178" offset="0"/>
+  </joint>
+  <joint name="unrothum_r1_r" type="revolute">
+    <origin xyz="-0.00955 -0.034 0.009" rpy="0 0 0"/>
+    <parent link="scapula_r"/>
+    <child link="scapphant_r_dof1"/>
+    <axis xyz="0.6377 0.1186 0.7611"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="-0.178" offset="0"/>
+  </joint>
+  <joint name="unrothum_r3_r" type="revolute">
+    <parent link="scapphant_r_dof1"/>
+    <child link="scapphant_r_dof2"/>
+    <axis xyz="-0.754084 0.297594 0.585487"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="-0.396002" offset="0"/>
+  </joint>
+  <joint name="unrothum_r2_r" type="revolute">
+    <parent link="scapphant_r_dof2"/>
+    <child link="scapphant_r"/>
+    <axis xyz="0.157095 0.947269 -0.279291"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_r" multiplier="0.0490002" offset="0"/>
+  </joint>
+  <joint name="elv_angle_r" type="revolute">
+    <parent link="scapphant_r"/>
+    <child link="humphant_r"/>
+    <axis xyz="0.0048 0.999089 0.0424"/>
+    <limit lower="-1.6" upper="2.2" effort="0" velocity="0"/>
+    <dynamics damping="0.6" friction="0"/>
+  </joint>
+  <joint name="shoulder_elv_r" type="revolute">
+    <parent link="humphant_r"/>
+    <child link="humphant1_r_dof1"/>
+    <axis xyz="-0.998261 0.0023 0.058898"/>
+    <limit lower="0" upper="3.1" effort="0" velocity="0"/>
+    <dynamics damping="0.6" friction="0"/>
+  </joint>
+  <joint name="shoulder1_r2_r" type="revolute">
+    <parent link="humphant1_r_dof1"/>
+    <child link="humphant1_r"/>
+    <axis xyz="0.0048 0.999089 0.0424"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="elv_angle_r" multiplier="-1" offset="0"/>
+  </joint>
+  <joint name="shoulder_rot_r" type="revolute">
+    <parent link="humphant1_r"/>
+    <child link="humerus_r"/>
+    <axis xyz="0.0048 0.999089 0.0424"/>
+    <limit lower="-0.8" upper="1.6" effort="0" velocity="0"/>
+    <dynamics damping="0.6" friction="0"/>
+  </joint>
+  <joint name="elbow_flexion_r" type="revolute">
+    <origin xyz="0.0061 -0.2904 -0.0123" rpy="0 0 0"/>
+    <parent link="humerus_r"/>
+    <child link="ulna_r"/>
+    <axis xyz="0.0494 0.0366 0.998108"/>
+    <limit lower="0" upper="2.2" effort="0" velocity="0"/>
+    <dynamics damping="0.3" friction="0"/>
+  </joint>
+  <joint name="pro_sup_r" type="revolute">
+    <origin xyz="0.0004 -0.011503 0.019999" rpy="0 0 0"/>
+    <parent link="ulna_r"/>
+    <child link="radius_r"/>
+    <axis xyz="-0.017161 0.992666 -0.119668"/>
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0"/>
+    <dynamics damping="0.3" friction="0"/>
+  </joint>
+  <joint name="deviation_r" type="revolute">
+    <origin xyz="0.018 -0.242 0.025" rpy="0 0 0"/>
+    <parent link="radius_r"/>
+    <child link="proximal_row_r_dof1"/>
+    <axis xyz="-0.819064 -0.135611 -0.557444"/>
+    <limit lower="-0.17" upper="0.43" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="flexion_r" type="revolute">
+    <parent link="proximal_row_r_dof1"/>
+    <child link="proximal_row_r"/>
+    <axis xyz="0.956427 -0.252207 0.147104"/>
+    <limit lower="-0.6" upper="0.6" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="wrist_hand_r1_r" type="revolute">
+    <origin xyz="0.003992 -0.015054 0.002327" rpy="0 0 0"/>
+    <parent link="proximal_row_r"/>
+    <child link="hand_r_dof1"/>
+    <axis xyz="0.899136 -0.349053 -0.26404"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="deviation_r" multiplier="1.35714" offset="0"/>
+  </joint>
+  <joint name="wrist_hand_r3_r" type="revolute">
+    <parent link="hand_r_dof1"/>
+    <child link="hand_r"/>
+    <axis xyz="0.997119 0.0107 -0.075101"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="flexion_r" multiplier="1" offset="0"/>
+  </joint>
+  <joint name="sternoclavicular_r2_l" type="revolute">
+    <origin xyz="0 0 -0.0335" rpy="0 0.26179897045933426 0"/>
+    <parent link="sternum"/>
+    <child link="clavicle_l_dof1"/>
+    <axis xyz="-0.0153 -0.989299 -0.1451"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="-0.242001" offset="0"/>
+  </joint>
+  <joint name="sternoclavicular_r3_l" type="revolute">
+    <parent link="clavicle_l_dof1"/>
+    <child link="clavicle_l"/>
+    <axis xyz="0.994473 0 -0.104997"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="0.1025" offset="0"/>
+  </joint>
+  <joint name="unrotscap_r3_l" type="revolute">
+    <origin xyz="-0.01433 0.02007 -0.135535" rpy="0 0 0"/>
+    <parent link="clavicle_l"/>
+    <child link="clavphant_l_dof1"/>
+    <axis xyz="0.994473 0 -0.104997"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="-0.1025" offset="0"/>
+  </joint>
+  <joint name="unrotscap_r2_l" type="revolute">
+    <parent link="clavphant_l_dof1"/>
+    <child link="clavphant_l"/>
+    <axis xyz="-0.0153 -0.989299 -0.1451"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="0.242001" offset="0"/>
+  </joint>
+  <joint name="acromioclavicular_r2_l" type="revolute">
+    <origin xyz="0 0 0" rpy="0 -0.34906970121436953 0"/>
+    <parent link="clavphant_l"/>
+    <child link="scapula_l_dof1"/>
+    <axis xyz="-0.157095 -0.947269 -0.279291"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="-0.0490002" offset="0"/>
+  </joint>
+  <joint name="acromioclavicular_r3_l" type="revolute">
+    <parent link="scapula_l_dof1"/>
+    <child link="scapula_l_dof2"/>
+    <axis xyz="0.754084 -0.297594 0.585487"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="0.396002" offset="0"/>
+  </joint>
+  <joint name="acromioclavicular_r1_l" type="revolute">
+    <parent link="scapula_l_dof2"/>
+    <child link="scapula_l"/>
+    <axis xyz="-0.6377 -0.1186 0.7611"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="0.178" offset="0"/>
+  </joint>
+  <joint name="unrothum_r1_l" type="revolute">
+    <origin xyz="-0.00955 -0.034 -0.009" rpy="0 0 0"/>
+    <parent link="scapula_l"/>
+    <child link="scapphant_l_dof1"/>
+    <axis xyz="-0.6377 -0.1186 0.7611"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="-0.178" offset="0"/>
+  </joint>
+  <joint name="unrothum_r3_l" type="revolute">
+    <parent link="scapphant_l_dof1"/>
+    <child link="scapphant_l_dof2"/>
+    <axis xyz="0.754084 -0.297594 0.585487"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="-0.396002" offset="0"/>
+  </joint>
+  <joint name="unrothum_r2_l" type="revolute">
+    <parent link="scapphant_l_dof2"/>
+    <child link="scapphant_l"/>
+    <axis xyz="-0.157095 -0.947269 -0.279291"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="shoulder_elv_l" multiplier="0.0490002" offset="0"/>
+  </joint>
+  <joint name="elv_angle_l" type="revolute">
+    <parent link="scapphant_l"/>
+    <child link="humphant_l"/>
+    <axis xyz="-0.0048 -0.999089 0.0424"/>
+    <limit lower="-1.6" upper="2.2" effort="0" velocity="0"/>
+    <dynamics damping="0.6" friction="0"/>
+  </joint>
+  <joint name="shoulder_elv_l" type="revolute">
+    <parent link="humphant_l"/>
+    <child link="humphant1_l_dof1"/>
+    <axis xyz="0.998261 -0.0023 0.058898"/>
+    <limit lower="0" upper="3.1" effort="0" velocity="0"/>
+    <dynamics damping="0.6" friction="0"/>
+  </joint>
+  <joint name="shoulder1_r2_l" type="revolute">
+    <parent link="humphant1_l_dof1"/>
+    <child link="humphant1_l"/>
+    <axis xyz="-0.0048 -0.999089 0.0424"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="elv_angle_l" multiplier="-1" offset="0"/>
+  </joint>
+  <joint name="shoulder_rot_l" type="revolute">
+    <parent link="humphant1_l"/>
+    <child link="humerus_l"/>
+    <axis xyz="-0.0048 -0.999089 0.0424"/>
+    <limit lower="-0.8" upper="1.6" effort="0" velocity="0"/>
+    <dynamics damping="0.6" friction="0"/>
+  </joint>
+  <joint name="elbow_flexion_l" type="revolute">
+    <origin xyz="0.0061 -0.2904 0.0123" rpy="0 0 0"/>
+    <parent link="humerus_l"/>
+    <child link="ulna_l"/>
+    <axis xyz="-0.0494 -0.0366 0.998108"/>
+    <limit lower="0" upper="2.2" effort="0" velocity="0"/>
+    <dynamics damping="0.3" friction="0"/>
+  </joint>
+  <joint name="pro_sup_l" type="revolute">
+    <origin xyz="0.0004 -0.011503 -0.019999" rpy="0 0 0"/>
+    <parent link="ulna_l"/>
+    <child link="radius_l"/>
+    <axis xyz="0.017161 -0.992666 -0.119668"/>
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0"/>
+    <dynamics damping="0.3" friction="0"/>
+  </joint>
+  <joint name="deviation_l" type="revolute">
+    <origin xyz="0.018 -0.242 -0.025" rpy="0 0 0"/>
+    <parent link="radius_l"/>
+    <child link="proximal_row_l_dof1"/>
+    <axis xyz="0.819064 0.135611 -0.557444"/>
+    <limit lower="-0.17" upper="0.43" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="flexion_l" type="revolute">
+    <parent link="proximal_row_l_dof1"/>
+    <child link="proximal_row_l"/>
+    <axis xyz="-0.956427 0.252207 0.147104"/>
+    <limit lower="-0.6" upper="0.6" effort="0" velocity="0"/>
+    <dynamics damping="0.1" friction="0"/>
+  </joint>
+  <joint name="wrist_hand_r1_l" type="revolute">
+    <origin xyz="0.003992 -0.015054 -0.002327" rpy="0 0 0"/>
+    <parent link="proximal_row_l"/>
+    <child link="hand_l_dof1"/>
+    <axis xyz="-0.899136 0.349053 -0.26404"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="deviation_l" multiplier="1.35714" offset="0"/>
+  </joint>
+  <joint name="wrist_hand_r3_l" type="revolute">
+    <parent link="hand_l_dof1"/>
+    <child link="hand_l"/>
+    <axis xyz="-0.997119 -0.0107 -0.075101"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+    <mimic joint="flexion_l" multiplier="1" offset="0"/>
+  </joint>
+  <joint name="rib1_R_fixed" type="fixed">
+    <origin xyz="-0.0033483 0.019498 0.018755" rpy="0.0000036389216878374844 -0.0000010436266045588588 0.5236068435885073"/>
+    <parent link="thoracic1"/>
+    <child link="rib1_R"/>
+  </joint>
+  <joint name="rib1_L_fixed" type="fixed">
+    <origin xyz="-0.0033483 0.019498 -0.018755" rpy="0.0000027232262202292675 -0.000002629626088973206 0.5236068435868255"/>
+    <parent link="thoracic1"/>
+    <child link="rib1_L"/>
+  </joint>
+  <joint name="rib2_R_fixed" type="fixed">
+    <origin xyz="-0.0030697 0.020271 0.011998" rpy="0.000002176135625085733 -0.00000365071579247961 0.5061535410775909"/>
+    <parent link="thoracic2"/>
+    <child link="rib2_R"/>
+  </joint>
+  <joint name="rib2_L_fixed" type="fixed">
+    <origin xyz="-0.0030697 0.020271 -0.011998" rpy="0.000004249146870376653 0.00000008905838680037717 0.5061535410817523"/>
+    <parent link="thoracic2"/>
+    <child link="rib2_L"/>
+  </joint>
+  <joint name="rib3_R_fixed" type="fixed">
+    <origin xyz="-0.0044462 0.02221 0.013345" rpy="0.0000050999805819800265 0.000002077317595454643 0.4537937736326177"/>
+    <parent link="thoracic3"/>
+    <child link="rib3_R"/>
+  </joint>
+  <joint name="rib3_L_fixed" type="fixed">
+    <origin xyz="-0.0044462 0.02221 -0.013345" rpy="0.0000015028915035581763 -0.000005297811155902572 0.45379377362333956"/>
+    <parent link="thoracic3"/>
+    <child link="rib3_L"/>
+  </joint>
+  <joint name="rib4_R_fixed" type="fixed">
+    <origin xyz="-0.0061241 0.024475 0.014919" rpy="0.000005022595538500056 0.0000026258712355765737 0.38398074916805813"/>
+    <parent link="thoracic4"/>
+    <child link="rib4_R"/>
+  </joint>
+  <joint name="rib4_L_fixed" type="fixed">
+    <origin xyz="-0.0061241 0.024475 -0.014919" rpy="0.000001788849399445001 -0.0000053779298026305086 0.3839807491566536"/>
+    <parent link="thoracic4"/>
+    <child link="rib4_L"/>
+  </joint>
+  <joint name="rib5_R_fixed" type="fixed">
+    <origin xyz="-0.0078849 0.026267 0.016164" rpy="0.000004762047247392387 0.000003281023470645187 0.279260421646678"/>
+    <parent link="thoracic5"/>
+    <child link="rib5_R"/>
+  </joint>
+  <joint name="rib5_L_fixed" type="fixed">
+    <origin xyz="-0.0078849 0.026267 -0.016164" rpy="0.0000022997465912237966 -0.000005306009919845303 0.2792604216327645"/>
+    <parent link="thoracic5"/>
+    <child link="rib5_L"/>
+  </joint>
+  <joint name="rib6_R_fixed" type="fixed">
+    <origin xyz="-0.0088519 0.025672 0.015663" rpy="0.000004351536476469204 0.000003525661358744527 0.17454033356608878"/>
+    <parent link="thoracic6"/>
+    <child link="rib6_R"/>
+  </joint>
+  <joint name="rib6_L_fixed" type="fixed">
+    <origin xyz="-0.0088519 0.025672 -0.015663" rpy="0.0000028832468274568785 -0.000004801396177363688 0.17454033355149592"/>
+    <parent link="thoracic6"/>
+    <child link="rib6_L"/>
+  </joint>
+  <joint name="rib7_R_fixed" type="fixed">
+    <origin xyz="-0.010069 0.025934 0.015672" rpy="0.000003749404816455565 0.0000009615573622403187 0.06982056008855064"/>
+    <parent link="thoracic7"/>
+    <child link="rib7_R"/>
+  </joint>
+  <joint name="rib7_L_fixed" type="fixed">
+    <origin xyz="-0.010069 0.025934 -0.015672" rpy="0.0000035790899266885965 -0.00000147406939978875 0.0698205600841101"/>
+    <parent link="thoracic7"/>
+    <child link="rib7_L"/>
+  </joint>
+  <joint name="rib8_R_fixed" type="fixed">
+    <origin xyz="-0.010496 0.024615 0.014582" rpy="0.0000037944246494783195 -0.000003407010088136601 -0.0348991626620732"/>
+    <parent link="thoracic8"/>
+    <child link="rib8_R"/>
+  </joint>
+  <joint name="rib8_L_fixed" type="fixed">
+    <origin xyz="-0.010496 0.024615 -0.014582" rpy="0.0000035475187647070605 0.000003663336417789486 -0.03489916264911152"/>
+    <parent link="thoracic8"/>
+    <child link="rib8_L"/>
+  </joint>
+  <joint name="rib9_R_fixed" type="fixed">
+    <origin xyz="-0.011703 0.025135 0.014682" rpy="0.0000037184932539645563 -0.00000014412774941295632 -0.12216575753483541"/>
+    <parent link="thoracic9"/>
+    <child link="rib9_R"/>
+  </joint>
+  <joint name="rib9_L_fixed" type="fixed">
+    <origin xyz="-0.011703 0.025135 -0.014682" rpy="0.0000035731753333253912 0.0000010393765682017798 -0.1221657575327105"/>
+    <parent link="thoracic9"/>
+    <child link="rib9_L"/>
+  </joint>
+  <joint name="rib10_R_fixed" type="fixed">
+    <origin xyz="-0.014883 0.029 0.01702" rpy="0.0000037914711956651655 -0.0000002547842102363153 -0.19197879264749193"/>
+    <parent link="thoracic10"/>
+    <child link="rib10_R"/>
+  </joint>
+  <joint name="rib10_L_fixed" type="fixed">
+    <origin xyz="-0.014883 0.029 -0.01702" rpy="0.0000034199604997697728 0.0000016564910243951724 -0.19197879264417636"/>
+    <parent link="thoracic10"/>
+    <child link="rib10_L"/>
+  </joint>
+  <joint name="rib11_R_fixed" type="fixed">
+    <origin xyz="-0.01598 0.0188 0.01679" rpy="0.000002386845203087795 0.000005002271968575429 -0.27924429900421366"/>
+    <parent link="thoracic11"/>
+    <child link="rib11_R"/>
+  </joint>
+  <joint name="rib11_L_fixed" type="fixed">
+    <origin xyz="-0.01598 0.0188 -0.01679" rpy="0.000004674971395521604 -0.000002977381808214357 -0.27924429901714315"/>
+    <parent link="thoracic11"/>
+    <child link="rib11_L"/>
+  </joint>
+  <joint name="rib12_R_fixed" type="fixed">
+    <origin xyz="-0.022046 0.022058 0.021423" rpy="0.00000319419068246057 0.000001963750539242419 -0.349059505833753"/>
+    <parent link="thoracic12"/>
+    <child link="rib12_R"/>
+  </joint>
+  <joint name="rib12_L_fixed" type="fixed">
+    <origin xyz="-0.022046 0.022058 -0.021423" rpy="0.0000037091898555368873 0.0000005488217728364517 -0.3490595058358715"/>
+    <parent link="thoracic12"/>
+    <child link="rib12_L"/>
+  </joint>
+</robot>

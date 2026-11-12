@@ -7,6 +7,7 @@
 #include <cmath>
 #include <urdf_parser/urdf_parser.h>
 #include <urdf_model/model.h>
+#include <unordered_set>
 
 namespace RDL {
 namespace Utils {
@@ -132,7 +133,7 @@ static bool hasActiveJoints(const urdf::LinkSharedPtr& link, const std::shared_p
 
 // Parse topology via DFS; fixed joints are collapsed and their transforms accumulated
 // into the downstream active joints, their inertia lumped into the owning active body.
-static void parseTopologyAndLumpFixedJointsDFS(
+/*static void parseTopologyAndLumpFixedJointsDFS(
     const urdf::LinkSharedPtr& current_link,
     int current_parent_id,
     const Eigen::Matrix4d& current_transform,
@@ -178,7 +179,14 @@ static void parseTopologyAndLumpFixedJointsDFS(
             RobotNodeInfo node_info;
             node_info.node_name = child_link->name;
             node_info.joint_name = joint->name;
-            node_info.joint_type = (joint->type == urdf::Joint::PRISMATIC) ? IRJointType::PRISMATIC : IRJointType::REVOLUTE;
+            //node_info.joint_type = (joint->type == urdf::Joint::PRISMATIC) ? IRJointType::PRISMATIC : IRJointType::REVOLUTE;
+            if (joint->type == urdf::Joint::PRISMATIC) {
+                node_info.joint_type = IRJointType::PRISMATIC;
+            } else if (joint->type == urdf::Joint::REVOLUTE || joint->type == urdf::Joint::CONTINUOUS) {
+                node_info.joint_type = IRJointType::REVOLUTE;
+            } else {
+                node_info.joint_type = IRJointType::FIXED; // 其他情况兜底
+            }
             node_info.transform = final_transform;
             node_info.parent_id = current_parent_id;
             node_info.accumulated_spatial_inertia = cluster_inertia;
@@ -201,7 +209,90 @@ static void parseTopologyAndLumpFixedJointsDFS(
         }
     }
 }
+*/
+static void parseTopologyAndLumpFixedJointsDFS(
+    const urdf::LinkSharedPtr& current_link,
+    int current_parent_id,
+    const Eigen::Matrix4d& current_transform,
+    const Eigen::Matrix3d& parent_R_align,
+    const std::shared_ptr<urdf::ModelInterface>& model,
+    std::vector<RobotNodeInfo>& nodes,
+    std::unordered_set<std::string>& visited_links) // 新增：用于记录已访问的连杆，防止闭环
+{
+    if (!current_link) return;
 
+    // 将当前连杆标记为已访问
+    visited_links.insert(current_link->name);
+
+    for (const auto& joint : current_link->child_joints) {
+        auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
+        if (!child_link) continue;
+
+        // 【核心修改】检查子链接是否已经访问过（即是否构成了闭环回路）
+        if (visited_links.find(child_link->name) != visited_links.end()) {
+            std::cout << "[URDFParser] Warning: Detected kinematic loop at joint '" << joint->name 
+                      << "' pointing to already visited link '" << child_link->name 
+                      << "'. Breaking loop here to keep open-loop tree.\n";
+            continue; // 直接跳过该关节，在闭环的最后一个节点处断开，转为开环！
+        }
+
+        Eigen::Matrix4d joint_transform = current_transform * urdfPoseToMatrix(joint->parent_to_joint_origin_transform);
+
+        if (isActiveJoint(joint)) {
+            Eigen::Vector3d axis(joint->axis.x, joint->axis.y, joint->axis.z);
+            if (axis.norm() < 1e-6) axis << 0, 0, 1;
+            else axis.normalize();
+
+            Eigen::Vector3d z_axis(0, 0, 1);
+            Eigen::Matrix3d R_align = Eigen::Matrix3d::Identity();
+
+            if (axis.isApprox(z_axis, 1e-6)) {
+                R_align = Eigen::Matrix3d::Identity();
+            } else if (axis.isApprox(-z_axis, 1e-6)) {
+                R_align = Eigen::AngleAxisd(M_PI, Eigen::Vector3d::UnitX()).toRotationMatrix();
+            } else {
+                R_align = Eigen::Quaterniond::FromTwoVectors(z_axis, axis).toRotationMatrix();
+            }
+
+            Eigen::Matrix4d T_parent_inv = Eigen::Matrix4d::Identity();
+            T_parent_inv.block<3,3>(0,0) = parent_R_align.transpose();
+
+            Eigen::Matrix4d T_child_align = Eigen::Matrix4d::Identity();
+            T_child_align.block<3,3>(0,0) = R_align;
+
+            Eigen::Matrix4d final_transform = T_parent_inv * joint_transform * T_child_align;
+
+            Matrix6d cluster_inertia = Matrix6d::Zero();
+            accumulateRigidCluster(child_link, Eigen::Matrix4d::Identity(), model, cluster_inertia);
+
+            RobotNodeInfo node_info;
+            node_info.node_name = child_link->name;
+            node_info.joint_name = joint->name;
+            node_info.joint_type = (joint->type == urdf::Joint::PRISMATIC) ? IRJointType::PRISMATIC : IRJointType::REVOLUTE;
+            node_info.transform = final_transform;
+            node_info.parent_id = current_parent_id;
+            node_info.accumulated_spatial_inertia = cluster_inertia;
+            node_info.R_align = R_align;
+
+            int new_node_id = static_cast<int>(nodes.size());
+            nodes.push_back(node_info);
+
+            // 递归向下传递 visited_links 集合
+            parseTopologyAndLumpFixedJointsDFS(child_link, new_node_id, Eigen::Matrix4d::Identity(), R_align, model, nodes, visited_links);
+            //for (auto it=visited_links.begin(); it!=visited_links.end(); ++it)
+            //    std::cout << "Link name: " << it->c_str() << std::endl;
+        }
+        else if (joint->type == urdf::Joint::FIXED) {
+            if (hasActiveJoints(child_link, model)) {
+                parseTopologyAndLumpFixedJointsDFS(child_link, current_parent_id, joint_transform, parent_R_align, model, nodes, visited_links);
+            }
+        }
+        else {
+            std::cerr << "[URDFParser] Warning: unsupported joint type for joint '" << joint->name
+                      << "' (floating/planar), its subtree is skipped.\n";
+        }
+    }
+}
 bool URDFParser::parse(
     const std::string& file_path,
     std::vector<RobotNodeInfo>& nodes,
@@ -227,10 +318,10 @@ bool URDFParser::parse(
     world_node.parent_id = -1;
     nodes.push_back(world_node);
 
+    // 初始化闭环检测集合
+    std::unordered_set<std::string> visited_links;
+
     if (is_floating_base) {
-        // Like Pinocchio's free-flyer: the floating base frame is the URDF root link frame.
-        // All fixed-joint-connected subtrees of the root are lumped into the base inertia,
-        // and traversal starts from the root so no branch is lost even if the root is massless.
         RobotNodeInfo base_node;
         base_node.node_name = root_link->name;
         base_node.joint_name = root_link->name + "_floating_joint";
@@ -244,9 +335,12 @@ bool URDFParser::parse(
         base_node.accumulated_spatial_inertia = base_inertia;
         nodes.push_back(base_node);
 
-        parseTopologyAndLumpFixedJointsDFS(root_link, 1, Eigen::Matrix4d::Identity(), Eigen::Matrix3d::Identity(), model, nodes);
+        // 传入 visited_links
+        parseTopologyAndLumpFixedJointsDFS(root_link, 1, Eigen::Matrix4d::Identity(), Eigen::Matrix3d::Identity(), model, nodes, visited_links);
+
     } else {
-        parseTopologyAndLumpFixedJointsDFS(root_link, 0, Eigen::Matrix4d::Identity(), Eigen::Matrix3d::Identity(), model, nodes);
+        // 传入 visited_links
+        parseTopologyAndLumpFixedJointsDFS(root_link, 0, Eigen::Matrix4d::Identity(), Eigen::Matrix3d::Identity(), model, nodes, visited_links);
     }
 
     return true;

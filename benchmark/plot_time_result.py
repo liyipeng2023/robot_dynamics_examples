@@ -98,12 +98,12 @@ for title, r50, r99, p50, p99 in full_algos:
     plot_comparison_chart(title, r50, r99, p50, p99, f"time_benchmark_comparison_{title}.png")
 
 # 3. Pure Algorithms (excl. FK)
-pure_algos = [
-    ("Pure_CRBA_Excl_FK", "RDL_CRBA_Pure", "RDL_CRBA_Pure_P99", "Pin_CRBA_Pure", "Pin_CRBA_Pure_P99"),
-    ("Pure_RNEA_Excl_FK", "RDL_RNEA_Pure", "RDL_RNEA_Pure_P99", "Pin_RNEA_Pure", "Pin_RNEA_Pure_P99"),
-    ("Pure_ABA_Excl_FK",  "RDL_ABA_Pure",  "RDL_ABA_Pure_P99",  "Pin_ABA_Pure",  "Pin_ABA_Pure_P99")
-]
-for title, r50, r99, p50, p99 in pure_algos:
-    plot_comparison_chart(title, r50, r99, p50, p99, f"time_benchmark_comparison_{title}.png")
+#pure_algos = [
+#    ("Pure_CRBA_Excl_FK", "RDL_CRBA_Pure", "RDL_CRBA_Pure_P99", "Pin_CRBA_Pure", "Pin_CRBA_Pure_P99"),
+#    ("Pure_RNEA_Excl_FK", "RDL_RNEA_Pure", "RDL_RNEA_Pure_P99", "Pin_RNEA_Pure", "Pin_RNEA_Pure_P99"),
+#    ("Pure_ABA_Excl_FK",  "RDL_ABA_Pure",  "RDL_ABA_Pure_P99",  "Pin_ABA_Pure",  "Pin_ABA_Pure_P99")
+#]
+#for title, r50, r99, p50, p99 in pure_algos:
+#    plot_comparison_chart(title, r50, r99, p50, p99, f"time_benchmark_comparison_{title}.png")
 
 plt.show()

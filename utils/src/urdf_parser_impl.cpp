@@ -223,7 +223,7 @@ static void parseTopologyAndLumpFixedJointsDFS(
 
     // 将当前连杆标记为已访问
     visited_links.insert(current_link->name);
-    std::cout << "current name: " << current_link->name << std::endl;
+    //std::cout << "current name: " << current_link->name << std::endl;
 
     for (const auto& joint : current_link->child_joints) {
         auto child_link = std::const_pointer_cast<urdf::Link>(model->getLink(joint->child_link_name));
@@ -269,7 +269,14 @@ static void parseTopologyAndLumpFixedJointsDFS(
             RobotNodeInfo node_info;
             node_info.node_name = child_link->name;
             node_info.joint_name = joint->name;
-            node_info.joint_type = (joint->type == urdf::Joint::PRISMATIC) ? IRJointType::PRISMATIC : IRJointType::REVOLUTE;
+            //node_info.joint_type = (joint->type == urdf::Joint::PRISMATIC) ? IRJointType::PRISMATIC : IRJointType::REVOLUTE;
+            if (joint->type == urdf::Joint::PRISMATIC) {
+                node_info.joint_type = IRJointType::PRISMATIC;
+            } else if (joint->type == urdf::Joint::REVOLUTE) {
+                node_info.joint_type = IRJointType::REVOLUTE;
+            } else if (joint->type == urdf::Joint::CONTINUOUS) {
+                node_info.joint_type = IRJointType::CONTINUOUS;
+            }
             node_info.transform = final_transform;
             node_info.parent_id = current_parent_id;
             node_info.accumulated_spatial_inertia = cluster_inertia;

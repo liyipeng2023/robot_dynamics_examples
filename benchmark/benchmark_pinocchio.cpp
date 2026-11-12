@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     Eigen::VectorXd a = Eigen::VectorXd::Zero(model.nv);
     Eigen::VectorXd tau = Eigen::VectorXd::Zero(model.nv);
 
-    const size_t NUM_ITERATIONS = 50000;
+    const size_t NUM_ITERATIONS = 150000;
     const int WARMUP_ITERATIONS = 1000;
     int q_start_idx = is_floating_base ? 7 : 0;
 

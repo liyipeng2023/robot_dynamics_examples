@@ -12,8 +12,8 @@ test_cases = [
     {"model": models_base_dir / "unitree-go2.urdf", "floating": 1},
     {"model": models_base_dir / "spot.urdf", "floating": 1},
     {"model": models_base_dir / "atlas.urdf", "floating": 1},
-    {"model": models_base_dir / "unitree-h1-2.urdf", "floating": 1},
-    {"model": models_base_dir / "HumanURDFmodel.urdf", "floating": 1}
+    {"model": models_base_dir / "HumanURDFmodel.urdf", "floating": 1},
+    {"model": models_base_dir / "unitree-h1-2.urdf", "floating": 1}
 ]
 # linux
 binary_path = "../build/benchmark/compare_rdl_pinocchio"

@@ -49,6 +49,7 @@ int main(int argc, char** argv) {
     Eigen::VectorXd tau = Eigen::VectorXd::Zero(dof_dyn);
     Eigen::MatrixXd M(dof_dyn, dof_dyn);
     Eigen::VectorXd qdd_aba(dof_dyn);
+    M.setZero();
 
     if (is_floating_base && dof_q >= 7) {
         q(3) = 1.0;
@@ -58,7 +59,7 @@ int main(int argc, char** argv) {
     std::mt19937 rng(1337);
     std::uniform_real_distribution<double> dist(-0.1, 0.1);
 
-    const size_t NUM_ITERATIONS = 50000;
+    const size_t NUM_ITERATIONS = 150000;
     const int WARMUP_ITERATIONS = 1000;
     int q_start_idx = is_floating_base ? 7 : 0;
 
@@ -70,7 +71,6 @@ int main(int argc, char** argv) {
         rdl_dyn->backward_iterations(tau.data(), tau.size());
         rdl_dyn->forward_dynamics_aba(v.data(), tau.data(), qdd_aba.data(), dof_dyn, false);
     }
-
     // ----------------------------------------------------
     // 0. Forward Kinematics (FK) Benchmark
     // ----------------------------------------------------

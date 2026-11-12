@@ -17,7 +17,8 @@ namespace RDL {
             FIXED,
             REVOLUTE,
             PRISMATIC,
-            FLOATING
+            FLOATING,
+            CONTINUOUS
         };
 
         // 与文件格式无关的通用节点信息（Intermediate Representation）

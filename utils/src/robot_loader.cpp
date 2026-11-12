@@ -77,8 +77,10 @@ std::shared_ptr<RobotDynamics> load_RobotDynamics(
             robot_dyn->set_joint_type(i, JointType::FLOATING, 0.0);
         } else if (node.joint_type == IRJointType::PRISMATIC) {
             robot_dyn->set_joint_type(i, JointType::PRISMATIC, 0.0);
-        } else {
+        } else if (node.joint_type == IRJointType::REVOLUTE){
             robot_dyn->set_joint_type(i, JointType::REVOLUTE, 0.0);
+        } else {
+            robot_dyn->set_joint_type(i, JointType::CONTINUOUS, 0.0);
         }
 
         robot_dyn->set_fixed_transformation(i, node.transform.data(), 16);

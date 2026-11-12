@@ -10,14 +10,27 @@ target_link_libraries(compare_rdl_pinocchio PRIVATE
         urdfdom::urdfdom_world
         pinocchio::pinocchio
 )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_compile_options(compare_rdl_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -march=native -DNDEBUG>)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_compile_options(compare_rdl_pinocchio PRIVATE $<$<CONFIG:Release>:/O2 /arch:AVX2 /Gy /GL /DNDEBUG /DEIGEN_NO_DEBUG>)
+else()
+    target_compile_options(compare_rdl_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -mpu=native -DNDEBUG>)
+endif()
 
 # 2. Pinocchio performance test
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
 add_executable(benchmark_pinocchio benchmark_pinocchio.cpp)
 target_include_directories(benchmark_pinocchio PRIVATE ${pinocchio_INCLUDE_DIRS} )
 target_link_libraries(benchmark_pinocchio PRIVATE
         pinocchio::pinocchio
 )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_compile_options(benchmark_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -march=native -DNDEBUG>)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_compile_options(benchmark_pinocchio PRIVATE $<$<CONFIG:Release>:/O2 /arch:AVX2 /Gy /GL /DNDEBUG /DEIGEN_NO_DEBUG>)
+else()
+    target_compile_options(benchmark_pinocchio PRIVATE $<$<CONFIG:Release>:-O3 -mpu=native -DNDEBUG>)
+endif()
 
 # 3. RDL performance test
 add_executable(benchmark_rdl benchmark_rdl.cpp)

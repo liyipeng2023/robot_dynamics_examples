@@ -40,10 +40,29 @@ target_link_libraries(benchmark_rdl PRIVATE
         rdl_model_loader
 )
 
+# 4. compare the planar joint and continuous joint in RDL w.r.t. Pinocchio
+add_executable(compare_planar_continuous compare_planar_continuous.cpp)
+target_include_directories(compare_planar_continuous PRIVATE ${pinocchio_INCLUDE_DIRS} )
+target_link_libraries(compare_planar_continuous PRIVATE
+        rdl::rdl_core
+        rdl_model_loader
+        urdfdom::urdfdom_model
+        urdfdom::urdfdom_world
+        pinocchio::pinocchio
+)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_compile_options(compare_planar_continuous PRIVATE $<$<CONFIG:Release>:-O3 -march=native -DNDEBUG>)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_compile_options(compare_planar_continuous PRIVATE $<$<CONFIG:Release>:/O2 /arch:AVX2 /Gy /GL /DNDEBUG /DEIGEN_NO_DEBUG>)
+else()
+    target_compile_options(compare_planar_continuous PRIVATE $<$<CONFIG:Release>:-O3 -mcpu=native -DNDEBUG>)
+endif()
+
 set(RDL_BENCHMARK_EXECUTABLES
         compare_rdl_pinocchio
         benchmark_pinocchio
         benchmark_rdl
+        compare_planar_continuous
 )
 
 if(WIN32)

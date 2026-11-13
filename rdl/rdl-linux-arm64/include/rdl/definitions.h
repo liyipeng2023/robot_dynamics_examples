@@ -72,7 +72,8 @@ namespace RDL {
 		HELICAL = 5,    // 1 DOF, the screw axis is specified by the user
 		CYLINDRICAL = 6,// 2 DOF, the first DOF is the rotation around the joint axis, and the second DOF is the translation along the joint axis
 		PLANAR = 7,     // 3 DOF, the first two DOFs are the translation along the plane, and the third DOF is the rotation around the axis perpendicular to the plane
-		SPHERICAL = 8   // 3 DOF, the rotation around the x, y, and z axes
+		SPHERICAL = 8,   // 3 DOF, the rotation around the x, y, and z axes
+        CONTINUOUS = 9,  // 2 DOF, sin and cos
     }; // the type of joint
 
     struct alignas(16) SpatialVector {

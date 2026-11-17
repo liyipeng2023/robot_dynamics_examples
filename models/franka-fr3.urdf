@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!--
+  Converted by urdfbase. The following could not be carried across:
+  - verified by reading it back: the converted file describes the same robot
+  - 2 link(s) declare no mass (base, fr3_link0): the tool that loads this may fold it into its parent
+-->
 <robot name="fr3">
   <material name="black">
     <color rgba="0.2 0.2 0.2 1"/>
@@ -66,7 +71,7 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <collision name="fr3_link0_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link0.stl"/>
       </geometry>
@@ -74,9 +79,9 @@
   </link>
   <link name="fr3_link1">
     <inertial>
-      <origin xyz="0.0000004128 -0.0181251 -0.0386036" rpy="-0.12105901743903731 0.008928745026649745 0.021521753134633323"/>
+      <origin xyz="0.0000004128 -0.0181251 -0.0386036" rpy="0 0 0"/>
       <mass value="2.92747"/>
-      <inertia ixx="0.0239286" ixy="0" ixz="0" iyy="0.0227246" iyz="0" izz="0.00610634"/>
+      <inertia ixx="0.0239273" ixy="0.0000133173" ixz="-0.000114051" iyy="0.0224821" iyz="-0.00199503" izz="0.0063501"/>
     </inertial>
     <visual>
       <geometry>
@@ -84,7 +89,7 @@
       </geometry>
       <material name="white"/>
     </visual>
-    <collision name="fr3_link1_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link1.stl"/>
       </geometry>
@@ -92,9 +97,9 @@
   </link>
   <link name="fr3_link2">
     <inertial>
-      <origin xyz="0.00318289 -0.0743222 0.00881461" rpy="2.142230254511828 -1.3519062642846593 -0.5209203682981132"/>
+      <origin xyz="0.00318289 -0.0743222 0.00881461" rpy="0 0 0"/>
       <mass value="2.93554"/>
-      <inertia ixx="0.0629567" ixy="0" ixz="0" iyy="0.0411924" iyz="0" izz="0.0246371"/>
+      <inertia ixx="0.0419389" ixy="0.000202601" ixz="0.00407778" iyy="0.0251452" iyz="-0.00422523" izz="0.0617021"/>
     </inertial>
     <visual>
       <geometry>
@@ -102,7 +107,7 @@
       </geometry>
       <material name="white"/>
     </visual>
-    <collision name="fr3_link2_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link2.stl"/>
       </geometry>
@@ -110,9 +115,9 @@
   </link>
   <link name="fr3_link3">
     <inertial>
-      <origin xyz="0.0407016 -0.00482006 -0.0289731" rpy="-0.41698122363149004 0.4261264104517043 0.46028868159336267"/>
+      <origin xyz="0.0407016 -0.00482006 -0.0289731" rpy="0 0 0"/>
       <mass value="2.2449"/>
-      <inertia ixx="0.0267409" ixy="0" ixz="0" iyy="0.0189869" iyz="0" izz="0.0171587"/>
+      <inertia ixx="0.0241014" ixy="0.00240468" ixz="-0.00285627" iyy="0.0197405" iyz="-0.00210421" izz="0.0190445"/>
     </inertial>
     <visual>
       <geometry>
@@ -126,7 +131,7 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <collision name="fr3_link3_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link3.stl"/>
       </geometry>
@@ -134,9 +139,9 @@
   </link>
   <link name="fr3_link4">
     <inertial>
-      <origin xyz="-0.0459101 0.0630493 -0.00851879" rpy="1.9588852461423245 -0.6943925796027254 0.5000913749429721"/>
+      <origin xyz="-0.0459101 0.0630493 -0.00851879" rpy="0 0 0"/>
       <mass value="2.6156"/>
-      <inertia ixx="0.05139" ixy="0" ixz="0" iyy="0.0372717" iyz="0" izz="0.0160047"/>
+      <inertia ixx="0.03453" ixy="0.0132255" ixz="0.0101514" iyy="0.0288817" iyz="-0.000976307" izz="0.0412547"/>
     </inertial>
     <visual>
       <geometry>
@@ -150,7 +155,7 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <collision name="fr3_link4_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link4.stl"/>
       </geometry>
@@ -158,9 +163,9 @@
   </link>
   <link name="fr3_link5">
     <inertial>
-      <origin xyz="-0.00160396 0.0292536 -0.0972966" rpy="0.18170140810885352 0.23215867227501033 -0.736746924286951"/>
+      <origin xyz="-0.00160396 0.0292536 -0.0972966" rpy="0 0 0"/>
       <mass value="2.32712"/>
-      <inertia ixx="0.0579335" ixy="0" ixz="0" iyy="0.0449144" iyz="0" izz="0.0130634"/>
+      <inertia ixx="0.0516103" ixy="-0.00571518" ixz="-0.00356732" iyy="0.0478773" iyz="0.010674" izz="0.0164237"/>
     </inertial>
     <visual>
       <geometry>
@@ -180,7 +185,7 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <collision name="fr3_link5_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link5.stl"/>
       </geometry>
@@ -188,9 +193,9 @@
   </link>
   <link name="fr3_link6">
     <inertial>
-      <origin xyz="0.0597131 -0.0410295 -0.0101693" rpy="1.7136864523859925 0.4011511898562939 1.1418354925474927"/>
+      <origin xyz="0.0597131 -0.0410295 -0.0101693" rpy="0 0 0"/>
       <mass value="1.81704"/>
-      <inertia ixx="0.0175039" ixy="0" ixz="0" iyy="0.0161123" iyz="0" izz="0.00193529"/>
+      <inertia ixx="0.00541232" ixy="0.00619345" ixz="0.00142192" iyy="0.0140583" iyz="-0.00131407" izz="0.0160808"/>
     </inertial>
     <visual>
       <geometry>
@@ -240,7 +245,7 @@
       </geometry>
       <material name="button_blue"/>
     </visual>
-    <collision name="fr3_link6_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link6.stl"/>
       </geometry>
@@ -248,9 +253,9 @@
   </link>
   <link name="fr3_link7">
     <inertial>
-      <origin xyz="0.00452258 0.00862619 -0.0161633" rpy="-0.198384695331344 -0.5075815978453885 1.481540679509996"/>
+      <origin xyz="0.00452258 0.00862619 -0.0161633" rpy="0 0 0"/>
       <mass value="0.627143"/>
-      <inertia ixx="0.000223836" ixy="0" ixz="0" iyy="0.000223642" iyz="0" izz="0.000000564132"/>
+      <inertia ixx="0.000210924" ixy="-0.000024333" ixz="0.0000456448" iyy="0.000177186" iyz="0.0000874408" izz="0.000059932"/>
     </inertial>
     <visual>
       <geometry>
@@ -276,7 +281,7 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <collision name="fr3_link7_collision">
+    <collision>
       <geometry>
         <mesh filename="meshes/link7.stl"/>
       </geometry>

@@ -65,6 +65,14 @@ set(RDL_BENCHMARK_EXECUTABLES
         compare_planar_continuous
 )
 
+# 5. Compare URDF and MJCF loader using RDL
+add_executable(compare_urdf_mjcf_rdl compare_urdf_mjcf_rdl.cpp)
+target_include_directories(compare_urdf_mjcf_rdl PRIVATE ${EIGEN3_INCLUDE_DIR})
+target_link_libraries(compare_urdf_mjcf_rdl PRIVATE
+        rdl::rdl_core
+        rdl_model_loader
+)
+
 if(WIN32)
     foreach(test_target ${RDL_BENCHMARK_EXECUTABLES})
         add_custom_command(

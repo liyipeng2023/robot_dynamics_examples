@@ -18,7 +18,7 @@ test_cases = [
 # linux
 binary_path = "../build/benchmark/compare_rdl_pinocchio"
 # windows
-#binary_path = script_dir / ".." / "cmake-build-release" / "benchmark" / "compare_rdl_pinocchio.exe"
+binary_path = script_dir / ".." / "cmake-build-release" / "benchmark" / "compare_rdl_pinocchio.exe"
 results = []
 
 if not os.path.exists(binary_path):

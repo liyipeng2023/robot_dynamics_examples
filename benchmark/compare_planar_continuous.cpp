@@ -205,7 +205,7 @@ int main()
     std::uniform_real_distribution<double> acc_dist(-3.0, 3.0);
     std::uniform_real_distribution<double> tau_dist(-10.0, 10.0);
 
-    const size_t num_trials = 1000;
+    const size_t num_trials = 10000;
     ErrorMetrics max_metrics;
 
     for (size_t iter = 0; iter < num_trials; ++iter)
@@ -354,9 +354,9 @@ int main()
     // =========================================================================
     // 6. 打印 100 次随机构型对比汇总报告
     // =========================================================================
-    cout << "\n====================================================================\n";
-    cout << "   RDL vs Pinocchio (Planar + Continuous + 5 Revolute) 100次随机对比\n";
-    cout << "====================================================================\n";
+    cout << "\n==================================================================================\n";
+    cout << "   RDL vs Pinocchio (Planar + Continuous + 5 Revolute) 10000 round random comparison\n";
+    cout << "====================================================================================\n";
     cout << std::scientific << std::setprecision(6);
     cout << left << setw(36) << "1. Forward Kinematics Pose (T1~T7)" << "Max Abs Error: " << max_metrics.pose_err << "\n";
     cout << left << setw(36) << "2. Mass Matrix (CRBA M)"            << "Max Abs Error: " << max_metrics.M_err << "\n";
@@ -374,7 +374,7 @@ int main()
 
     if (max_metrics.max_all() < 1e-10)
     {
-        cout << "[PASS] All 100 random trials matched within machine precision (< 1e-10)!\n";
+        cout << "[PASS] All 10000 random trials matched within machine precision (< 1e-10)!\n";
     }
     else
     {

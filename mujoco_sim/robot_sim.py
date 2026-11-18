@@ -1,10 +1,12 @@
 import sys
 import os
 import time
+import json
 import struct
 import ctypes
 import threading
 import argparse
+from datetime import datetime
 import xml.etree.ElementTree as ET
 import numpy as np
 import zmq
@@ -12,7 +14,8 @@ import mujoco
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QFileDialog, QTextEdit, QGroupBox, QOpenGLWidget,
-    QFormLayout, QLineEdit, QCheckBox, QDialog, QScrollArea, QDoubleSpinBox
+    QFormLayout, QLineEdit, QCheckBox, QDialog, QScrollArea, QDoubleSpinBox,
+    QMessageBox
 )
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QSurfaceFormat
@@ -221,7 +224,6 @@ class XMLModelMerger:
         robot_root = cls.load_robot_xml_root(robot_path)
         has_free = cls._has_free_joint(robot_root)
 
-        # Merge non-worldbody sections
         merge_tags = ["asset", "default", "actuator", "sensor", "contact", "equality", "tendon", "keyframe"]
         for tag in merge_tags:
             for r_section in robot_root.findall(tag):
@@ -232,7 +234,6 @@ class XMLModelMerger:
                     for child in list(r_section):
                         e_section.append(child)
 
-        # Merge worldbody; wrap fixed-base robot elements inside 'robot_base_mount' so the base can be translated freely
         e_wb = env_root.find("worldbody")
         if e_wb is None:
             e_wb = ET.SubElement(env_root, "worldbody")
@@ -272,8 +273,8 @@ class RobotBasePosDialog(QDialog):
 
     def __init__(self, current_base_pos: np.ndarray, on_change_callback, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Set Robot Base Position")
-        self.resize(360, 220)
+        self.setWindowTitle("Robot Base Position")
+        self.resize(360, 200)
         self.base_pos = np.copy(current_base_pos)
         self.on_change_callback = on_change_callback
         self.spinboxes = []
@@ -281,7 +282,7 @@ class RobotBasePosDialog(QDialog):
         main_layout = QVBoxLayout(self)
         info_lbl = QLabel(
             "Set robot base 3D world coordinates (m).\n"
-            "You can also hold Ctrl + Left/Right Mouse Drag in the 3D view."
+            "Tip: Hold Ctrl + Mouse Drag in 3D view to move interactively."
         )
         main_layout.addWidget(info_lbl)
 
@@ -299,7 +300,9 @@ class RobotBasePosDialog(QDialog):
 
         btn_row = QHBoxLayout()
         btn_apply = QPushButton("Apply")
-        btn_reset = QPushButton("Reset (0, 0, 0)")
+        btn_apply.setDefault(True)
+        btn_apply.setAutoDefault(True)
+        btn_reset = QPushButton("Reset (0)")
         btn_close = QPushButton("Close")
 
         btn_apply.clicked.connect(self._on_spinbox_changed)
@@ -397,6 +400,8 @@ class InitialJointDialog(QDialog):
         btn_zero = QPushButton("Zero Pos")
         btn_clear_pol = QPushButton("Reset Polarity")
         btn_apply = QPushButton("Apply")
+        btn_apply.setDefault(True)
+        btn_apply.setAutoDefault(True)
         btn_close = QPushButton("Close")
 
         btn_zero.clicked.connect(self._reset_to_defaults)
@@ -462,7 +467,7 @@ class RotorInertiaDialog(QDialog):
         main_layout = QVBoxLayout(self)
         info_lbl = QLabel(
             "Set reflected rotor inertia (I_a = N^2 * I_m) in sequential DOF order (default: 0.0).\n"
-            "Click 'Save' to update MuJoCo and write values to TXT for RDL."
+            "Press Enter to trigger 'Apply', or click 'Save' to also write values to TXT for RDL."
         )
         main_layout.addWidget(info_lbl)
 
@@ -729,10 +734,33 @@ class MuJoCoViewport(QOpenGLWidget):
         self.cam.elevation = -20.0
         self.cam.lookat[:] = [0.0, 0.0, 0.45]
 
-        # Enable subtle contact point and contact force display; disable convex hull overlay so robot mesh stands out
+        # Enable subtle contact point and contact force display; disable convex hull overlay so robot stands out
         self.opt.flags[int(mujoco.mjtVisFlag.mjVIS_CONTACTPOINT)] = 1
         self.opt.flags[int(mujoco.mjtVisFlag.mjVIS_CONTACTFORCE)] = 1
         self.opt.flags[int(mujoco.mjtVisFlag.mjVIS_CONVEXHULL)] = 0
+
+    def get_camera_state(self) -> dict:
+        """Exports current spherical camera viewpoint parameters for scene file serialization."""
+        return {
+            "azimuth": float(self.cam.azimuth),
+            "elevation": float(self.cam.elevation),
+            "distance": float(self.cam.distance),
+            "lookat": np.asarray(self.cam.lookat, dtype=np.float64).tolist()
+        }
+
+    def set_camera_state(self, cam_state: dict):
+        """Restores spherical camera viewpoint parameters from a loaded scene dictionary."""
+        if not isinstance(cam_state, dict):
+            return
+        if "azimuth" in cam_state:
+            self.cam.azimuth = float(cam_state["azimuth"]) % 360.0
+        if "elevation" in cam_state:
+            self.cam.elevation = float(np.clip(float(cam_state["elevation"]), -89.0, 89.0))
+        if "distance" in cam_state:
+            self.cam.distance = float(max(0.05, float(cam_state["distance"])))
+        if "lookat" in cam_state and len(cam_state["lookat"]) == 3:
+            self.cam.lookat[:] = [float(x) for x in cam_state["lookat"]]
+        self.update()
 
     def bind_model(self, model: mujoco.MjModel, data: mujoco.MjData):
         self.model = model
@@ -799,11 +827,9 @@ class MuJoCoViewport(QOpenGLWidget):
         # Hold Ctrl + Mouse Drag to interactively drag the robot base position in 3D space
         if ctrl_pressed and self.on_drag_robot_callback is not None:
             if bool(buttons & Qt.LeftButton):
-                # Ctrl + Left Drag: translate robot horizontally in XY plane
                 delta_pos = (dx * right - dy * forward_horiz) * scale
                 self.on_drag_robot_callback(delta_pos)
             elif bool(buttons & Qt.RightButton):
-                # Ctrl + Right Drag: translate robot along vertical Z axis and horizontal right
                 up_z = np.array([0.0, 0.0, 1.0])
                 delta_pos = (dx * right - dy * up_z) * scale
                 self.on_drag_robot_callback(delta_pos)
@@ -835,7 +861,6 @@ class MuJoCoViewport(QOpenGLWidget):
         if self.model is None:
             return
         steps = event.angleDelta().y() / 120.0
-        # Hold Ctrl + Mouse Wheel to adjust robot Z height directly
         if bool(event.modifiers() & Qt.ControlModifier) and self.on_drag_robot_callback is not None:
             self.on_drag_robot_callback(np.array([0.0, 0.0, 0.02 * steps]))
         else:
@@ -845,7 +870,7 @@ class MuJoCoViewport(QOpenGLWidget):
 
 
 class RobotSimulationSystem(QMainWindow):
-    """Main window: executes causal lockstep synchronization and supports interactive robot base positioning."""
+    """Main window: executes causal lockstep synchronization and supports scene saving/loading (including auto-save on exit)."""
 
     def __init__(self, robot_xml_path: str = None, env_xml_path: str = None, inertia_txt_path: str = "rotor_inertia.txt"):
         super().__init__()
@@ -856,6 +881,7 @@ class RobotSimulationSystem(QMainWindow):
         self.env_xml_path = env_xml_path
         self.robot_xml_path = robot_xml_path
         self.inertia_txt_path = inertia_txt_path
+        self.current_scene_path = None
         self.model = None
         self.data = None
         self.init_qpos = None
@@ -901,10 +927,69 @@ class RobotSimulationSystem(QMainWindow):
         self.render_timer.timeout.connect(self._gui_refresh_step)
         self.render_timer.start(33)
 
+    def _get_robot_directory(self) -> str:
+        """Returns the directory containing the current robot model file."""
+        robot_ref = self.robot_xml_path if self.robot_xml_path else "demo_robot.xml"
+        robot_dir = os.path.dirname(os.path.abspath(robot_ref))
+        if not os.path.exists(robot_dir):
+            os.makedirs(robot_dir, exist_ok=True)
+        return robot_dir
+
+    def _write_scene_to_file(self, scene_file: str, show_popup: bool = False) -> bool:
+        """Serializes all current UI, simulation, and camera viewpoint parameters into the specified JSON file."""
+        with self.sim_lock:
+            robot_ref = self.robot_xml_path if self.robot_xml_path else "demo_robot.xml"
+            abs_robot_path = os.path.abspath(robot_ref)
+
+            scene_data = {
+                "robot_xml_path": self.robot_xml_path,
+                "robot_filename": os.path.basename(abs_robot_path),
+                "env_filename": os.path.basename(self.env_xml_path) if self.env_xml_path else "",
+                "init_qpos": self.init_qpos.tolist() if self.init_qpos is not None else [],
+                "qpos_polarity": self.qpos_polarity.tolist() if self.qpos_polarity is not None else [],
+                "qvel_polarity": self.qvel_polarity.tolist() if self.qvel_polarity is not None else [],
+                "rotor_inertia": self.rotor_inertia.tolist() if self.rotor_inertia is not None else [],
+                "sim_timestep": float(self.sim_timestep),
+                "sim_duration": float(self.sim_duration),
+                "robot_base_pos": self.robot_base_pos.tolist(),
+                "camera_state": self.viewport.get_camera_state(),
+                "pub_endpoint": self.edt_pub_ep.text().strip(),
+                "sub_endpoint": self.edt_sub_ep.text().strip(),
+                "inertia_txt_path": self.inertia_txt_path
+            }
+
+            try:
+                os.makedirs(os.path.dirname(os.path.abspath(scene_file)), exist_ok=True)
+                with open(scene_file, "w", encoding="utf-8") as f:
+                    json.dump(scene_data, f, indent=4)
+            except Exception as e:
+                if show_popup:
+                    QMessageBox.critical(self, "Save Scene Error", f"Failed to save scene file:\n{e}")
+                else:
+                    print(f"[Auto-Save Scene Error] {e}")
+                return False
+
+        if show_popup:
+            QMessageBox.information(self, "Scene Saved", f"Scene configuration saved to:\n{scene_file}")
+        else:
+            print(f"[Auto-Save Scene] Saved configuration to: {scene_file}")
+        return True
+
     def closeEvent(self, event):
+        """Automatically saves the scene configuration when the user closes the application."""
         self._running = False
         if self.physics_thread.is_alive():
             self.physics_thread.join(timeout=0.5)
+
+        # Overwrite loaded scene file if one was loaded; otherwise create a timestamped scene file in the robot directory
+        if self.current_scene_path:
+            target_scene_file = self.current_scene_path
+        else:
+            robot_dir = self._get_robot_directory()
+            timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+            target_scene_file = os.path.join(robot_dir, f"scene_{timestamp_str}.json")
+
+        self._write_scene_to_file(target_scene_file, show_popup=False)
         super().closeEvent(event)
 
     def _init_ui(self):
@@ -918,7 +1003,7 @@ class RobotSimulationSystem(QMainWindow):
         panel = QVBoxLayout()
         main_layout.addLayout(panel, stretch=1)
 
-        # 1. Model & Robot Setup Group
+        # 1. Model & Setup Group
         model_group = QGroupBox("Model & Setup")
         model_layout = QVBoxLayout(model_group)
 
@@ -926,7 +1011,7 @@ class RobotSimulationSystem(QMainWindow):
         robot_label_str = os.path.basename(self.robot_xml_path) if self.robot_xml_path else "2-Link Demo"
         self.lbl_env = QLabel(f"Env: {env_label_str}")
         self.lbl_robot = QLabel(f"Robot: {robot_label_str}")
-        lbl_drag_tip = QLabel("Tip: Hold Ctrl + Mouse Drag/Wheel to move robot")
+        lbl_drag_tip = QLabel("Tip: Hold Ctrl + Mouse Drag/Wheel to move base")
         lbl_drag_tip.setStyleSheet("color: #555555; font-size: 11px;")
 
         env_btn_row = QHBoxLayout()
@@ -937,15 +1022,26 @@ class RobotSimulationSystem(QMainWindow):
 
         robot_btn_row = QHBoxLayout()
         btn_load_robot = QPushButton("Load Robot")
-        btn_base_pos = QPushButton("Robot Base Pos")
-        btn_base_pos.setStyleSheet("font-weight: bold; padding: 4px;")
+        btn_base_pos = QPushButton("Set Robot Base")
+        #btn_base_pos.setStyleSheet("font-weight: bold; padding: 3px;")
         robot_btn_row.addWidget(btn_load_robot)
         robot_btn_row.addWidget(btn_base_pos)
 
-        btn_edit_qpos = QPushButton("Joint Pos. and Polarity")
-        btn_edit_qpos.setStyleSheet("font-weight: bold; padding: 4px;")
+        # Compact Joint Pose/Polarity and Motor Inertia buttons placed on a single horizontal row
+        pose_inertia_row = QHBoxLayout()
+        btn_edit_qpos = QPushButton("Joint Position")
+        #btn_edit_qpos.setStyleSheet("font-size: 11px; font-weight: bold; padding: 3px;")
         btn_edit_inertia = QPushButton("Motor Inertia")
-        btn_edit_inertia.setStyleSheet("font-weight: bold; padding: 4px;")
+        #btn_edit_inertia.setStyleSheet("font-size: 11px; font-weight: bold; padding: 3px;")
+        pose_inertia_row.addWidget(btn_edit_qpos)
+        pose_inertia_row.addWidget(btn_edit_inertia)
+
+        # Scene Save & Load row
+        scene_btn_row = QHBoxLayout()
+        btn_save_scene = QPushButton("Save Scene")
+        btn_load_scene = QPushButton("Load Scene")
+        scene_btn_row.addWidget(btn_save_scene)
+        scene_btn_row.addWidget(btn_load_scene)
 
         ctrl_btn_row = QHBoxLayout()
         btn_reset_sim = QPushButton("Reset Sim")
@@ -959,6 +1055,8 @@ class RobotSimulationSystem(QMainWindow):
         btn_base_pos.clicked.connect(self.open_robot_base_pos_dialog)
         btn_edit_qpos.clicked.connect(self.open_initial_joint_dialog)
         btn_edit_inertia.clicked.connect(self.open_rotor_inertia_dialog)
+        btn_save_scene.clicked.connect(self.save_experimental_scene)
+        btn_load_scene.clicked.connect(self.load_experimental_scene)
         btn_reset_sim.clicked.connect(self.reset_physics_state)
         self.btn_pause.clicked.connect(self.toggle_pause)
 
@@ -967,10 +1065,11 @@ class RobotSimulationSystem(QMainWindow):
         model_layout.addSpacing(4)
         model_layout.addWidget(self.lbl_robot)
         model_layout.addLayout(robot_btn_row)
+        model_layout.addLayout(scene_btn_row)
         model_layout.addWidget(lbl_drag_tip)
         model_layout.addSpacing(4)
-        model_layout.addWidget(btn_edit_qpos)
-        model_layout.addWidget(btn_edit_inertia)
+        model_layout.addLayout(pose_inertia_row)
+        
         model_layout.addLayout(ctrl_btn_row)
         panel.addWidget(model_group)
 
@@ -1017,6 +1116,152 @@ class RobotSimulationSystem(QMainWindow):
         self.txt_collision.setReadOnly(True)
         col_layout.addWidget(self.txt_collision)
         panel.addWidget(col_group, stretch=1)
+
+    def save_experimental_scene(self):
+        """Pops up a file save dialog in the robot model directory so the user can enter a custom scene filename."""
+        robot_dir = self._get_robot_directory()
+        if self.current_scene_path:
+            default_target = self.current_scene_path
+        else:
+            robot_ref = self.robot_xml_path if self.robot_xml_path else "demo_robot.xml"
+            robot_stem = os.path.splitext(os.path.basename(robot_ref))[0]
+            default_target = os.path.join(robot_dir, f"{robot_stem}_scene.json")
+
+        scene_file, _ = QFileDialog.getSaveFileName(
+            self, "Save Experimental Scene", default_target, "Scene JSON Files (*.json)"
+        )
+        if not scene_file:
+            return
+
+        if not scene_file.lower().endswith(".json"):
+            scene_file += ".json"
+
+        if self._write_scene_to_file(scene_file, show_popup=True):
+            self.current_scene_path = os.path.abspath(scene_file)
+
+    def load_experimental_scene(self):
+        """Loads scene JSON, resolves environment file in robot directory (or errors & reverts to default), and restores all settings including camera view."""
+        default_dir = self._get_robot_directory()
+        scene_path, _ = QFileDialog.getOpenFileName(
+            self, "Load Experimental Scene", default_dir, "Scene JSON Files (*.json)"
+        )
+        if not scene_path:
+            return
+
+        try:
+            with open(scene_path, "r", encoding="utf-8") as f:
+                scene_data = json.load(f)
+        except Exception as e:
+            QMessageBox.critical(self, "Load Scene Error", f"Failed to read scene JSON:\n{e}")
+            return
+
+        scene_dir = os.path.dirname(os.path.abspath(scene_path))
+        saved_robot_path = scene_data.get("robot_xml_path", None)
+        saved_robot_fname = scene_data.get("robot_filename", "")
+
+        # Resolve robot model path (prefer same directory as scene file if moved, otherwise saved path)
+        resolved_robot_path = None
+        if saved_robot_fname:
+            local_candidate = os.path.join(scene_dir, saved_robot_fname)
+            if os.path.exists(local_candidate):
+                resolved_robot_path = local_candidate
+        if resolved_robot_path is None and saved_robot_path and os.path.exists(saved_robot_path):
+            resolved_robot_path = saved_robot_path
+
+        robot_dir = os.path.dirname(os.path.abspath(resolved_robot_path)) if resolved_robot_path else scene_dir
+
+        # Resolve environment model by filename in the robot model's directory
+        env_filename = scene_data.get("env_filename", "").strip()
+        resolved_env_path = None
+        if env_filename:
+            candidate_env = os.path.join(robot_dir, env_filename)
+            if os.path.exists(candidate_env):
+                resolved_env_path = candidate_env
+            else:
+                QMessageBox.critical(
+                    self,
+                    "Environment Model Not Found",
+                    f"Environment file '{env_filename}' was not found in robot directory:\n{robot_dir}\n\n"
+                    "Reverting to default flat ground environment."
+                )
+                resolved_env_path = None
+
+        self.robot_xml_path = resolved_robot_path
+        self.env_xml_path = resolved_env_path
+        self.lbl_env.setText(f"Env: {os.path.basename(resolved_env_path) if resolved_env_path else 'Default Ground'}")
+        self.lbl_robot.setText(f"Robot: {os.path.basename(resolved_robot_path) if resolved_robot_path else '2-Link Demo'}")
+
+        self.sim_timestep = float(scene_data.get("sim_timestep", 0.001))
+        self.sim_duration = float(scene_data.get("sim_duration", 10.0))
+        self.spn_timestep.setValue(self.sim_timestep)
+        self.spn_duration.setValue(self.sim_duration)
+        self.inertia_txt_path = scene_data.get("inertia_txt_path", self.inertia_txt_path)
+
+        with self.sim_lock:
+            try:
+                if not self.robot_xml_path and not os.path.exists("demo_robot.xml"):
+                    with open("demo_robot.xml", "w", encoding="utf-8") as f:
+                        f.write(XMLModelMerger.DemoRobotXML().strip())
+
+                combined_xml = XMLModelMerger.build_combined_xml(
+                    self.env_xml_path, self.robot_xml_path, timestep=self.sim_timestep
+                )
+                self.model = mujoco.MjModel.from_xml_string(combined_xml)
+                self.model.opt.timestep = self.sim_timestep
+                self._apply_subtle_contact_visuals_unlocked()
+                self.data = mujoco.MjData(self.model)
+
+                nq = int(self.model.nq)
+                nv = int(self.model.nv)
+
+                init_q = scene_data.get("init_qpos", [])
+                self.init_qpos = np.array(init_q, dtype=np.float64) if len(init_q) == nq else np.copy(self.data.qpos)
+
+                qpos_pol = scene_data.get("qpos_polarity", [])
+                self.qpos_polarity = np.array(qpos_pol, dtype=np.float64) if len(qpos_pol) == nq else np.ones(nq, dtype=np.float64)
+
+                qvel_pol = scene_data.get("qvel_polarity", [])
+                self.qvel_polarity = np.array(qvel_pol, dtype=np.float64) if len(qvel_pol) == nv else np.ones(nv, dtype=np.float64)
+
+                inertia_vals = scene_data.get("rotor_inertia", [])
+                self.rotor_inertia = np.array(inertia_vals, dtype=np.float64) if len(inertia_vals) == nv else np.zeros(nv, dtype=np.float64)
+                self.model.dof_armature[:] = self.rotor_inertia
+                mujoco.mj_setConst(self.model, self.data)
+
+                # Sync loaded rotor inertia to TXT file so RDL also uses the loaded scene's inertia
+                if self.inertia_txt_path:
+                    try:
+                        with open(self.inertia_txt_path, "w", encoding="utf-8") as f:
+                            for val in self.rotor_inertia:
+                                f.write(f"{val:.8f}\n")
+                    except Exception:
+                        pass
+
+                self._locate_robot_base_handle_unlocked()
+                base_pos = scene_data.get("robot_base_pos", [0.0, 0.0, 0.0])
+                if len(base_pos) == 3:
+                    self._set_robot_base_pos_unlocked(np.array(base_pos, dtype=np.float64))
+
+                self._reset_physics_state_unlocked()
+                self.viewport.bind_model(self.model, self.data)
+
+                # Restore saved 3D camera viewpoint
+                cam_state = scene_data.get("camera_state", None)
+                if cam_state is not None:
+                    self.viewport.set_camera_state(cam_state)
+            except Exception as e:
+                QMessageBox.critical(self, "Scene Model Build Error", f"Failed to build simulation from scene:\n{e}")
+                return
+
+        # Record the loaded scene file path so closing the application overwrites this file directly
+        self.current_scene_path = os.path.abspath(scene_path)
+
+        pub_ep = scene_data.get("pub_endpoint", "tcp://*:5555").strip()
+        sub_ep = scene_data.get("sub_endpoint", "tcp://*:5556").strip()
+        self.edt_pub_ep.setText(pub_ep)
+        self.edt_sub_ep.setText(sub_ep)
+        self._need_net_reconfig = (pub_ep, sub_ep)
+        self.viewport.update()
 
     def _apply_subtle_contact_visuals_unlocked(self):
         """Weakens the visual prominence of contact points and force arrows so the robot stands out clearly."""
@@ -1114,6 +1359,7 @@ class RobotSimulationSystem(QMainWindow):
         )
         if path:
             self.robot_xml_path = path
+            self.current_scene_path = None
             self.lbl_robot.setText(f"Robot: {os.path.basename(path)}")
             self.reload_simulation()
 
@@ -1140,7 +1386,6 @@ class RobotSimulationSystem(QMainWindow):
                 self.qpos_polarity = np.ones(int(self.model.nq), dtype=np.float64)
                 self.qvel_polarity = np.ones(int(self.model.nv), dtype=np.float64)
 
-                # Default equivalent motor inertia (armature) is 0.0 for all DOFs
                 self.rotor_inertia = np.zeros(int(self.model.nv), dtype=np.float64)
                 self.model.dof_armature[:] = self.rotor_inertia
                 mujoco.mj_setConst(self.model, self.data)
@@ -1340,7 +1585,6 @@ class RobotSimulationSystem(QMainWindow):
                     time.sleep(0.01)
                     continue
 
-                # Once duration is reached, strictly hold initial pose until user clicks Reset Sim / Apply Timing
                 if self.sim_finished:
                     self._hold_initial_pose_unlocked()
                     self.measured_phys_hz = 0.0
@@ -1358,17 +1602,14 @@ class RobotSimulationSystem(QMainWindow):
                 ncon = int(self.data.ncon)
                 contacts_bin = self.pack_collisions_binary_fast()
 
-                # CAUSAL BARRIER: Flush any stale command in SUB buffer before sending current state x(k)
                 self.rdl_net.flush_cmd_queue()
 
-                # STEP 1: Send state x(k) to RDL
                 ts_override = 0.0 if not self.rdl_connected else None
                 self.rdl_net.send_sim_state(
                     self.model, self.data, self.qpos_polarity, self.qvel_polarity,
                     contacts_bin, ncon, timestamp_override=ts_override
                 )
 
-            # STEP 2: Wait exclusively for RDL's fresh torque tau(k) responding to x(k)
             wait_ms = 20 if self.rdl_connected else 2
             cmd = self.rdl_net.receive_rdl_cmd(timeout_ms=wait_ms)
 
@@ -1388,7 +1629,6 @@ class RobotSimulationSystem(QMainWindow):
                     self.missed_sync_count = 0
                     self.apply_rdl_command(cmd, is_first_handshake_frame=is_first_frame)
 
-                    # STEP 3: Step physics (skip stepping on the initial t=0 handshake frame so q_init is exact)
                     if not self.is_paused and not is_first_frame:
                         mujoco.mj_step(self.model, self.data)
                         mujoco.mj_forward(self.model, self.data)
@@ -1411,7 +1651,6 @@ class RobotSimulationSystem(QMainWindow):
 
                 curr_sim_time = float(self.data.time)
 
-            # Real-time pacing with automatic catch-up
             if self.rdl_connected and not self.is_paused and not self.sim_finished:
                 target_wall = wall_origin + (curr_sim_time - sim_origin)
                 rem = target_wall - time.perf_counter()

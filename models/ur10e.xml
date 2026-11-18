@@ -1,0 +1,99 @@
+<mujoco model="ur10e">
+  <compiler angle="radian" coordinate="local" meshdir="meshes"/>
+  <option integrator="implicitfast"/>
+
+  <asset>
+    <mesh name="base_0" file="base_0.obj"/>
+    <mesh name="base_1" file="base_1.obj"/>
+    <mesh name="shoulder_0" file="shoulder_0.obj"/>
+    <mesh name="shoulder_1" file="shoulder_1.obj"/>
+    <mesh name="shoulder_2" file="shoulder_2.obj"/>
+    <mesh name="upperarm_0" file="upperarm_0.obj"/>
+    <mesh name="upperarm_1" file="upperarm_1.obj"/>
+    <mesh name="upperarm_2" file="upperarm_2.obj"/>
+    <mesh name="upperarm_3" file="upperarm_3.obj"/>
+    <mesh name="forearm_0" file="forearm_0.obj"/>
+    <mesh name="forearm_1" file="forearm_1.obj"/>
+    <mesh name="forearm_2" file="forearm_2.obj"/>
+    <mesh name="forearm_3" file="forearm_3.obj"/>
+    <mesh name="wrist1_0" file="wrist1_0.obj"/>
+    <mesh name="wrist1_1" file="wrist1_1.obj"/>
+    <mesh name="wrist1_2" file="wrist1_2.obj"/>
+    <mesh name="wrist2_0" file="wrist2_0.obj"/>
+    <mesh name="wrist2_1" file="wrist2_1.obj"/>
+    <mesh name="wrist2_2" file="wrist2_2.obj"/>
+    <mesh name="wrist3" file="wrist3.obj"/>
+    <material name="black" rgba="0.033 0.033 0.033 1"/>
+    <material name="jointgray" rgba="0.278 0.278 0.278 1"/>
+    <material name="linkgray" rgba="0.82 0.82 0.82 1"/>
+    <material name="urblue" rgba="0.49 0.678 0.8 1"/>
+  </asset>
+
+  <worldbody>
+    <body name="base">
+      <inertial pos="0 0 0" mass="4" fullinertia="0.00610633 0.00610633 0.01125 0 0 0"/>
+      <geom type="mesh" mesh="base_0" material="black" contype="0" conaffinity="0" group="1"/>
+      <geom type="mesh" mesh="base_1" material="jointgray" contype="0" conaffinity="0" group="1"/>
+      <body name="shoulder_link" pos="0 0 0.181" quat="1 0 0 0">
+        <joint name="shoulder_pan_joint" type="hinge" axis="0 0 1" range="-6.28319 6.28319" limited="true" damping="10"/>
+        <inertial pos="0 0 0" mass="7.778" fullinertia="0.0314743 0.0314743 0.0218756 0 0 0"/>
+        <geom type="mesh" mesh="shoulder_0" material="urblue" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="shoulder_1" material="black" contype="0" conaffinity="0" group="1"/>
+        <geom type="mesh" mesh="shoulder_2" material="jointgray" contype="0" conaffinity="0" group="1"/>
+        <geom type="capsule" size="0.078 0.08" pos="0 0 -0.05" group="3"/>
+        <body name="upper_arm_link" pos="0 0.176 0" quat="0.707107 0 0.707107 0">
+          <joint name="shoulder_lift_joint" type="hinge" axis="0 1 0" range="-6.28319 6.28319" limited="true" damping="10"/>
+          <inertial pos="0 0 0.3065" mass="12.93" fullinertia="0.423074 0.423074 0.0363656 0 0 0"/>
+          <geom type="mesh" mesh="upperarm_0" material="black" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="upperarm_1" material="jointgray" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="upperarm_2" material="urblue" contype="0" conaffinity="0" group="1"/>
+          <geom type="mesh" mesh="upperarm_3" material="linkgray" contype="0" conaffinity="0" group="1"/>
+          <geom type="capsule" size="0.078 0.08" pos="0 -0.05 0" quat="0.707107 0.707107 0 0" group="3"/>
+          <geom type="capsule" size="0.06 0.3" pos="0 0 0.3" group="3"/>
+          <body name="forearm_link" pos="0 -0.137 0.613" quat="1 0 0 0">
+            <joint name="elbow_joint" type="hinge" axis="0 1 0" range="-3.1415 3.1415" limited="true" damping="5"/>
+            <inertial pos="0 0 0.2855" mass="3.87" fullinertia="0.11059 0.11059 0.0108844 0 0 0"/>
+            <geom type="mesh" mesh="forearm_0" material="urblue" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="forearm_1" material="black" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="forearm_2" material="jointgray" contype="0" conaffinity="0" group="1"/>
+            <geom type="mesh" mesh="forearm_3" material="linkgray" contype="0" conaffinity="0" group="1"/>
+            <geom type="capsule" size="0.058 0.065" pos="0 0.08 0" quat="0.707107 0.707107 0 0" group="3"/>
+            <geom type="capsule" size="0.043 0.28" pos="0 0 0.29" group="3"/>
+            <body name="wrist_1_link" pos="0 0 0.571" quat="0.707107 0 0.707107 0">
+              <joint name="wrist_1_joint" type="hinge" axis="0 1 0" range="-6.28319 6.28319" limited="true" damping="2"/>
+              <inertial pos="0 0.135 0" mass="1.96" fullinertia="0.00510825 0.00510825 0.0055125 0 2.47532e-20 -2.67276e-51"/>
+              <geom type="mesh" mesh="wrist1_0" material="black" contype="0" conaffinity="0" group="1"/>
+              <geom type="mesh" mesh="wrist1_1" material="urblue" contype="0" conaffinity="0" group="1"/>
+              <geom type="mesh" mesh="wrist1_2" material="jointgray" contype="0" conaffinity="0" group="1"/>
+              <geom type="capsule" size="0.05 0.07" pos="0 0.06 0" quat="0.707107 0.707107 0 0" group="3"/>
+              <body name="wrist_2_link" pos="0 0.135 0" quat="1 0 0 0">
+                <joint name="wrist_2_joint" type="hinge" axis="0 0 1" range="-6.28319 6.28319" limited="true" damping="2"/>
+                <inertial pos="0 0 0.12" mass="1.96" fullinertia="0.00510825 0.00510825 0.0055125 0 2.47532e-20 -2.67276e-51"/>
+                <geom type="mesh" mesh="wrist2_0" material="black" contype="0" conaffinity="0" group="1"/>
+                <geom type="mesh" mesh="wrist2_1" material="urblue" contype="0" conaffinity="0" group="1"/>
+                <geom type="mesh" mesh="wrist2_2" material="jointgray" contype="0" conaffinity="0" group="1"/>
+                <geom type="capsule" size="0.046 0.065" pos="0 0 0.05" group="3"/>
+                <geom type="capsule" size="0.046 0.043" pos="0 0.028 0.12" quat="0.707107 0.707107 0 0" group="3"/>
+                <body name="wrist_3_link" pos="0 0 0.12" quat="1 0 0 0">
+                  <joint name="wrist_3_joint" type="hinge" axis="0 1 0" range="-6.28319 6.28319" limited="true" damping="2"/>
+                  <inertial pos="0 0.092 0" mass="0.202" fullinertia="0.000144346 0.000204525 0.000144346 9.67752e-21 0 0"/>
+                  <geom type="mesh" mesh="wrist3" material="linkgray" contype="0" conaffinity="0" group="1"/>
+                  <geom type="cylinder" size="0.046 0.02" pos="0 0.097 0" quat="0.707107 0.707107 0 0" group="3"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="shoulder_pan_joint_act" joint="shoulder_pan_joint" kp="50" dampratio="1" forcerange="-330 330"/>
+    <position name="shoulder_lift_joint_act" joint="shoulder_lift_joint" kp="50" dampratio="1" forcerange="-330 330"/>
+    <position name="elbow_joint_act" joint="elbow_joint" kp="50" dampratio="1" forcerange="-150 150"/>
+    <position name="wrist_1_joint_act" joint="wrist_1_joint" kp="50" dampratio="1" forcerange="-56 56"/>
+    <position name="wrist_2_joint_act" joint="wrist_2_joint" kp="50" dampratio="1" forcerange="-56 56"/>
+    <position name="wrist_3_joint_act" joint="wrist_3_joint" kp="50" dampratio="1" forcerange="-56 56"/>
+  </actuator>
+</mujoco>

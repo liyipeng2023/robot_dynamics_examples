@@ -58,13 +58,6 @@ else()
     target_compile_options(compare_planar_continuous PRIVATE $<$<CONFIG:Release>:-O3 -mcpu=native -DNDEBUG>)
 endif()
 
-set(RDL_BENCHMARK_EXECUTABLES
-        compare_rdl_pinocchio
-        benchmark_pinocchio
-        benchmark_rdl
-        compare_planar_continuous
-)
-
 # 5. Compare URDF and MJCF loader using RDL
 add_executable(compare_urdf_mjcf_rdl compare_urdf_mjcf_rdl.cpp)
 target_include_directories(compare_urdf_mjcf_rdl PRIVATE ${EIGEN3_INCLUDE_DIR})
@@ -72,6 +65,16 @@ target_link_libraries(compare_urdf_mjcf_rdl PRIVATE
         rdl::rdl_core
         rdl_model_loader
 )
+
+set(RDL_BENCHMARK_EXECUTABLES
+        compare_rdl_pinocchio
+        benchmark_pinocchio
+        benchmark_rdl
+        compare_planar_continuous
+        compare_urdf_mjcf_rdl
+)
+
+
 
 if(WIN32)
     foreach(test_target ${RDL_BENCHMARK_EXECUTABLES})

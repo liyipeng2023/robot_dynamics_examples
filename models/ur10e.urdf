@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<robot name="ur10e">
+  <material name="black">
+    <color rgba="0.033 0.033 0.033 1"/>
+  </material>
+  <material name="jointgray">
+    <color rgba="0.278 0.278 0.278 1"/>
+  </material>
+  <material name="linkgray">
+    <color rgba="0.82 0.82 0.82 1"/>
+  </material>
+  <material name="urblue">
+    <color rgba="0.49 0.678 0.8 1"/>
+  </material>
+  <link name="base">
+    <inertial>
+      <mass value="4"/>
+      <inertia ixx="0.0061063308908" ixy="0" ixz="0" iyy="0.0061063308908" iyz="0" izz="0.01125"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/base_0.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/base_1.obj"/>
+      </geometry>
+      <material name="jointgray"/>
+    </visual>
+  </link>
+  <link name="shoulder_link">
+    <inertial>
+      <mass value="7.778"/>
+      <inertia ixx="0.0314743" ixy="0" ixz="0" iyy="0.0314743" iyz="0" izz="0.0218756"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/shoulder_0.obj"/>
+      </geometry>
+      <material name="urblue"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/shoulder_1.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/shoulder_2.obj"/>
+      </geometry>
+      <material name="jointgray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.078" length="0.16"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="upper_arm_link">
+    <inertial>
+      <origin xyz="0 0 0.3065" rpy="0 0 0"/>
+      <mass value="12.93"/>
+      <inertia ixx="0.423074" ixy="0" ixz="0" iyy="0.423074" iyz="0" izz="0.0363656"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/upperarm_0.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/upperarm_1.obj"/>
+      </geometry>
+      <material name="jointgray"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/upperarm_2.obj"/>
+      </geometry>
+      <material name="urblue"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/upperarm_3.obj"/>
+      </geometry>
+      <material name="linkgray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.05 0" rpy="1.5707963267948968 0 0"/>
+      <geometry>
+        <cylinder radius="0.078" length="0.16"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.06" length="0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="forearm_link">
+    <inertial>
+      <origin xyz="0 0 0.2855" rpy="0 0 0"/>
+      <mass value="3.87"/>
+      <inertia ixx="0.11059" ixy="0" ixz="0" iyy="0.11059" iyz="0" izz="0.0108844"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/forearm_0.obj"/>
+      </geometry>
+      <material name="urblue"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/forearm_1.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/forearm_2.obj"/>
+      </geometry>
+      <material name="jointgray"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/forearm_3.obj"/>
+      </geometry>
+      <material name="linkgray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0.08 0" rpy="1.5707963267948968 0 0"/>
+      <geometry>
+        <cylinder radius="0.058" length="0.13"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0.29" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.043" length="0.56"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="wrist_1_link">
+    <inertial>
+      <origin xyz="0 0.135 0" rpy="1.5707963267948966 -1.5707963267948966 0"/>
+      <mass value="1.96"/>
+      <inertia ixx="0.0055125" ixy="0" ixz="0" iyy="0.00510825" iyz="0" izz="0.00510825"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist1_0.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist1_1.obj"/>
+      </geometry>
+      <material name="urblue"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist1_2.obj"/>
+      </geometry>
+      <material name="jointgray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0.06 0" rpy="1.5707963267948968 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.14"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="wrist_2_link">
+    <inertial>
+      <origin xyz="0 0 0.12" rpy="1.5707963267948966 -1.5707963267948966 0"/>
+      <mass value="1.96"/>
+      <inertia ixx="0.0055125" ixy="0" ixz="0" iyy="0.00510825" iyz="0" izz="0.00510825"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist2_0.obj"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist2_1.obj"/>
+      </geometry>
+      <material name="urblue"/>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist2_2.obj"/>
+      </geometry>
+      <material name="jointgray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.046" length="0.13"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0.028 0.12" rpy="1.5707963267948968 0 0"/>
+      <geometry>
+        <cylinder radius="0.046" length="0.086"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="wrist_3_link">
+    <inertial>
+      <origin xyz="0 0.092 0" rpy="3.141592653589793 0 -1.5707963267948968"/>
+      <mass value="0.202"/>
+      <inertia ixx="0.000204525" ixy="0" ixz="0" iyy="0.000144346" iyz="0" izz="0.000144346"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/wrist3.obj"/>
+      </geometry>
+      <material name="linkgray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0.097 0" rpy="1.5707963267948968 0 0"/>
+      <geometry>
+        <cylinder radius="0.046" length="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="shoulder_pan_joint" type="revolute">
+    <origin xyz="0 0 0.181" rpy="0 0 0"/>
+    <parent link="base"/>
+    <child link="shoulder_link"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-6.28319" upper="6.28319" effort="330" velocity="0"/>
+    <dynamics damping="10" friction="0"/>
+  </joint>
+  <joint name="shoulder_lift_joint" type="revolute">
+    <origin xyz="0 0.176 0" rpy="0 1.5707963267948963 0"/>
+    <parent link="shoulder_link"/>
+    <child link="upper_arm_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-6.28319" upper="6.28319" effort="330" velocity="0"/>
+    <dynamics damping="10" friction="0"/>
+  </joint>
+  <joint name="elbow_joint" type="revolute">
+    <origin xyz="0 -0.137 0.613" rpy="0 0 0"/>
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.1415" upper="3.1415" effort="150" velocity="0"/>
+    <dynamics damping="5" friction="0"/>
+  </joint>
+  <joint name="wrist_1_joint" type="revolute">
+    <origin xyz="0 0 0.571" rpy="0 1.5707963267948963 0"/>
+    <parent link="forearm_link"/>
+    <child link="wrist_1_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-6.28319" upper="6.28319" effort="56" velocity="0"/>
+    <dynamics damping="2" friction="0"/>
+  </joint>
+  <joint name="wrist_2_joint" type="revolute">
+    <origin xyz="0 0.135 0" rpy="0 0 0"/>
+    <parent link="wrist_1_link"/>
+    <child link="wrist_2_link"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-6.28319" upper="6.28319" effort="56" velocity="0"/>
+    <dynamics damping="2" friction="0"/>
+  </joint>
+  <joint name="wrist_3_joint" type="revolute">
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+    <parent link="wrist_2_link"/>
+    <child link="wrist_3_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-6.28319" upper="6.28319" effort="56" velocity="0"/>
+    <dynamics damping="2" friction="0"/>
+  </joint>
+</robot>

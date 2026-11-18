@@ -1,6 +1,0 @@
-Model,DOF,ModelLabel,FloatingBase,CRBA_Max_Error,RNEA_Max_Error,ABA_Max_Error
-franka-fr3,7,franka-fr3(7dof),0,7.549517e-15,7.993606e-15,3.410605e-13
-unitree-go2,18,unitree-go2(18dof),1,0.0,0.0,0.0
-spot,18,spot(18dof),1,0.0,0.0,0.0
-atlas-v4,36,atlas-v4(36dof),1,3.552714e-15,3.552714e-15,5.329071e-15
-unitree-h1-2,57,unitree-h1-2(57dof),1,0.0005915732,0.003738688,498259.1

@@ -4,8 +4,9 @@ project(robot_dynamics_examples LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(WITH_EXAMPLES_MODEL "Build examples with support for loading model from files" OFF)
-option(WITH_BENCHMARK "Build benchmark for comparing RDL with Pinocchio" OFF)
+option(BUILD_EXAMPLES_MODEL "Build examples with support for loading model from files" OFF)
+option(BUILD_BENCHMARK "Build benchmark for comparing RDL with Pinocchio" OFF)
+option(BUILD_MUJOCO_SIM "Build simulation using mujoco to create 3D scene" OFF)
 
 # detect the type of operating system
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -45,13 +46,19 @@ add_subdirectory(utils)
 add_subdirectory(examples)
 
 # add examples_model
-if (WITH_EXAMPLES_MODEL)
+if (BUILD_EXAMPLES_MODEL)
     message(STATUS "Add examples with dynamics created from files (urdfdom and tinyxml2 are required).")
     add_subdirectory(examples_model)
 endif ()
 
 # add benchmark
-if (WITH_BENCHMARK)
+if (BUILD_BENCHMARK)
     message(STATUS "Add benchmark for comparing RDL and Pinocchio (Pinocchio should be installed first).")
     add_subdirectory(benchmark)
+endif()
+
+# add benchmark
+if (BUILD_MUJOCO_SIM)
+    message(STATUS "Add simulation using mujoco to create scene.")
+    add_subdirectory(mujoco_sim)
 endif()

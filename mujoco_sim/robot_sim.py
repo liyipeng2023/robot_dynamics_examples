@@ -15,11 +15,29 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QFileDialog, QTextEdit, QGroupBox, QOpenGLWidget,
     QFormLayout, QLineEdit, QCheckBox, QDialog, QScrollArea, QDoubleSpinBox,
-    QMessageBox
+    QMessageBox, QComboBox, QSpinBox
 )
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QSurfaceFormat
 from OpenGL.GL import glClearColor, glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT
+
+# Ensure project_generator.py in the same directory can be imported from any working directory
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)
+
+try:
+    from project_generator import (
+        ProjectGenConfig,
+        ControlProjectGenerator,
+        convert_bind_to_connect_endpoint,
+        sanitize_cmake_name,
+    )
+    _HAS_PROJECT_GENERATOR = True
+    _PROJECT_GENERATOR_IMPORT_ERR = ""
+except Exception as _imp_err:
+    _HAS_PROJECT_GENERATOR = False
+    _PROJECT_GENERATOR_IMPORT_ERR = str(_imp_err)
 
 
 # Reduce Python GIL thread switch interval from default 5ms to 0.5ms to prevent GUI/Physics contention
@@ -579,6 +597,234 @@ class RotorInertiaDialog(QDialog):
             self.on_apply_callback(new_inertia, txt_path)
 
 
+class GenerateControlProjectDialog(QDialog):
+    """Popup dialog for one-click generation of a standalone Linux C++17 RDL control project."""
+
+    def __init__(self, snapshot: dict, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Generate Linux Control Software Project")
+        self.resize(560, 560)
+        self.snapshot = snapshot
+
+        main_layout = QVBoxLayout(self)
+
+        # 1. Detected simulation model summary
+        summary_group = QGroupBox("Current Simulation Context")
+        summary_layout = QVBoxLayout(summary_group)
+        model_display = os.path.basename(snapshot["model_file"]) if snapshot["model_file"] else "demo_robot.xml (Built-in 2-Link)"
+        summary_text = (
+            f"Model: {model_display}  |  nq={snapshot['nq']}, nv={snapshot['nv']}  |  "
+            f"Floating Base: {'Yes' if snapshot['is_floating_base'] else 'No'}\n"
+            f"Timestep: {snapshot['sim_timestep']:.4f}s  |  "
+            f"Controller ZMQ -> SUB: {snapshot['mujoco_sub_ep']} / PUB: {snapshot['mujoco_pub_ep']}"
+        )
+        lbl_summary = QLabel(summary_text)
+        lbl_summary.setStyleSheet("color: #333333; font-size: 11px;")
+        lbl_summary.setWordWrap(True)
+        summary_layout.addWidget(lbl_summary)
+        main_layout.addWidget(summary_group)
+
+        # 2. Target Project & RDL Path Settings
+        proj_group = QGroupBox("Project & RDL Configuration (Linux)")
+        proj_form = QFormLayout(proj_group)
+
+        dir_row = QHBoxLayout()
+        self.edt_out_dir = QLineEdit(snapshot["default_output_dir"])
+        btn_browse = QPushButton("Browse...")
+        btn_browse.clicked.connect(self._browse_output_dir)
+        dir_row.addWidget(self.edt_out_dir, stretch=1)
+        dir_row.addWidget(btn_browse)
+
+        self.edt_proj_name = QLineEdit(snapshot["default_project_name"])
+
+        self.cmb_rdl_platform = QComboBox()
+        self.cmb_rdl_platform.setEditable(True)
+        self.cmb_rdl_platform.addItems(["linux-x86_64", "linux-arm64", "linux-aarch64"])
+        self.cmb_rdl_platform.setCurrentText("linux-x86_64")
+
+        lbl_rdl_hint = QLabel(
+            'CMake: set(rdl_DIR "${CMAKE_CURRENT_SOURCE_DIR}/rdl/${RDL_PLATFORM_FOLDER}/lib/cmake/rdl")'
+        )
+        lbl_rdl_hint.setStyleSheet("color: #555555; font-size: 11px;")
+        lbl_rdl_hint.setWordWrap(True)
+
+        proj_form.addRow("Output Folder:", dir_row)
+        proj_form.addRow("Project Name:", self.edt_proj_name)
+        proj_form.addRow("RDL Platform Folder:", self.cmb_rdl_platform)
+        proj_form.addRow(lbl_rdl_hint)
+        main_layout.addWidget(proj_group)
+
+        # 3. Communication Options (Raw TCP/UDP always included; ROS optional)
+        comm_group = QGroupBox("Communication Interfaces (Raw TCP / UDP Included)")
+        comm_form = QFormLayout(comm_group)
+
+        self.chk_enable_ros = QCheckBox("Enable Optional ROS Communication Bridge (via UDP / TCP)")
+        self.chk_enable_ros.setChecked(False)
+        self.chk_enable_ros.toggled.connect(self._toggle_ros_fields)
+
+        self.cmb_ros_transport = QComboBox()
+        self.cmb_ros_transport.addItems(["udp", "tcp"])
+
+        self.edt_ros_ip = QLineEdit("127.0.0.1")
+
+        self.spn_ros_state_port = QSpinBox()
+        self.spn_ros_state_port.setRange(1024, 65535)
+        self.spn_ros_state_port.setValue(9001)
+
+        self.spn_ros_cmd_port = QSpinBox()
+        self.spn_ros_cmd_port.setRange(1024, 65535)
+        self.spn_ros_cmd_port.setValue(9002)
+
+        comm_form.addRow(self.chk_enable_ros)
+        comm_form.addRow("ROS Transport:", self.cmb_ros_transport)
+        comm_form.addRow("ROS Remote IP:", self.edt_ros_ip)
+        comm_form.addRow("ROS State Port:", self.spn_ros_state_port)
+        comm_form.addRow("ROS Command Port:", self.spn_ros_cmd_port)
+        main_layout.addWidget(comm_group)
+
+        # 4. Default Controller Gains & Test Trajectory
+        ctrl_group = QGroupBox("MuJoCo Test Controller Defaults")
+        ctrl_form = QFormLayout(ctrl_group)
+
+        gains_row = QHBoxLayout()
+        self.spn_kp = self._make_dspin(0.0, 10000.0, 2, 10.0, 400.0)
+        self.spn_ki = self._make_dspin(0.0, 5000.0, 2, 5.0, 20.0)
+        self.spn_kd = self._make_dspin(0.0, 5000.0, 2, 2.0, 40.0)
+        gains_row.addWidget(QLabel("Kp:"))
+        gains_row.addWidget(self.spn_kp)
+        gains_row.addWidget(QLabel("Ki:"))
+        gains_row.addWidget(self.spn_ki)
+        gains_row.addWidget(QLabel("Kd:"))
+        gains_row.addWidget(self.spn_kd)
+
+        traj_row = QHBoxLayout()
+        self.spn_amp = self._make_dspin(0.0, 3.14, 3, 0.05, 0.40)
+        self.spn_freq = self._make_dspin(0.0, 10.0, 3, 0.05, 0.25)
+        traj_row.addWidget(QLabel("Amp (rad):"))
+        traj_row.addWidget(self.spn_amp)
+        traj_row.addWidget(QLabel("Freq (Hz):"))
+        traj_row.addWidget(self.spn_freq)
+
+        ctrl_form.addRow("PID Gains:", gains_row)
+        ctrl_form.addRow("Cosine Traj:", traj_row)
+        main_layout.addWidget(ctrl_group)
+
+        self._toggle_ros_fields(False)
+
+        # 5. Action Buttons
+        btn_row = QHBoxLayout()
+        btn_generate = QPushButton("Generate Project")
+        btn_generate.setDefault(True)
+        btn_generate.setAutoDefault(True)
+        btn_close = QPushButton("Close")
+
+        btn_generate.clicked.connect(self._on_generate_clicked)
+        btn_close.clicked.connect(self.reject)
+
+        btn_row.addStretch(1)
+        btn_row.addWidget(btn_generate)
+        btn_row.addWidget(btn_close)
+        main_layout.addLayout(btn_row)
+
+    @staticmethod
+    def _make_dspin(vmin: float, vmax: float, decimals: int, step: float, val: float) -> QDoubleSpinBox:
+        sb = QDoubleSpinBox()
+        sb.setRange(vmin, vmax)
+        sb.setDecimals(decimals)
+        sb.setSingleStep(step)
+        sb.setValue(val)
+        return sb
+
+    def _toggle_ros_fields(self, enabled: bool):
+        self.cmb_ros_transport.setEnabled(enabled)
+        self.edt_ros_ip.setEnabled(enabled)
+        self.spn_ros_state_port.setEnabled(enabled)
+        self.spn_ros_cmd_port.setEnabled(enabled)
+
+    def _browse_output_dir(self):
+        start_dir = self.edt_out_dir.text().strip() or os.getcwd()
+        if not os.path.isdir(start_dir):
+            start_dir = os.path.dirname(start_dir) or os.getcwd()
+        chosen = QFileDialog.getExistingDirectory(self, "Select Output Directory for Control Project", start_dir)
+        if chosen:
+            self.edt_out_dir.setText(chosen)
+
+    def _on_generate_clicked(self):
+        out_dir = self.edt_out_dir.text().strip()
+        if not out_dir:
+            QMessageBox.warning(self, "Invalid Path", "Please specify a valid target output folder.")
+            return
+
+        proj_name = sanitize_cmake_name(self.edt_proj_name.text().strip() or "rdl_robot_control")
+        rdl_platform = self.cmb_rdl_platform.currentText().strip() or "linux-x86_64"
+
+        if os.path.isdir(out_dir) and os.listdir(out_dir):
+            ans = QMessageBox.question(
+                self,
+                "Directory Not Empty",
+                f"Target folder already exists and is not empty:\n{out_dir}\n\n"
+                "Existing generated source/CMake files with the same names will be overwritten. Continue?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if ans != QMessageBox.Yes:
+                return
+
+        cfg = ProjectGenConfig(
+            output_dir=out_dir,
+            project_name=proj_name,
+            model_file=self.snapshot["model_file"],
+            is_floating_base=self.snapshot["is_floating_base"],
+            nq=self.snapshot["nq"],
+            nv=self.snapshot["nv"],
+            joint_names=self.snapshot["joint_names"],
+            rotor_inertia=self.snapshot["rotor_inertia"],
+            sim_timestep=self.snapshot["sim_timestep"],
+            mujoco_sub_endpoint=self.snapshot["mujoco_sub_ep"],
+            mujoco_pub_endpoint=self.snapshot["mujoco_pub_ep"],
+            rdl_platform_folder=rdl_platform,
+            enable_ros_comm=self.chk_enable_ros.isChecked(),
+            ros_transport=self.cmb_ros_transport.currentText(),
+            ros_remote_ip=self.edt_ros_ip.text().strip() or "127.0.0.1",
+            ros_state_port=int(self.spn_ros_state_port.value()),
+            ros_cmd_port=int(self.spn_ros_cmd_port.value()),
+            kp=float(self.spn_kp.value()),
+            ki=float(self.spn_ki.value()),
+            kd=float(self.spn_kd.value()),
+            traj_amp=float(self.spn_amp.value()),
+            traj_freq=float(self.spn_freq.value()),
+        )
+
+        try:
+            gen = ControlProjectGenerator(cfg)
+            result = gen.generate()
+        except Exception as e:
+            QMessageBox.critical(self, "Project Generation Failed", f"Failed to generate control project:\n{e}")
+            return
+
+        ros_info = (
+            f"Enabled ({result['ros_transport'].upper()})"
+            if result["enable_ros_comm"]
+            else "Disabled (Raw TCP/UDP only)"
+        )
+        QMessageBox.information(
+            self,
+            "Project Generated",
+            f"Linux C++ control project generated successfully!\n\n"
+            f"Location: {result['output_dir']}\n"
+            f"Project: {result['project_name']}\n"
+            f"Model: {result['model_rel_path']}\n"
+            f"ROS Bridge: {ros_info}\n"
+            f"Files Created: {len(result['generated_files'])}\n\n"
+            f"Next steps on Linux:\n"
+            f"1. Copy your RDL SDK into:\n"
+            f"   {os.path.join(result['output_dir'], 'rdl', rdl_platform)}\n"
+            f"2. Run: ./build.sh\n"
+            f"3. Run: ./build/mujoco_test_app",
+        )
+        self.accept()
+
+
 class RDLZmqBinaryNode:
     """ZeroMQ server node in MuJoCo supporting strict causal lockstep ping-pong synchronization."""
 
@@ -1023,16 +1269,13 @@ class RobotSimulationSystem(QMainWindow):
         robot_btn_row = QHBoxLayout()
         btn_load_robot = QPushButton("Load Robot")
         btn_base_pos = QPushButton("Set Robot Base")
-        #btn_base_pos.setStyleSheet("font-weight: bold; padding: 3px;")
         robot_btn_row.addWidget(btn_load_robot)
         robot_btn_row.addWidget(btn_base_pos)
 
         # Compact Joint Pose/Polarity and Motor Inertia buttons placed on a single horizontal row
         pose_inertia_row = QHBoxLayout()
         btn_edit_qpos = QPushButton("Joint Position")
-        #btn_edit_qpos.setStyleSheet("font-size: 11px; font-weight: bold; padding: 3px;")
         btn_edit_inertia = QPushButton("Motor Inertia")
-        #btn_edit_inertia.setStyleSheet("font-size: 11px; font-weight: bold; padding: 3px;")
         pose_inertia_row.addWidget(btn_edit_qpos)
         pose_inertia_row.addWidget(btn_edit_inertia)
 
@@ -1049,6 +1292,9 @@ class RobotSimulationSystem(QMainWindow):
         ctrl_btn_row.addWidget(btn_reset_sim)
         ctrl_btn_row.addWidget(self.btn_pause)
 
+        # One-click Linux Control Project Generator button
+        btn_gen_project = QPushButton("Generate Linux Control Project")
+
         btn_load_env.clicked.connect(self.select_env_xml)
         btn_reset_env.clicked.connect(self.reset_default_env)
         btn_load_robot.clicked.connect(self.select_robot_xml)
@@ -1059,6 +1305,7 @@ class RobotSimulationSystem(QMainWindow):
         btn_load_scene.clicked.connect(self.load_experimental_scene)
         btn_reset_sim.clicked.connect(self.reset_physics_state)
         self.btn_pause.clicked.connect(self.toggle_pause)
+        btn_gen_project.clicked.connect(self.open_generate_project_dialog)
 
         model_layout.addWidget(self.lbl_env)
         model_layout.addLayout(env_btn_row)
@@ -1069,8 +1316,8 @@ class RobotSimulationSystem(QMainWindow):
         model_layout.addWidget(lbl_drag_tip)
         model_layout.addSpacing(4)
         model_layout.addLayout(pose_inertia_row)
-        
         model_layout.addLayout(ctrl_btn_row)
+        model_layout.addWidget(btn_gen_project)
         panel.addWidget(model_group)
 
         # 2. Simulation Timing Group (Timestep & Duration)
@@ -1116,6 +1363,79 @@ class RobotSimulationSystem(QMainWindow):
         self.txt_collision.setReadOnly(True)
         col_layout.addWidget(self.txt_collision)
         panel.addWidget(col_group, stretch=1)
+
+    def _extract_joint_names_unlocked(self):
+        """Extracts per-qpos-coordinate joint names for the currently loaded MuJoCo model."""
+        if self.model is None:
+            return []
+        names = []
+        for j in range(int(self.model.njnt)):
+            jnt_name = mujoco.mj_id2name(self.model, int(mujoco.mjtObj.mjOBJ_JOINT), j) or f"joint_{j}"
+            jnt_type = int(self.model.jnt_type[j])
+            if jnt_type == int(mujoco.mjtJoint.mjJNT_FREE):
+                for suffix in ["x", "y", "z", "qw", "qx", "qy", "qz"]:
+                    names.append(f"{jnt_name}.{suffix}")
+            elif jnt_type == int(mujoco.mjtJoint.mjJNT_BALL):
+                for suffix in ["qw", "qx", "qy", "qz"]:
+                    names.append(f"{jnt_name}.{suffix}")
+            else:
+                names.append(jnt_name)
+        return names
+
+    def open_generate_project_dialog(self):
+        """Opens the one-click Linux C++ control project generator dialog populated from the active simulation."""
+        if not _HAS_PROJECT_GENERATOR:
+            QMessageBox.critical(
+                self,
+                "Generator Module Missing",
+                "Could not import 'project_generator.py'.\n"
+                "Please place 'project_generator.py' in the same directory as 'robot_sim.py'.\n\n"
+                f"Import error: {_PROJECT_GENERATOR_IMPORT_ERR}",
+            )
+            return
+
+        with self.sim_lock:
+            if self.model is None:
+                QMessageBox.warning(self, "No Model Loaded", "Please load a valid robot model first.")
+                return
+
+            nq = int(self.model.nq)
+            nv = int(self.model.nv)
+            is_floating = bool(self.free_jnt_qpos_adr >= 0 or nq == nv + 1)
+            joint_names = self._extract_joint_names_unlocked()
+            rotor_inertia_list = (
+                self.rotor_inertia.tolist()
+                if self.rotor_inertia is not None
+                else [0.0] * nv
+            )
+            sim_dt = float(self.sim_timestep)
+            model_file = os.path.abspath(self.robot_xml_path) if self.robot_xml_path else None
+
+        robot_dir = self._get_robot_directory()
+        robot_stem = os.path.splitext(os.path.basename(model_file))[0] if model_file else "demo_robot"
+        default_proj_name = sanitize_cmake_name(f"{robot_stem}_ctrl")
+        default_out_dir = os.path.join(robot_dir, default_proj_name)
+
+        # Simulator PUB -> Controller SUB; Simulator SUB -> Controller PUB
+        sim_pub_ep = self.edt_pub_ep.text().strip()
+        sim_sub_ep = self.edt_sub_ep.text().strip()
+
+        snapshot = {
+            "model_file": model_file,
+            "nq": nq,
+            "nv": nv,
+            "is_floating_base": is_floating,
+            "joint_names": joint_names,
+            "rotor_inertia": rotor_inertia_list,
+            "sim_timestep": sim_dt,
+            "mujoco_sub_ep": convert_bind_to_connect_endpoint(sim_pub_ep),
+            "mujoco_pub_ep": convert_bind_to_connect_endpoint(sim_sub_ep),
+            "default_project_name": default_proj_name,
+            "default_output_dir": default_out_dir,
+        }
+
+        dlg = GenerateControlProjectDialog(snapshot, self)
+        dlg.exec_()
 
     def save_experimental_scene(self):
         """Pops up a file save dialog in the robot model directory so the user can enter a custom scene filename."""

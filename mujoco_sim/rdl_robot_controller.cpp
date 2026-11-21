@@ -105,6 +105,9 @@ int main(int argc, char** argv) {
         std::cerr << "[RDL Error] Failed to load model file: " << model_file << std::endl;
         return -1;
     }
+    for (auto it:joint_map) {
+        std::cout << it.second << " : " << it.first << std::endl;
+    }
 
     int dof_dyn = rdl_dyn->DOF();
     int dof_q = rdl_dyn->dim_position();
@@ -141,7 +144,7 @@ int main(int argc, char** argv) {
     Eigen::VectorXd v = Eigen::VectorXd::Zero(dof_dyn);
     Eigen::VectorXd v_des = Eigen::VectorXd::Zero(dof_dyn);
     Eigen::VectorXd a_des = Eigen::VectorXd::Zero(dof_dyn);
-    Eigen::VectorXd u_acc = Eigen::VectorXd::Zero(dof_dyn);
+    Eigen::VectorXd tau_pid = Eigen::VectorXd::Zero(dof_dyn);
 
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(dof_dyn, dof_dyn);
     Eigen::VectorXd tau_grav = Eigen::VectorXd::Zero(dof_dyn);
@@ -193,7 +196,7 @@ int main(int argc, char** argv) {
                 v.setZero(dof_dyn);
                 v_des.setZero(dof_dyn);
                 a_des.setZero(dof_dyn);
-                u_acc.setZero(dof_dyn);
+                tau_pid.setZero(dof_dyn);
                 M.setZero(dof_dyn, dof_dyn);
                 tau_grav.setZero(dof_dyn);
                 tau_cmd.setZero(dof_dyn);
@@ -288,8 +291,8 @@ int main(int argc, char** argv) {
         // Add equivalent motor inertia loaded from TXT file onto the diagonal of M(q)
         M.diagonal() += rotor_inertia;
 
-        // 3. Compute Desired Acceleration Command: u_acc = a_des + kp*(q_des - q) + ki*int_e + kd*(v_des - v)
-        u_acc.setZero();
+        // 3. Compute Desired Acceleration Command: tau_pid = a_des + kp*(q_des - q) + ki*int_e + kd*(v_des - v)
+        tau_pid.setZero();
         double effective_kd = std::max(kd, 1.6 * std::sqrt(std::max(0.0, kp)));
         if (!is_floating_base) {
             for (int i = 0; i < dof_dyn; ++i) {
@@ -298,7 +301,7 @@ int main(int argc, char** argv) {
                     integral_err(i) = std::clamp(integral_err(i) + pos_err * dt, -integral_limit, integral_limit);
                 }
                 double vel_err = v_des(i) - v(i);
-                u_acc(i) = a_des(i) + kp * pos_err + ki * integral_err(i) + effective_kd * vel_err;
+                tau_pid(i) = kp * pos_err + ki * integral_err(i) + effective_kd * vel_err;
             }
         } else if (dof_q >= 7 && dof_dyn >= 6) {
             for (int i = 6; i < dof_dyn; ++i) {
@@ -308,12 +311,14 @@ int main(int argc, char** argv) {
                     integral_err(i) = std::clamp(integral_err(i) + pos_err * dt, -integral_limit, integral_limit);
                 }
                 double vel_err = v_des(i) - v(i);
-                u_acc(i) = a_des(i) + kp * pos_err + ki * integral_err(i) + effective_kd * vel_err;
+                tau_pid(i) = kp * pos_err + ki * integral_err(i) + effective_kd * vel_err;
             }
         }
-
-        // 4. Computed-Torque Law: tau_cmd = tau_grav(q) + (M_link(q) + diag(I_a)) * u_acc
-        tau_cmd = tau_grav + M * u_acc;
+        //std::cout << "q =     " << q.transpose() << std::endl;
+        //std::cout << "q_err = " << (q-q_des).transpose() << std::endl;
+        //std::cout << "v_err = " << (v-v_des).transpose() << std::endl;
+        // 4. Computed-Torque Law: tau_cmd = tau_grav(q) + (M_link(q) + diag(I_a)) * tau_pid
+        tau_cmd = tau_grav + tau_pid;
 
         // 5. Send RdlCmdHeader (mode = 0) + tau_cmd to unlock MuJoCo's next step
         sendTorqueCommand(pub_sock, dof_q, dof_dyn, tau_cmd);
@@ -325,6 +330,7 @@ int main(int argc, char** argv) {
 
             double max_pos_err = (q_des - q).cwiseAbs().maxCoeff();
             double max_vel_err = (v_des - v).cwiseAbs().maxCoeff();
+            std::cout << "q = " << q.transpose() << std::endl;
             std::cout << std::fixed << std::setprecision(4)
                       << "[RDL Lockstep] Sim t: " << t << "s (Wall dt: " << wall_sec << "s)"
                       << " | Max |e_q|: " << max_pos_err << " rad"
